@@ -26,5 +26,12 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:25.0.1'
     compile 'agency.tango.android:material-intro-screen:0.0.5'
+    compile 'com.rengwuxian.materialedittext:library:2.1.4'
+    compile 'com.github.medyo:fancybuttons:1.8'
+    compile 'com.mikepenz:fontawesome-typeface:4.7.0.0@aar'
+    compile('com.mikepenz:materialdrawer:5.9.0@aar') {
+        transitive = true
+    }
+    compile 'com.mikepenz:google-material-typeface:2.2.0.1@aar'
     testCompile 'junit:junit:4.12'
 }

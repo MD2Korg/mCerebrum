@@ -17,6 +17,7 @@
         </activity>
         <activity android:name=".intro.ActivityIntro"
             android:theme="@style/Theme.Intro" />
+        <activity android:name=".login.ActivityLogin"/>
     </application>
 
 </manifest>
