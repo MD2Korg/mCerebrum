@@ -29,8 +29,8 @@ public class ActivityIntro extends MaterialIntroActivity {
                 });
 
         addSlide(new SlideFragmentBuilder()
-                .backgroundColor(R.color.first_slide_background)
-                .buttonsColor(R.color.first_slide_buttons)
+                .backgroundColor(R.color.colorBackground)
+                .buttonsColor(R.color.colorPrimaryDark)
                 .image(R.drawable.img_office)
                 .title("Welcome to mCerebrum")
                 .description("sense- Analyze- Act")
@@ -46,8 +46,8 @@ public class ActivityIntro extends MaterialIntroActivity {
                 }, "Work with love"));
 */
         addSlide(new SlideFragmentBuilder()
-                .backgroundColor(R.color.second_slide_background)
-                .buttonsColor(R.color.second_slide_buttons)
+                .backgroundColor(R.color.colorBackground)
+                .buttonsColor(R.color.colorPrimaryDark)
                 .image(R.drawable.img_equipment)
                 .title("Sense")
                 .description("")
@@ -56,8 +56,8 @@ public class ActivityIntro extends MaterialIntroActivity {
         // addSlide(new CustomSlide());
 
         addSlide(new SlideFragmentBuilder()
-                .backgroundColor(R.color.third_slide_background)
-                .buttonsColor(R.color.third_slide_buttons)
+                .backgroundColor(R.color.colorBackground)
+                .buttonsColor(R.color.colorPrimaryDark)
                 .image(R.drawable.img_equipment)
                 .title("Analyze")
                 .description("")
@@ -71,8 +71,8 @@ public class ActivityIntro extends MaterialIntroActivity {
                 }, "Tools"));
 */
         addSlide(new SlideFragmentBuilder()
-                .backgroundColor(R.color.fourth_slide_background)
-                .buttonsColor(R.color.fourth_slide_buttons)
+                .backgroundColor(R.color.colorBackground)
+                .buttonsColor(R.color.colorPrimaryDark)
                 .image(R.drawable.img_office)
                 .title("Act")
                 .description("")

@@ -1,24 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
-    <color name="first_slide_background">#1A5276</color>
-    <color name="first_slide_buttons">#880E4F</color>
-
-    <color name="second_slide_background">#34495E</color>
-    <color name="second_slide_buttons">#4A148C</color>
-
-    <color name="third_slide_background">#2E4053</color>
-    <color name="third_slide_buttons">#004D40</color>
-
-    <color name="fourth_slide_background">#424949</color>
-    <color name="fourth_slide_buttons">#3E2723</color>
-
-    <color name="custom_slide_background">#e5fcc2</color>
-    <color name="custom_slide_buttons">#1A237E</color>
-
-    <!--Splash Screen-->
-    <item name="splash_background" type="color">@color/colorPrimary</item>
+    <color name="colorPrimary">#009688</color>
+    <color name="colorPrimaryDark">#00796B</color>
+    <color name="colorPrimaryLight">#B2DFDB</color>
+    <color name="colorAccent">#FF5722</color>
+    <color name="colorBackground">#303030</color>
+    <color name="colorPrimaryText">#FFFFFF</color>
+    <color name="colorSecondaryText">#757575</color>
+    <color name="icons">#FFFFFF</color>
+    <color name="divider">#BDBDBD</color>
 
 </resources>
