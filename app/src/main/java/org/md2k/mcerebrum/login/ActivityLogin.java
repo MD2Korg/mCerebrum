@@ -1,13 +1,20 @@
 package org.md2k.mcerebrum.login;
 
 import android.annotation.SuppressLint;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import com.rengwuxian.materialedittext.MaterialEditText;
 
 import org.md2k.mcerebrum.R;
 
@@ -82,19 +89,57 @@ public class ActivityLogin extends AppCompatActivity {
 
         final Button button_cancel = (Button) findViewById(R.id.button_login_cancel);
         button_cancel.setOnClickListener(new View.OnClickListener() {
-                                      public void onClick(View v) {
-                                          // Code here executes on main thread after user presses button
-                                          finish();
-                                      }
-    });
-
-
-        final Button button_login = (Button) findViewById(R.id.button_login);
-        button_login.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Code here executes on main thread after user presses button
                 finish();
+
             }
+        });
+
+
+        MaterialEditText mEdit = null;
+        final String[] uname = {null};
+        final Button button_login = (Button) findViewById(R.id.button_login);
+        final MaterialEditText finalMEdit = mEdit;
+        TextView t;
+        button_login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                MaterialEditText materialEditText = (MaterialEditText) findViewById(R.id.edittext_username);
+                MaterialEditText materialEditText1 = (MaterialEditText) findViewById(R.id.edittext_password);
+             //   Toast.makeText(ActivityLogin.this, "username=" + materialEditText.getText(), Toast.LENGTH_LONG).show();
+            //    Toast.makeText(ActivityLogin.this, "password=" + materialEditText1.getText(), Toast.LENGTH_LONG).show();
+
+
+
+
+                TextView t=(TextView) findViewById(R.id.textview_logininfo);
+                    if(materialEditText.getText().toString().equals("")){
+                    t.setText("Usename field is empty");
+                        t.setTextColor(Color.RED);
+
+                }
+                else if(materialEditText1.getText().toString().equals("")){
+                    t.setText("Password field is empty");
+                        t.setTextColor(Color.RED);
+
+                }
+
+                    else if(materialEditText.getText().toString().equals("abc")&& materialEditText1.getText().toString().equals("123")){
+                        t.setText("Login Successful");
+                        t.setTextColor(Color.WHITE);
+                        finish();
+                    }
+                    else if(!materialEditText.getText().toString().equals("abc")|| !materialEditText1.getText().toString().equals("123")){
+                        t.setText("Login not Successful");
+                        t.setTextColor(Color.RED);
+
+                    }
+
+
+            };
+
+
         });
     }
 

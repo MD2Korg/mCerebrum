@@ -53,6 +53,7 @@ public class ActivityMain extends AppCompatActivity {
         headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
                 .withHeaderBackground(R.drawable.header)
+                .withCompactStyle(true)
                 .addProfiles(
                         profile,
                         //don't ask but google uses 14dp for the add account icon in gmail but 20dp for the normal icons (like manage account)
