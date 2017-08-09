@@ -1,6 +1,8 @@
 package org.md2k.mcerebrum.login;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -17,6 +19,13 @@ import android.widget.Toast;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import org.md2k.mcerebrum.R;
+import org.md2k.mcerebrum.internet.download.DownloadFile;
+import org.md2k.mcerebrum.internet.download.DownloadInfo;
+
+import rx.Observer;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -91,8 +100,9 @@ public class ActivityLogin extends AppCompatActivity {
         button_cancel.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Code here executes on main thread after user presses button
+                Intent returnIntent = new Intent();
+                setResult(Activity.RESULT_CANCELED,returnIntent);
                 finish();
-
             }
         });
 
@@ -101,7 +111,7 @@ public class ActivityLogin extends AppCompatActivity {
         final String[] uname = {null};
         final Button button_login = (Button) findViewById(R.id.button_login);
         final MaterialEditText finalMEdit = mEdit;
-        TextView t;
+        final TextView t=(TextView) findViewById(R.id.textview_logininfo);
         button_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -113,7 +123,6 @@ public class ActivityLogin extends AppCompatActivity {
 
 
 
-                TextView t=(TextView) findViewById(R.id.textview_logininfo);
                     if(materialEditText.getText().toString().equals("")){
                     t.setText("Usename field is empty");
                         t.setTextColor(Color.RED);
@@ -126,9 +135,7 @@ public class ActivityLogin extends AppCompatActivity {
                 }
 
                     else if(materialEditText.getText().toString().equals("abc")&& materialEditText1.getText().toString().equals("123")){
-                        t.setText("Login Successful");
-                        t.setTextColor(Color.WHITE);
-                        finish();
+                        downloadConfig();
                     }
                     else if(!materialEditText.getText().toString().equals("abc")|| !materialEditText1.getText().toString().equals("123")){
                         t.setText("Login not Successful");
@@ -140,6 +147,37 @@ public class ActivityLogin extends AppCompatActivity {
             };
 
 
+        });
+    }
+    private void downloadConfig(){
+        final TextView t=(TextView) findViewById(R.id.textview_logininfo);
+        t.setText("Login Successful...downloading configuration file...");
+        DownloadFile downloadFile=new DownloadFile();
+
+        Subscription subscription = downloadFile.download("https://github.com/MD2Korg/mCerebrum-Configuration/releases/download/1.4/R724749.zip", this.getExternalFilesDir(null)+"/temp","config.zip")
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<DownloadInfo>() {
+            @Override
+            public void onCompleted() {
+                t.setTextColor(Color.GREEN);
+                Intent returnIntent = new Intent();
+                returnIntent.putExtra("config_file",ActivityLogin.this.getExternalFilesDir(null)+"/temp/config.zip");
+
+                setResult(Activity.RESULT_OK,returnIntent);
+                finish();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                t.setTextColor(Color.RED);
+                t.setText("Error: download configuration file ... failed...please try again");
+            }
+
+            @Override
+            public void onNext(DownloadInfo downloadInfo) {
+
+            }
         });
     }
 
