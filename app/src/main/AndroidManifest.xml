@@ -22,15 +22,6 @@
             android:theme="@style/Theme.Intro" />
         <activity android:name=".login.ActivityLogin"/>
         <activity android:name=".usage_type.ActivityUsageType"/>
-        <provider
-            android:name="android.support.v4.content.FileProvider"
-            android:authorities="org.md2k.mcerebrum.provider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths" />
-        </provider>
     </application>
 
 </manifest>

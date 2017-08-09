@@ -57,7 +57,6 @@ public class ApplicationManager {
         application.title=cApp.getTitle();
         application.summary=cApp.getSummary();
         application.description=cApp.getDescription();
-        application.downloadLink=cApp.getDownload_link();
         application.icon=cApp.getIcon();
         return application;
     }
