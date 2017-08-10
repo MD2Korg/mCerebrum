@@ -24,8 +24,8 @@ public class ActivityConfig extends MaterialIntroActivity {
                         view.setAlpha(percentage);
                     }
                 });
-        addSlide(new CustomSlide());
-        addSlide(new DeviceSetup());
+        addSlide(new Fragment_App_Install());
+        addSlide(new Fragment_App_Setup());
 
        addSlide(new SlideFragmentBuilder()
                         .backgroundColor(R.color.colorBackground)

@@ -34,7 +34,7 @@ import org.md2k.mcerebrum.configuration.CAppManager;
 
 public class ApplicationManager {
     private Application[] applications;
-    private void read(String filePath){
+    public void read(String filePath){
         CApp[] cApps=new CAppManager().read(filePath);
         applications=new Application[cApps.length];
         for(int i=0;i<cApps.length;i++){
@@ -50,6 +50,9 @@ public class ApplicationManager {
     }
     public Application[] get(){
         return applications;
+    }
+    public Application get(int i){
+        return applications[i];
     }
     private Application getApplication(CApp cApp){
         Application application=new Application();

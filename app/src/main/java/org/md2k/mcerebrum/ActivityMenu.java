@@ -53,7 +53,9 @@ public abstract class ActivityMenu extends AppCompatActivity {
     private static final String STRING_TERMS = "Terms and Conditions";
     private static final String STRING_PRIVACY = "Privacy Policy";
     private static final String STRING_CONTACT = "Contact";
-    private static final String STRING_FEEDBACK = "FEEDBACK";
+    private static final String STRING_FEEDBACK = "Feedback";
+    private static final String STRING_JOIN_STUDY = "Join Study";
+
 
     private static final int ID_HOME=0;
     private static final int ID_SETTINGS=1;
@@ -69,6 +71,8 @@ public abstract class ActivityMenu extends AppCompatActivity {
     private static final int ID_PRIVACY = 11;
     private static final int ID_CONTACT = 12;
     private static final int ID_FEEDBACK = 13;
+    protected static final int ID_JOIN_STUDY = 14;
+
     int curId;
     int lastId;
 
@@ -264,11 +268,6 @@ public abstract class ActivityMenu extends AppCompatActivity {
             profile3 = new ProfileSettingDrawerItem().withName("Login").withIcon(FontAwesome.Icon.faw_sign_in).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                 @Override
                 public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                    // do something with the clicked item :
-                    //    Toast toast= Toast.makeText(MainActivity.this, "login enter", Toast.LENGTH_SHORT);
-                    //  toast.show();
-//                    Intent i = new Intent(ActivityMenu.this, ActivityLogin.class);
-//                    startActivity(i);
                     Toasty.success(ActivityMenu.this, "Success: Logged in", Toast.LENGTH_SHORT, true).show();
                     data.setLoggedIn(ActivityMenu.this, true);
                     data.setRefresh(ActivityMenu.this, true);
@@ -281,11 +280,6 @@ public abstract class ActivityMenu extends AppCompatActivity {
             profile3 = new ProfileSettingDrawerItem().withName("Logout").withIcon(FontAwesome.Icon.faw_sign_out).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                 @Override
                 public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                    // do something with the clicked item :
-                    //    Toast toast= Toast.makeText(MainActivity.this, "login enter", Toast.LENGTH_SHORT);
-                    //  toast.show();
-//                    Intent i = new Intent(ActivityMenu.this, ActivityLogin.class);
-//                    startActivity(i);
                     Toasty.success(ActivityMenu.this, "Success: Logged out", Toast.LENGTH_SHORT, true).show();
                     data.setLoggedIn(ActivityMenu.this, false);
                     data.setRefresh(ActivityMenu.this, true);
@@ -343,15 +337,14 @@ public abstract class ActivityMenu extends AppCompatActivity {
     }
 
     IProfile getProfileJoin(){
-        return new ProfileSettingDrawerItem().withName("Join Study").withIcon(FontAwesome.Icon.faw_link).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+        return new ProfileSettingDrawerItem().withName(STRING_JOIN_STUDY).withIcon(FontAwesome.Icon.faw_link).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
             @Override
             public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
                 // do something with the clicked item :
                 //    Toast toast= Toast.makeText(MainActivity.this, "login enter", Toast.LENGTH_SHORT);
                 //  toast.show();
                 Intent i = new Intent(ActivityMenu.this, ActivityUsageType.class);
-                startActivity(i);
-
+                startActivityForResult(i,ID_JOIN_STUDY);
                 return false;
             }
         });

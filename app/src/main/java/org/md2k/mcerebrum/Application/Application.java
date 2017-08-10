@@ -42,7 +42,7 @@ import org.md2k.mcerebrum.internet.download.DownloadInfo;
 import rx.Observable;
 import rx.Subscription;
 
-class Application {
+public class Application {
     String id;
     String type;
     String title;
@@ -87,5 +87,49 @@ class Application {
             Bitmap bitmap = BitmapFactory.decodeFile(imageInSD);
             return new BitmapDrawable(context.getResources(), bitmap);
         }
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public long getSize() {
+        return size;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public String getCreatedAt() {
+        return createdAt;
+    }
+
+    public String getPublishedAt() {
+        return publishedAt;
+    }
+
+    public String getDownloadLink() {
+        return downloadLink;
     }
 }

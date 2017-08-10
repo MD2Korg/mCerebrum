@@ -6,8 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
-import android.widget.SimpleAdapter;
+import android.widget.TextView;
 
+import org.md2k.mcerebrum.Application.ApplicationManager;
 import org.md2k.mcerebrum.R;
 
 import java.util.ArrayList;
@@ -16,39 +17,26 @@ import java.util.List;
 
 import agency.tango.materialintroscreen.SlideFragment;
 
-public class DeviceSetup extends SlideFragment {
+public class Fragment_App_Install extends SlideFragment {
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final View view = inflater.inflate(R.layout.device_setup, container, false);
+        final View view = inflater.inflate(R.layout.fragment_app_install, container, false);
         List<HashMap<String,String>> aList = new ArrayList<HashMap<String,String>>();
-
-        for(int i=0;i<3;i++){
-            HashMap<String, String> hm = new HashMap<String,String>();
-            hm.put("txt","" + countries[i]);
-            hm.put("cur","" + currency[i]);
-            hm.put("flag", Integer.toString(flags[i]) );
-            aList.add(hm);
-        }
-
-        // Keys used in Hashmap
-        String[] from = { "flag","txt","cur" };
-
-        // Ids of views in listview_layout
-        int[] to = { R.id.flag,R.id.txt,R.id.textview_desc};
-
-        // Instantiating an adapter to store each items
-        // R.layout.listview_layout defines the layout of each item
-        SimpleAdapter adapter = new SimpleAdapter(getActivity(), aList, R.layout.listview_layout, from, to);
+        ApplicationManager applicationManager=new ApplicationManager();
+        applicationManager.read(getActivity().getExternalFilesDir(null).toString()+"/temp/mCerebrum/mCerebrum/applications.json");
+        AdapterInstall adapterInstall=new AdapterInstall(getActivity(), applicationManager.get());
 
         // Getting a reference to listview of main.xml layout file
         ListView listView = (ListView) view.findViewById(R.id.listview);
+
         //  Sample2Activity.startThisActivity(this);
 
         // Setting the adapter to the listView
-        listView.setAdapter(adapter);
-
+        listView.setAdapter(adapterInstall);
+        TextView textView = (TextView) view.findViewById(R.id.textview_app_no);
+        textView.setText("0/"+String.valueOf(applicationManager.get().length));
         return view;
     }
 
@@ -62,34 +50,12 @@ public class DeviceSetup extends SlideFragment {
         return R.color.colorPrimaryDark;
     }
 
-
     @Override
     public String cantMoveFurtherErrorMessage() {
-        return "Error Message";
+        return "Error";
     }
-
-    // Array of strings storing country names
-    String[] countries = new String[]{
-            "AutoSense",
-            "Left Wrist",
-            "Right Wrist"
-    };
-
-    // Array of integers points to images stored in /res/drawable-ldpi/
-    int[] flags = new int[]{
-            R.drawable.sense,
-            R.drawable.sense,
-            R.drawable.sense
-    };
-
-    // Array of strings to store currencies
-    String[] currency = new String[]{
-            "Setup for AutoSense",
-            "Setup for Left wrist",
-            "Setup for right wrist"
-    };
 }
-/** Called when the activity is first created. */
+    /** Called when the activity is first created. */
 /*    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
