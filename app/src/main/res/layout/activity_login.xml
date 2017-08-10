@@ -12,6 +12,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#96000000">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textColor="#D6DBDF"
+            android:text="Log In"
+            android:layout_marginTop="50dp"
+            android:textSize="20dp"
+            android:textStyle="bold"/>
 
     </RelativeLayout>
 
@@ -19,30 +28,21 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="110dp"
         android:id="@+id/linearLayout2">
 
         <RelativeLayout
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="70dp"
+            android:layout_height="80dp"
             android:layout_gravity="center_horizontal">
 
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:id="@+id/imageView14"
-                android:background="@drawable/circ"
-                android:layout_centerVertical="true"
-                android:layout_centerHorizontal="true" />
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/imageView15"
-                android:layout_centerVertical="true"
                 android:layout_centerHorizontal="true"
-                android:src="@drawable/ic_person_outline_white_48dp"
-                android:layout_margin="5dp" />
+                android:layout_centerVertical="true"
+                android:background="@drawable/mcerebrum" />
+
         </RelativeLayout>
     </LinearLayout>
 
