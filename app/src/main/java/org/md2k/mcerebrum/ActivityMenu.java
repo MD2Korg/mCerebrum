@@ -32,6 +32,7 @@ import com.mikepenz.materialize.util.UIUtils;
 import org.md2k.mcerebrum.data.Data;
 import org.md2k.mcerebrum.feedback.FragmentFeedBack;
 import org.md2k.mcerebrum.intro.ActivityIntro;
+import org.md2k.mcerebrum.setup_step.ActivityConfig;
 import org.md2k.mcerebrum.usage_type.ActivityUsageType;
 
 import es.dmoral.toasty.Toasty;
@@ -116,11 +117,7 @@ public abstract class ActivityMenu extends AppCompatActivity {
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                        if (drawerItem != null && drawerItem.getIdentifier() == 1) {
-                            startSupportActionMode(new ActionBarCallBack());
-                            findViewById(R.id.action_mode_bar).setBackgroundColor(UIUtils.getThemeColorFromAttrOrRes(ActivityMenu.this, R.attr.colorPrimary, R.color.material_drawer_primary));
-                        }
-                        else if (drawerItem instanceof Nameable) {
+                         if (drawerItem instanceof Nameable) {
                             toolbar.setTitle(((Nameable) drawerItem).getName().getText(ActivityMenu.this));
                             loadFragment(drawerItem);
                         }
@@ -141,6 +138,8 @@ public abstract class ActivityMenu extends AppCompatActivity {
             case STRING_SETTINGS:
                 lastId=curId;
                 curId=ID_SETTINGS;
+                Intent intentSettings=new Intent(this, ActivityConfig.class);
+                startActivity(intentSettings);
                 break;
             case STRING_REPORT:
                 lastId=curId;
@@ -204,35 +203,6 @@ public abstract class ActivityMenu extends AppCompatActivity {
         if(requestCode==ID_QUICK_TOUR){
             curId=lastId;
             result.setSelection(curId);
-        }
-    }
-    private class ActionBarCallBack implements ActionMode.Callback {
-
-        @Override
-        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-            return false;
-        }
-
-        @Override
-        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                getWindow().setStatusBarColor(UIUtils.getThemeColorFromAttrOrRes(ActivityMenu.this, R.attr.colorPrimaryDark, R.color.material_drawer_primary_dark));
-            }
-
-            mode.getMenuInflater().inflate(R.menu.cab, menu);
-            return true;
-        }
-
-        @Override
-        public void onDestroyActionMode(ActionMode mode) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                getWindow().setStatusBarColor(Color.TRANSPARENT);
-            }
-        }
-
-        @Override
-        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-            return false;
         }
     }
     @Override

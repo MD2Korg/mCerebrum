@@ -38,7 +38,7 @@ import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class GitHub {
+public class Github {
     public Observable<ReleaseInfo[]> getReleases(String owner, String repo){
         GitHubAPI service = createRetrofitService(GitHubAPI.class);
         return service.getReleases(owner, repo)
