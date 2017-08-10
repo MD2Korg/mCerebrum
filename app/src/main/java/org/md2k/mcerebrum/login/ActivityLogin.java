@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import org.md2k.mcerebrum.R;
+import org.md2k.mcerebrum.data.Data;
 import org.md2k.mcerebrum.internet.download.DownloadFile;
 import org.md2k.mcerebrum.internet.download.DownloadInfo;
 
@@ -85,7 +86,7 @@ public class ActivityLogin extends AppCompatActivity {
             return false;
         }
     };
-
+    Subscription subscription;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -124,12 +125,12 @@ public class ActivityLogin extends AppCompatActivity {
 
 
                     if(materialEditText.getText().toString().equals("")){
-                    t.setText("Usename field is empty");
+                    t.setText("Error: User Name is required");
                         t.setTextColor(Color.RED);
 
                 }
                 else if(materialEditText1.getText().toString().equals("")){
-                    t.setText("Password field is empty");
+                    t.setText("Error: Password is required");
                         t.setTextColor(Color.RED);
 
                 }
@@ -138,12 +139,9 @@ public class ActivityLogin extends AppCompatActivity {
                         downloadConfig();
                     }
                     else if(!materialEditText.getText().toString().equals("abc")|| !materialEditText1.getText().toString().equals("123")){
-                        t.setText("Login not Successful");
+                        t.setText("Error: Invalid username/password");
                         t.setTextColor(Color.RED);
-
                     }
-
-
             };
 
 
@@ -151,10 +149,11 @@ public class ActivityLogin extends AppCompatActivity {
     }
     private void downloadConfig(){
         final TextView t=(TextView) findViewById(R.id.textview_logininfo);
-        t.setText("Login Successful...downloading configuration file...");
+        t.setText("Success: Downloading configuration file...");
+        t.setTextColor(Color.GREEN);
         DownloadFile downloadFile=new DownloadFile();
 
-        Subscription subscription = downloadFile.download("https://github.com/MD2Korg/mCerebrum-Configuration/releases/download/1.4/R724749.zip", this.getExternalFilesDir(null)+"/temp","config.zip")
+        subscription = downloadFile.download("https://github.com/MD2Korg/mCerebrum-Configuration/releases/download/1.4/R724749.zip", this.getExternalFilesDir(null)+"/temp","config.zip")
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<DownloadInfo>() {
@@ -165,13 +164,20 @@ public class ActivityLogin extends AppCompatActivity {
                 returnIntent.putExtra("config_file",ActivityLogin.this.getExternalFilesDir(null)+"/temp/config.zip");
 
                 setResult(Activity.RESULT_OK,returnIntent);
+                Data data=new Data();
+                data.setUserType(ActivityLogin.this,Data.TYPE_LOGIN);
+                data.setUserId(ActivityLogin.this,((MaterialEditText) findViewById(R.id.edittext_username)).getText().toString());
+                data.setUserPassword(ActivityLogin.this,((MaterialEditText) findViewById(R.id.edittext_password)).getText().toString());
+                data.setServer(ActivityLogin.this,((MaterialEditText) findViewById(R.id.edittext_login_server)).getText().toString());
+                data.setLoggedIn(ActivityLogin.this,true);
+                data.setRefresh(ActivityLogin.this, true);
                 finish();
             }
 
             @Override
             public void onError(Throwable e) {
                 t.setTextColor(Color.RED);
-                t.setText("Error: download configuration file ... failed...please try again");
+                t.setText("Error: download configuration file failed...please try again");
             }
 
             @Override
@@ -238,5 +244,11 @@ public class ActivityLogin extends AppCompatActivity {
     private void delayedHide(int delayMillis) {
         mHideHandler.removeCallbacks(mHideRunnable);
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
+    }
+    @Override
+    public void onDestroy(){
+        if(subscription!=null && !subscription.isUnsubscribed())
+            subscription.unsubscribe();
+        super.onDestroy();
     }
 }

@@ -29,7 +29,8 @@ package org.md2k.mcerebrum.data;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-public class MySharedPreference {
+
+class MySharedPreference {
     private static final String NAME="MCEREBRUM";
     void set(Context context, String key, String value) {
         SharedPreferences sharedPref = context.getSharedPreferences(NAME, Context.MODE_PRIVATE);
@@ -51,5 +52,4 @@ public class MySharedPreference {
         SharedPreferences sharedPref = context.getSharedPreferences(NAME, Context.MODE_PRIVATE);
         return sharedPref.getBoolean(key, defaultValue);
     }
-
 }

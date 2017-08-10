@@ -19,6 +19,8 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import org.md2k.mcerebrum.R;
 import org.md2k.mcerebrum.login.ActivityLogin;
 
+import mehdi.sakout.fancybuttons.FancyButton;
+
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
  * status bar and navigation/system bar) with user interaction.
@@ -35,14 +37,14 @@ public class ActivityUsageType extends AppCompatActivity {
 
         setContentView(R.layout.activity_usage_type);
 
-        final Button button_login = (Button) findViewById(R.id.button_usage_login);
+        final FancyButton button_login = (FancyButton) findViewById(R.id.button_usage_login);
         button_login.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent intent=new Intent(ActivityUsageType.this, ActivityLogin.class);
                 startActivityForResult(intent, TYPE_LOGIN);
             }
         });
-        final Button button_general = (Button) findViewById(R.id.button_usage_general);
+        final FancyButton button_general = (FancyButton) findViewById(R.id.button_usage_general);
         button_general.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent returnIntent = new Intent();
@@ -51,13 +53,13 @@ public class ActivityUsageType extends AppCompatActivity {
                 finish();
             }
         });
-        final Button button_download = (Button) findViewById(R.id.button_usage_download);
+        final FancyButton button_download = (FancyButton) findViewById(R.id.button_usage_dl);
         button_download.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Toast.makeText(ActivityUsageType.this,"Not implemented yet",Toast.LENGTH_LONG).show();
             }
         });
-        final Button button_barcode = (Button) findViewById(R.id.button_usage_barcode);
+        final FancyButton button_barcode = (FancyButton) findViewById(R.id.button_usage_scan);
         button_barcode.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Toast.makeText(ActivityUsageType.this,"Not implemented yet",Toast.LENGTH_LONG).show();
@@ -86,9 +88,5 @@ public class ActivityUsageType extends AppCompatActivity {
                 finish();
             }
         }
-    }
-    @Override
-    public void onBackPressed(){
-
     }
 }

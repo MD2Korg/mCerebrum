@@ -37,6 +37,7 @@ public class ActivityMain extends ActivityMenu {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent intent) {
         Log.d("abc","abc");
+        super.onActivityResult(requestCode, resultCode, intent);
         if(requestCode==INTRO_ID) {
             Intent newIntent = new Intent(this, ActivityUsageType.class);
             startActivityForResult(newIntent, CHOICE_ID);
@@ -48,10 +49,15 @@ public class ActivityMain extends ActivityMenu {
                     String fileName=intent.getStringExtra("config_file");
                     unzipFile(fileName, this.getExternalFilesDir(null).toString()+"/temp");
                     Log.d("abc","abc");
+
             }
             Data data=new Data();
             data.setFirstTimeRunning(this);
         }
+    }
+    @Override
+    public void onResume(){
+        super.onResume();
     }
 }
 
