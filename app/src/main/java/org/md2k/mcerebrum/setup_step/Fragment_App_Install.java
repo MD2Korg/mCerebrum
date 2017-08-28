@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import org.md2k.mcerebrum.Application.ApplicationManager;
+import org.md2k.mcerebrum.app.ApplicationManager;
 import org.md2k.mcerebrum.R;
 
 import java.util.ArrayList;
@@ -23,6 +23,7 @@ public class Fragment_App_Install extends SlideFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         final View view = inflater.inflate(R.layout.fragment_app_install, container, false);
+        /* TODO: reactivate
         List<HashMap<String,String>> aList = new ArrayList<HashMap<String,String>>();
         ApplicationManager applicationManager=new ApplicationManager();
         applicationManager.read(getActivity().getExternalFilesDir(null).toString()+"/temp/mCerebrum/mCerebrum/applications.json");
@@ -37,6 +38,7 @@ public class Fragment_App_Install extends SlideFragment {
         listView.setAdapter(adapterInstall);
         TextView textView = (TextView) view.findViewById(R.id.textview_app_no);
         textView.setText("0/"+String.valueOf(applicationManager.get().length));
+        */
         return view;
     }
 

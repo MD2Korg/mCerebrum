@@ -1,4 +1,4 @@
-package org.md2k.mcerebrum.configuration;
+package org.md2k.mcerebrum.data.userinfo;
 /*
  * Copyright (c) 2016, The University of Memphis, MD2K Center
  * - Syed Monowar Hossain <monowar.hossain@gmail.com>
@@ -26,26 +26,6 @@ package org.md2k.mcerebrum.configuration;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
+public class UserInfoConfigure extends UserInfo{
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.lang.reflect.Type;
-
-public class CAppManager {
-    public CApp[] read(String filePath) {
-        CApp[] cApps;
-        BufferedReader br;
-        try {
-            br = new BufferedReader(new InputStreamReader(new FileInputStream(filePath)));
-            Gson gson = new Gson();
-            Type listType = new TypeToken<CApp[]>(){}.getType();
-            cApps = gson.fromJson(br, listType);
-        } catch (Exception e) {
-            return null;
-        }
-        return cApps;
-    }
 }

@@ -1,4 +1,4 @@
-package org.md2k.mcerebrum.internet.download;
+package org.md2k.mcerebrum.configuration;
 /*
  * Copyright (c) 2016, The University of Memphis, MD2K Center
  * - Syed Monowar Hossain <monowar.hossain@gmail.com>
@@ -26,44 +26,60 @@ package org.md2k.mcerebrum.internet.download;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import android.os.Parcel;
-import android.os.Parcelable;
+public class Config {
+    private String id;
+    private String type;
+    private String title;
+    private String summary;
+    private String description;
+    private String icon;
+    private String cover_image;
+    private String update;
+    private String version;
+    private boolean start_at_boot;
+    private CApp[] applications;
 
-public class DownloadInfo{
-    public DownloadInfo(long totalFileSize, long currentFileSize, boolean completed){
-        this.currentFileSize=currentFileSize;
-        this.totalFileSize=totalFileSize;
-        this.completed=completed;
-        if(currentFileSize==totalFileSize) progress=100;
-        else progress = 100.0*(currentFileSize/totalFileSize);
+    public String getId() {
+        return id;
     }
 
-    private double progress;
-    private long currentFileSize;
-    private long totalFileSize;
-    private boolean completed;
-
-    public double getProgress() {
-        return progress;
+    public String getType() {
+        return type;
     }
 
-    public void setProgress(long progress) {
-        this.progress = progress;
+    public String getTitle() {
+        return title;
     }
 
-    public long getCurrentFileSize() {
-        return currentFileSize;
+    public String getSummary() {
+        return summary;
     }
 
-    public void setCurrentFileSize(long currentFileSize) {
-        this.currentFileSize = currentFileSize;
+    public String getDescription() {
+        return description;
     }
 
-    public long getTotalFileSize() {
-        return totalFileSize;
+    public String getIcon() {
+        return icon;
     }
 
-    public boolean isCompleted() {
-        return completed;
+    public String getCover_image() {
+        return cover_image;
+    }
+
+    public String getUpdate() {
+        return update;
+    }
+
+    public String getVersion() {
+        return version;
+    }
+
+    public boolean isStart_at_boot() {
+        return start_at_boot;
+    }
+
+    public CApp[] getApplications() {
+        return applications;
     }
 }

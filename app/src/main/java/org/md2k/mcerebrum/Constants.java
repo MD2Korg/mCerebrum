@@ -1,4 +1,4 @@
-package org.md2k.mcerebrum.Application;
+package org.md2k.mcerebrum;
 /*
  * Copyright (c) 2016, The University of Memphis, MD2K Center
  * - Syed Monowar Hossain <monowar.hossain@gmail.com>
@@ -26,41 +26,18 @@ package org.md2k.mcerebrum.Application;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import com.blankj.utilcode.util.AppUtils;
-import com.blankj.utilcode.util.Utils;
+import android.content.Context;
 
-import org.md2k.mcerebrum.configuration.CApp;
-import org.md2k.mcerebrum.configuration.CAppManager;
+import org.md2k.mcerebrum.commons.storage.StorageReadWrite;
+import org.md2k.mcerebrum.commons.storage.StorageType;
 
-public class ApplicationManager {
-    private Application[] applications;
-    public void read(String filePath){
-        CApp[] cApps=new CAppManager().read(filePath);
-        applications=new Application[cApps.length];
-        for(int i=0;i<cApps.length;i++){
-            applications[i]=getApplication(cApps[i]);
-        }
-        //TODO: read from memory
+public class Constants {
+    public static final String CONFIG_DEFAULT_URL="http://software.md2k.org/resources/mCerebrum/config.zip";
+    public static final String CONFIG_FILENAME_ZIP="config.zip";
+    public static String getDirectoryTemp(Context context){
+        return context.getExternalFilesDir(null)+"/temp";
     }
-    public void update(){
-        //TODO: read from github
-    }
-    private void write(){
-        //TODO: write to memory
-    }
-    public Application[] get(){
-        return applications;
-    }
-    public Application get(int i){
-        return applications[i];
-    }
-    private Application getApplication(CApp cApp){
-        Application application=new Application();
-        application.id=cApp.getId();
-        application.title=cApp.getTitle();
-        application.summary=cApp.getSummary();
-        application.description=cApp.getDescription();
-        application.icon=cApp.getIcon();
-        return application;
-    }
+    public static final String CONFIG_DIRECTORY_ROOT ="mCerebrum";
+    public static final String CONFIG_DIRECTORY_MCEREBRUM="org.md2k.mcerebrum";
+    public static final String CONFIG_FILENAME_MCEREBRUM="config.json";
 }

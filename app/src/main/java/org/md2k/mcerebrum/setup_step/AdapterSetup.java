@@ -38,7 +38,7 @@ import android.widget.TextView;
 
 import com.dd.CircularProgressButton;
 
-import org.md2k.mcerebrum.Application.Application;
+import org.md2k.mcerebrum.app.Application;
 import org.md2k.mcerebrum.R;
 
 public class AdapterSetup extends ArrayAdapter<Application> {
@@ -56,6 +56,7 @@ public class AdapterSetup extends ArrayAdapter<Application> {
         LayoutInflater inflater = (LayoutInflater) context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(R.layout.listview_app_setup, parent, false);
+/* TODO: reactivate
         ImageView imageView= (ImageView) rowView.findViewById(R.id.image_app_icon);
         Bitmap b = BitmapFactory.decodeFile(context.getExternalFilesDir(null).toString()+"/temp/mCerebrum/mCerebrum/"+applications[position].getIcon());
         imageView.setImageBitmap(b);
@@ -65,6 +66,7 @@ public class AdapterSetup extends ArrayAdapter<Application> {
         textView1.setText(applications[position].getSummary());
         CircularProgressButton c= (CircularProgressButton) rowView.findViewById(R.id.circularButton1);
         c.setProgress(0);
+        */
         return rowView;
     }
 }

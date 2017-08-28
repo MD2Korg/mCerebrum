@@ -1,4 +1,4 @@
-package org.md2k.mcerebrum.internet.download;
+package org.md2k.mcerebrum.status;
 /*
  * Copyright (c) 2016, The University of Memphis, MD2K Center
  * - Syed Monowar Hossain <monowar.hossain@gmail.com>
@@ -26,44 +26,19 @@ package org.md2k.mcerebrum.internet.download;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import android.os.Parcel;
-import android.os.Parcelable;
+public class Error {
+    private int value;
+    private String message;
 
-public class DownloadInfo{
-    public DownloadInfo(long totalFileSize, long currentFileSize, boolean completed){
-        this.currentFileSize=currentFileSize;
-        this.totalFileSize=totalFileSize;
-        this.completed=completed;
-        if(currentFileSize==totalFileSize) progress=100;
-        else progress = 100.0*(currentFileSize/totalFileSize);
+    public Error(int value, String message) {
+        this.value = value;
+        this.message = message;
     }
-
-    private double progress;
-    private long currentFileSize;
-    private long totalFileSize;
-    private boolean completed;
-
-    public double getProgress() {
-        return progress;
-    }
-
-    public void setProgress(long progress) {
-        this.progress = progress;
-    }
-
-    public long getCurrentFileSize() {
-        return currentFileSize;
-    }
-
-    public void setCurrentFileSize(long currentFileSize) {
-        this.currentFileSize = currentFileSize;
-    }
-
-    public long getTotalFileSize() {
-        return totalFileSize;
-    }
-
-    public boolean isCompleted() {
-        return completed;
-    }
+    public static final Error USER_NOT_FOUND = new Error(0,"User not found");
+    public static final Error CONFIG_NOT_FOUND = new Error(1,"Configuration file not found");
+    public static final Error CONFIG_FORMAT_ERROR = new Error(1,"Configuration file format error");
+    public static final Error DATAKIT_NOT_INSTAlLED = new Error(2,"DataKit not installed");
+    public static final Error APPLICATION_NOT_INSTALLED = new Error(3,"Application not installed");
+    public static final Error APPLICATION_UPDATE_AVAILABLE = new Error(4,"Application update available");
+    public static final Error APPLICATION_NOT_CONFIGURED = new Error(4,"Application not configured");
 }

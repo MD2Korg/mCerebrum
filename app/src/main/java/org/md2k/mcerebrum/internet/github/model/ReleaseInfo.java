@@ -27,11 +27,39 @@ package org.md2k.mcerebrum.internet.github.model;
  */
 
 public class ReleaseInfo {
-    String tag_name;
-    String name;
-    String body;
-    boolean prerelease;
-    String created_at;
-    String published_at;
-    AssetInfo[] assets;
+    private String tag_name;
+    private String name;
+    private String body;
+    private boolean prerelease;
+    private String created_at;
+    private String published_at;
+    private AssetInfo[] assets;
+
+    public String getTag_name() {
+        return tag_name;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public boolean isPrerelease() {
+        return prerelease;
+    }
+
+    public String getCreated_at() {
+        return created_at;
+    }
+
+    public String getPublished_at() {
+        return published_at;
+    }
+
+    public AssetInfo[] getAssets() {
+        return assets;
+    }
 }

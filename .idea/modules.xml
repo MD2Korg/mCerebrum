@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../mCerebrum-Library/commons/commons.iml" filepath="$PROJECT_DIR$/../mCerebrum-Library/commons/commons.iml" />
       <module fileurl="file://$PROJECT_DIR$/mCerebrum.iml" filepath="$PROJECT_DIR$/mCerebrum.iml" />
     </modules>
   </component>

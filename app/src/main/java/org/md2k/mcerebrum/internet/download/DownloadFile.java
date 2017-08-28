@@ -45,10 +45,9 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import rx.Observable;
 import rx.Subscriber;
 import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 public class DownloadFile {
-    private static final String TAG = "abc";
-
     public Observable<DownloadInfo> download(String source, String destinationPath, String destinationFile) {
         Observable<DownloadInfo> observable;
         try {
@@ -71,23 +70,6 @@ public class DownloadFile {
                     public void call(Subscriber<? super DownloadInfo> subscriber) {
                         try {
                             downloadFile(responseBodyResponse.body(), subscriber, destinationPath, destinationFile);
-
-//                        String header = responseBodyResponse.headers().get("Content-Disposition");
-//                        String filename = header.replace("attachment; filename=", "");
-//                        Log.d("abc","abc");
-/*
-                            new File(context.getFilesDir().getPath()).mkdirs();
-                            File destinationFile = new File(context.getFilesDir(), destination);
-                            responseBodyResponse.
-
-                            BufferedSink bufferedSink = Okio.buffer(Okio.sink(destinationFile));
-                            bufferedSink.writeAll(responseBodyResponse.body().source());
-                            bufferedSink.close();
-                            subscriber.onNext(null);
-
-//                    subscriber.onNext(destinationFile);
-                            subscriber.onCompleted();
-*/
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -99,45 +81,24 @@ public class DownloadFile {
     private void downloadFile(ResponseBody body, Subscriber<? super DownloadInfo> subscriber, String destinationPath, String destinationFile) throws IOException {
         int count;
         byte data[] = new byte[1024 * 4];
-        long fileSize = body.contentLength();
+        long totalSize = body.contentLength();
         InputStream bis = new BufferedInputStream(body.byteStream(), 1024 * 8);
-        new File(destinationPath).mkdirs();
+        boolean b = new File(destinationPath).mkdirs();
         File outputFile = new File(destinationPath, destinationFile);
         OutputStream output = new FileOutputStream(outputFile);
-        long total = 0;
-        long startTime = System.currentTimeMillis();
-        int timeCount = 1;
+        long curSize = 0;
         while ((count = bis.read(data)) != -1) {
-
-            total += count;
-            int totalFileSize = (int) (fileSize / (Math.pow(1024, 2)));
-            double current = Math.round(total / (Math.pow(1024, 2)));
-
-            int progress = (int) ((total * 100) / fileSize);
-
-            long currentTime = System.currentTimeMillis() - startTime;
-
-            DownloadInfo downloadInfo = new DownloadInfo();
-            downloadInfo.setTotalFileSize(totalFileSize);
-
-            if (currentTime > 1000 * timeCount) {
-
-                downloadInfo.setCurrentFileSize((int) current);
-                downloadInfo.setProgress(progress);
-                subscriber.onNext(downloadInfo);
-                timeCount++;
-            }
-
+            curSize += count;
+            DownloadInfo downloadInfo = new DownloadInfo(totalSize,curSize, false);
             output.write(data, 0, count);
+            subscriber.onNext(downloadInfo);
         }
-        DownloadInfo downloadInfo1 = new DownloadInfo();
-        downloadInfo1.setProgress(100);
-        subscriber.onNext(downloadInfo1);
-        subscriber.onCompleted();
+        DownloadInfo downloadInfo = new DownloadInfo(totalSize,curSize,true);
         output.flush();
         output.close();
         bis.close();
-
+        subscriber.onNext(downloadInfo);
+        subscriber.onCompleted();
     }
 
     private String[] getParts(String path) throws MalformedURLException {
@@ -148,7 +109,7 @@ public class DownloadFile {
         return parts;
     }
 
-    public <T> T createService(Class<T> serviceClass, String baseUrl) {
+    private <T> T createService(Class<T> serviceClass, String baseUrl) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(baseUrl)
                 .client(new OkHttpClient.Builder().build())

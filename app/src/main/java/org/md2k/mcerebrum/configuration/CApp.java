@@ -28,12 +28,15 @@ package org.md2k.mcerebrum.configuration;
 
 public class CApp {
     private String id;
+    private String type;
     private String title;
     private String summary;
     private String description;
-    private String github;
-    private String playstore;
-    private String web;
+    private String package_name;
+    private String download_from_github;
+    private String download_from_playstore;
+    private String download_from_url;
+    private String update;
     private String version;
     private String icon;
 
@@ -57,19 +60,31 @@ public class CApp {
         return icon;
     }
 
-    public String getGithub() {
-        return github;
+    public String getDownload_from_github() {
+        return download_from_github;
     }
 
-    public String getPlaystore() {
-        return playstore;
+    public String getDownload_from_playstore() {
+        return download_from_playstore;
     }
 
-    public String getWeb() {
-        return web;
+    public String getDownload_from_url() {
+        return download_from_url;
     }
 
     public String getVersion() {
         return version;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getPackage_name() {
+        return package_name;
+    }
+
+    public String getUpdate() {
+        return update;
     }
 }

@@ -27,12 +27,44 @@ package org.md2k.mcerebrum.internet.github.model;
  */
 
 public class AssetInfo {
-    String browser_download_url;
-    String name;
-    String label;
-    String content_type;
-    long size;
-    int download_count;
-    String created_at;
-    String updated_at;
+    private String browser_download_url;
+    private String name;
+    private String label;
+    private String content_type;
+    private long size;
+    private int download_count;
+    private String created_at;
+    private String updated_at;
+
+    public String getBrowser_download_url() {
+        return browser_download_url;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public String getContent_type() {
+        return content_type;
+    }
+
+    public long getSize() {
+        return size;
+    }
+
+    public int getDownload_count() {
+        return download_count;
+    }
+
+    public String getCreated_at() {
+        return created_at;
+    }
+
+    public String getUpdated_at() {
+        return updated_at;
+    }
 }

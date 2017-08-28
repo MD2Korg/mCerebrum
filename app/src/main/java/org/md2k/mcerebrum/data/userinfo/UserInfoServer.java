@@ -1,4 +1,4 @@
-package org.md2k.mcerebrum.internet.download;
+package org.md2k.mcerebrum.data.userinfo;
 /*
  * Copyright (c) 2016, The University of Memphis, MD2K Center
  * - Syed Monowar Hossain <monowar.hossain@gmail.com>
@@ -26,44 +26,18 @@ package org.md2k.mcerebrum.internet.download;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import android.os.Parcel;
-import android.os.Parcelable;
+import android.content.Context;
 
-public class DownloadInfo{
-    public DownloadInfo(long totalFileSize, long currentFileSize, boolean completed){
-        this.currentFileSize=currentFileSize;
-        this.totalFileSize=totalFileSize;
-        this.completed=completed;
-        if(currentFileSize==totalFileSize) progress=100;
-        else progress = 100.0*(currentFileSize/totalFileSize);
+import org.md2k.mcerebrum.data.MySharedPreference;
+
+public class UserInfoServer extends UserInfo {
+    private static final String LOGGED_IN="LOGGED_IN";
+
+    public boolean isLoggedIn(Context context) {
+        return new MySharedPreference().getBoolean(context, LOGGED_IN,false);
+    }
+    public void setLoggedIn(Context context, boolean value) {
+        new MySharedPreference().set(context, LOGGED_IN, value);
     }
 
-    private double progress;
-    private long currentFileSize;
-    private long totalFileSize;
-    private boolean completed;
-
-    public double getProgress() {
-        return progress;
-    }
-
-    public void setProgress(long progress) {
-        this.progress = progress;
-    }
-
-    public long getCurrentFileSize() {
-        return currentFileSize;
-    }
-
-    public void setCurrentFileSize(long currentFileSize) {
-        this.currentFileSize = currentFileSize;
-    }
-
-    public long getTotalFileSize() {
-        return totalFileSize;
-    }
-
-    public boolean isCompleted() {
-        return completed;
-    }
 }

@@ -30,26 +30,53 @@ import android.content.Context;
 import android.content.SharedPreferences;
 
 
-class MySharedPreference {
+public class MySharedPreference {
     private static final String NAME="MCEREBRUM";
-    void set(Context context, String key, String value) {
+    public void set(Context context, String key, String value) {
         SharedPreferences sharedPref = context.getSharedPreferences(NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(key, value);
         editor.apply();
     }
-    void set(Context context, String key, boolean value) {
+    public void set(Context context, String key, int value) {
+        SharedPreferences sharedPref = context.getSharedPreferences(NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putInt(key, value);
+        editor.apply();
+    }
+    public void set(Context context, String key, boolean value) {
         SharedPreferences sharedPref = context.getSharedPreferences(NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putBoolean(key, value);
         editor.apply();
     }
-    String getString(Context context, String key, String defaultValue) {
+    public String getString(Context context, String key, String defaultValue) {
         SharedPreferences sharedPref = context.getSharedPreferences(NAME, Context.MODE_PRIVATE);
         return sharedPref.getString(key, defaultValue);
     }
-    boolean getBoolean(Context context, String key, boolean defaultValue) {
+    public void set(Context context, String key, String[] value) {
+        SharedPreferences sharedPref = context.getSharedPreferences(NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        StringBuilder sb = new StringBuilder();
+        for (String aValue : value) {
+            sb.append(aValue).append(",");
+        }
+        editor.putString(key, sb.toString());
+        editor.apply();
+    }
+    public String[] getStringArray(Context context, String key, String defaultValue) {
+        SharedPreferences sharedPref = context.getSharedPreferences(NAME, Context.MODE_PRIVATE);
+        String res = sharedPref.getString(key, defaultValue);
+        if(res==null) return null;
+        else return res.split(",");
+    }
+    public boolean getBoolean(Context context, String key, boolean defaultValue) {
         SharedPreferences sharedPref = context.getSharedPreferences(NAME, Context.MODE_PRIVATE);
         return sharedPref.getBoolean(key, defaultValue);
     }
+    public int getInt(Context context, String key, int defaultValue) {
+        SharedPreferences sharedPref = context.getSharedPreferences(NAME, Context.MODE_PRIVATE);
+        return sharedPref.getInt(key, defaultValue);
+    }
+
 }
