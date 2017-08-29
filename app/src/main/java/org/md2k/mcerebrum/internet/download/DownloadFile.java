@@ -71,7 +71,7 @@ public class DownloadFile {
                         try {
                             downloadFile(responseBodyResponse.body(), subscriber, destinationPath, destinationFile);
                         } catch (IOException e) {
-                            e.printStackTrace();
+                            throw new RuntimeException(e);
                         }
                     }
                 });

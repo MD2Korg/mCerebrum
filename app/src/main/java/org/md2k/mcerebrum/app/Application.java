@@ -33,8 +33,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 import com.blankj.utilcode.util.AppUtils;
+import com.blankj.utilcode.util.Utils;
 
 import org.md2k.mcerebrum.configuration.CApp;
 import org.md2k.mcerebrum.data.MySharedPreference;
@@ -45,6 +47,8 @@ import org.md2k.mcerebrum.internet.github.service.Github;
 
 import rx.Observable;
 import rx.functions.Func1;
+
+import static com.mikepenz.iconics.Iconics.TAG;
 
 public class Application {
     private static final String ID="ID";
@@ -128,7 +132,8 @@ public class Application {
     void install(Activity activity, String filePath , int requestCode){
         AppUtils.installApp(activity,filePath, "org.md2k.mcerebrum.provider",requestCode);
     }
-    boolean isInstalled(){
+    public boolean isInstalled(){
+        Log.d("abc","packageName="+packageName);
         return AppUtils.isInstallApp(packageName);
     }
     void uninstall(Activity activity, int requestCode){

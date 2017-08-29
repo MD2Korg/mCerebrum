@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.ramotion.foldingcell.FoldingCell;
 
 import org.md2k.mcerebrum.R;
@@ -50,7 +51,9 @@ public class FoldingCellListAdapter extends ArrayAdapter<Application> {
             viewHolder.description =(TextView)cell.findViewById(R.id.textview_content_detail);
             viewHolder.version=(TextView)cell.findViewById(R.id.textview_version_number);
             viewHolder.updateVersion =(TextView)cell.findViewById(R.id.textview_update_date);
-            viewHolder.install=(Button)cell.findViewById(R.id.button_install);
+            viewHolder.install=(BootstrapButton)cell.findViewById(R.id.button_install);
+            viewHolder.update=(BootstrapButton)cell.findViewById(R.id.button_update);
+            viewHolder.uninstall=(BootstrapButton)cell.findViewById(R.id.button_uninstall);
 
             cell.setTag(viewHolder);
         } else {
@@ -68,6 +71,19 @@ public class FoldingCellListAdapter extends ArrayAdapter<Application> {
         viewHolder.content_title.setText(app.getTitle(getContext()));
         viewHolder.content_summary.setText(app.getSummary(getContext()));
         viewHolder.description.setText(app.getDescription(getContext()));
+        if(app.isInstalled()) {
+            viewHolder.install.setEnabled(false);
+            viewHolder.uninstall.setEnabled(true);
+            viewHolder.update.setEnabled(false);
+            viewHolder.version.setText(app.getVersionName());
+//            viewHolder.icon.setImageDrawable(app.getIcon());
+        }
+        else {
+            viewHolder.install.setEnabled(true);
+            viewHolder.uninstall.setEnabled(false);
+            viewHolder.update.setEnabled(false);
+            viewHolder.version.setText("<not installed>");
+        }
 //        viewHolder.icon.setImageDrawable(app.getIcon(getContext());
 //        viewHolder.version.setText(app.getVersionName());
         viewHolder.updateVersion.setText("N/A");
@@ -121,8 +137,8 @@ public class FoldingCellListAdapter extends ArrayAdapter<Application> {
         TextView description;
         TextView version;
         TextView updateVersion;
-        Button install;
-        Button uninstall;
-        Button update;
+        BootstrapButton install;
+        BootstrapButton uninstall;
+        BootstrapButton update;
     }
 }
