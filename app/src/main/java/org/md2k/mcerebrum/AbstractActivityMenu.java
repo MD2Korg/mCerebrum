@@ -12,6 +12,7 @@ import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 
+import org.md2k.mcerebrum.UI.folding_ui.FragmentFoldingUI;
 import org.md2k.mcerebrum.login.ActivityLogin;
 import org.md2k.mcerebrum.login.FragmentLogin;
 import org.md2k.mcerebrum.menu.AbstractMenu;
@@ -37,7 +38,7 @@ public abstract class AbstractActivityMenu extends AbstractActivityBasics {
         createDrawer();
         result.resetDrawerContent();
         result.getHeader().refreshDrawableState();
-        result.setSelection(state, false);
+        result.setSelection(state, true);
     }
 
     void createDrawer() {
@@ -101,6 +102,8 @@ public abstract class AbstractActivityMenu extends AbstractActivityBasics {
                 case AbstractMenu.MENU_HELP:
                     break;
                 case AbstractMenu.MENU_HOME:
+                    ft.replace(R.id.fragment_container, new FragmentFoldingUI());
+                    ft.commit();
                     break;
                 case AbstractMenu.MENU_JOIN:
                     Intent intent=new Intent(AbstractActivityMenu.this, ActivityLogin.class);
@@ -110,6 +113,7 @@ public abstract class AbstractActivityMenu extends AbstractActivityBasics {
                     break;
                 case AbstractMenu.MENU_LOGIN:
                     ft.replace(R.id.fragment_container, new FragmentLogin());
+                    ft.commit();
 //                Intent i = new Intent(this, ActivityLogin.class);
 //                startActivityForResult(i, ID_JOIN_STUDY);
                     break;
@@ -131,10 +135,10 @@ public abstract class AbstractActivityMenu extends AbstractActivityBasics {
         if (requestCode == REQUEST_CODE_JOIN) {
             // Make sure the request was successful
             if (resultCode == RESULT_CANCELED) {
-                updateMenu(0);
+                updateMenu(AbstractMenu.MENU_HOME);
             }
             else{
-                updateMenu(0);
+                updateMenu(AbstractMenu.MENU_HOME);
 //                updateState();
             }
         }

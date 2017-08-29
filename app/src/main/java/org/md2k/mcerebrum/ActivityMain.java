@@ -3,6 +3,8 @@ package org.md2k.mcerebrum;
 import android.content.Intent;
 import android.os.Bundle;
 
+import org.md2k.mcerebrum.menu.AbstractMenu;
+
 public class ActivityMain extends AbstractActivityMenu {
     private static final int REQUEST_CODE = 100;
     boolean isFirstTime;
@@ -20,7 +22,7 @@ public class ActivityMain extends AbstractActivityMenu {
             Intent intent=new Intent(this, ActivityConfigureStudy.class);
             startActivityForResult(intent, REQUEST_CODE);
         }else{
-            updateMenu(0);
+            updateMenu(AbstractMenu.MENU_HOME);
             isFirstTime=false;
         }
 
@@ -32,7 +34,7 @@ public class ActivityMain extends AbstractActivityMenu {
             if(resultCode==RESULT_CANCELED)
                 finish();
             else{
-                updateMenu(0);
+                updateMenu(AbstractMenu.MENU_HOME);
             }
         }
         super.onActivityResult(requestCode, resultCode, data);

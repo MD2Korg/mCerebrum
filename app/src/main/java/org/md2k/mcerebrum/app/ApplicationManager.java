@@ -32,6 +32,8 @@ import org.md2k.mcerebrum.configuration.CApp;
 import org.md2k.mcerebrum.configuration.ConfigManager;
 import org.md2k.mcerebrum.data.MySharedPreference;
 
+import java.util.ArrayList;
+
 public class ApplicationManager {
     private static final String APP_LIST="APP_LIST";
     public static void save(Context context,CApp[] cApps){
@@ -43,8 +45,13 @@ public class ApplicationManager {
         new MySharedPreference().set(context, APP_LIST, apps);
 
     }
-    private static String[] getAppList(Context context) {
-        return new MySharedPreference().getStringArray(context, APP_LIST, null);
+    public ArrayList<Application> getAppList(Context context) {
+        String[] apps= new MySharedPreference().getStringArray(context, APP_LIST, null);
+        ArrayList<Application> applicationArrayList=new ArrayList<>();
+        for (String app : apps) {
+            applicationArrayList.add(new Application(app));
+        }
+        return applicationArrayList;
     }
 
 /*    public void read(String filePath){

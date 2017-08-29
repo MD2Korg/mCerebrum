@@ -55,7 +55,7 @@ class MenuFreebie extends AbstractMenu {
     IDrawerItem[] getMenuContent(ResponseCallBack responseCallBack){
         return getMenuContent(menuContent, responseCallBack);
     }
-    private static MenuContent[] menuContent = new MenuContent[]{
+    private  MenuContent[] menuContent = new MenuContent[]{
             new MenuContent("Home", FontAwesome.Icon.faw_home, MenuContent.PRIMARY_DRAWER_ITEM, MENU_HOME),
             new MenuContent("Settings", FontAwesome.Icon.faw_cog, MenuContent.PRIMARY_DRAWER_ITEM, MENU_SETTINGS),
             new MenuContent("Join Study", FontAwesome.Icon.faw_link, MenuContent.PRIMARY_DRAWER_ITEM, MENU_JOIN)

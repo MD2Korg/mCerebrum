@@ -88,7 +88,7 @@ public class FragmentLogin extends Fragment {
         final Button button_cancel = (Button) view.findViewById(R.id.button_login_cancel);
         button_cancel.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                ((ActivityMain)getActivity()).updateMenu(0);
+                ((ActivityMain)getActivity()).updateMenu(AbstractMenu.MENU_HOME);
             }
         });
 

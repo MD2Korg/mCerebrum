@@ -137,7 +137,7 @@ public class Application {
     int getVersionCode(){
         return AppUtils.getAppVersionCode(packageName);
     }
-    String getVersionName(){
+    public String getVersionName(){
         return AppUtils.getAppVersionName(packageName);
     }
     boolean isUpdateAvailable(Context context){
@@ -160,16 +160,16 @@ public class Application {
     private String getType(Context context) {
         return get(context, TYPE);
     }
-    private String getTitle(Context context) {
+    public String getTitle(Context context) {
         return get(context, TITLE);
     }
-    private String getSummary(Context context) {
+    public String getSummary(Context context) {
         return get(context, SUMMARY);
     }
-    private String getDescription(Context context) {
+    public String getDescription(Context context) {
         return get(context, DESCRIPTION);
     }
-    private String getIcon(Context context) {
+    public String getIcon(Context context) {
         return get(context, ICON);
     }
     private String getDownloadFromGithub(Context context) {

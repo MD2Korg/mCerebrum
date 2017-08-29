@@ -54,7 +54,7 @@ public abstract class AbstractMenu {
     public static final int MENU_HELP = 10;
 
 
-    abstract IProfile[] getHeaderContentType(final Context context, UserInfo userInfo, StudyInfo studyInfo, final ResponseCallBack responseCallBack);
+//    abstract IProfile[] getHeaderContentType(final Context context, UserInfo userInfo, StudyInfo studyInfo, final ResponseCallBack responseCallBack);
 
     public static IProfile[] getHeaderContent(final Context context, UserInfo userInfo, StudyInfo studyInfo, final ResponseCallBack responseCallBack) {
         switch (studyInfo.getType(context)) {

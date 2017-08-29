@@ -150,7 +150,7 @@ public class ActivityLogin extends AppCompatActivity {
         t.setTextColor(Color.GREEN);
         DownloadFile downloadFile=new DownloadFile();
 
-        subscription = downloadFile.download("https://github.com/MD2Korg/mCerebrum-Configuration/releases/download/1.4/mperf.zip", this.getExternalFilesDir(null)+"/temp","config.zip")
+        subscription = downloadFile.download("https://github.com/MD2Korg/mCerebrum-Configuration/releases/download/1.4/mperftest.zip", this.getExternalFilesDir(null)+"/temp","config.zip")
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<DownloadInfo>() {

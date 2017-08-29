@@ -45,5 +45,11 @@ dependencies {
     compile 'com.afollestad.material-dialogs:core:0.9.4.6'
     //MD2K commons
     compile project(':commons')
+
+    //Folding UI
+    compile 'com.ramotion.foldingcell:folding-cell:1.2.1'
+    //Bootstrap
+    compile 'com.beardedhen:androidbootstrap:2.3.1'
+
     testCompile 'junit:junit:4.12'
 }
