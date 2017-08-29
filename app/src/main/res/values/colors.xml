@@ -22,5 +22,12 @@
     <color name="btnRequest">#ffbf12</color>
     <color name="teal">#00897b</color>
     <color name="backgroundColor">#455a64</color>
-
+    <color name="colorbackground">#1e2c3c</color>
+    <color name="backGroundDark">#131325</color>
+    <color name="headerTeal">#16A085</color>
+    <color name="headerOrange">#e15119</color>
+    <color name="headerLemon">#98ac30</color>
+    <color name="tealsecondary">#00838F</color>
+    <color name="tealthird">#0097A7</color>
+    <color name="fontPrimanry">#ffff</color>
 </resources>

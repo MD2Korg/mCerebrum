@@ -37,7 +37,7 @@ public class ActivityConfigureStudy extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_configure_study);
+        setContentView(R.layout.activity_usage_type);
         final FancyButton button_general = (FancyButton) findViewById(R.id.button_usage_general);
         button_general.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -52,18 +52,8 @@ public class ActivityConfigureStudy extends AppCompatActivity {
                 startActivityForResult(intent, TYPE_LOGIN);
             }
         });
-        final FancyButton button_download = (FancyButton) findViewById(R.id.button_usage_dl);
-        button_download.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Toast.makeText(ActivityConfigureStudy.this, "Not implemented yet", Toast.LENGTH_LONG).show();
-            }
-        });
-        final FancyButton button_barcode = (FancyButton) findViewById(R.id.button_usage_scan);
-        button_barcode.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-                Toast.makeText(ActivityConfigureStudy.this, "Not implemented yet", Toast.LENGTH_LONG).show();
-            }
-        });
+
+
     }
 
     @Override

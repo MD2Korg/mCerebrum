@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fancy="http://schemas.android.com/apk/res-auto"
+    tools:context="org.md2k.mcerebrum.login.ActivityLogin"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorbackground"
+    android:orientation="vertical"
+
+    android:weightSum="1">
+    <!--title and logo -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.25"
+        android:weightSum="1"
+        android:orientation="vertical"
+        android:background="@color/backGroundDark"
+        android:layout_margin="5dp"
+        android:layout_marginTop="20dp">
+
+        <TextView
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textColor="#D6DBDF"
+            android:text="Join Study"
+            android:layout_marginTop="5dp"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:layout_marginBottom="10dp"/>
+
+        <ImageView
+            android:layout_gravity="center_horizontal"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/mcerebrum" />
+
+
+    </LinearLayout>
+    <!--login section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.5"
+        android:orientation="vertical"
+        android:background="@color/backGroundDark"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="5dp"
+        android:weightSum="1">
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight=".1"
+            android:hint="Username"
+            android:id="@+id/edittext_username"
+            app:met_baseColor="@android:color/white"
+            app:met_floatingLabel="normal"
+            app:met_primaryColor="@color/colorPrimaryDark"
+            app:met_underlineColor="#fff"
+            app:met_singleLineEllipsis="true"
+            app:met_iconLeft="@drawable/ic_person_white_48dp"
+            app:met_iconPadding="0dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"/>
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/edittext_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight=".1"
+            android:hint="Password"
+
+            app:met_baseColor="@android:color/white"
+            app:met_floatingLabel="normal"
+            app:met_primaryColor="@color/colorPrimaryDark"
+            app:met_underlineColor="#fff"
+            app:met_iconLeft="@drawable/ic_lock_white_48dp"
+            app:met_iconPadding="0dp"
+            app:met_singleLineEllipsis="true"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"/>
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight=".1"
+            android:hint="Server"
+            android:id="@+id/edittext_login_server"
+
+            app:met_baseColor="@android:color/white"
+            app:met_floatingLabel="normal"
+            app:met_primaryColor="@color/colorPrimaryDark"
+            app:met_underlineColor="#fff"
+            app:met_iconLeft="@drawable/servericon"
+            app:met_iconPadding="0dp"
+            app:met_singleLineEllipsis="true"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_weight="0.2"
+            android:weightSum="1"
+            android:paddingBottom="5dp"
+            android:background="@color/backGroundDark"
+            android:layout_margin="10dp">
+
+
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_weight="0.5"
+                android:paddingRight="15dp"
+                android:layout_height="wrap_content"
+                android:text="Login"
+                android:id="@+id/button_login"
+                android:layout_gravity="left"
+                android:background="@drawable/button"
+                android:textColor="@color/colorPrimaryText"
+                android:layout_marginLeft="20dp" />
+
+            <Button
+                android:layout_width="0dp"
+                android:layout_weight="0.5"
+                android:paddingLeft="15dp"
+                android:layout_height="wrap_content"
+                android:text="Cancel"
+                android:id="@+id/button_login_cancel"
+                android:layout_gravity="right"
+                android:background="@drawable/button"
+                android:textColor="@color/colorPrimaryText"
+                android:layout_marginRight="20dp"/>
+        </LinearLayout>
+
+
+
+
+    </LinearLayout>
+
+    <!--download section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.25"
+        android:weightSum="1"
+        android:orientation="vertical"
+        android:background="@color/backGroundDark"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="5dp">
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:hint="Download Config File"
+            android:id="@+id/edittext_download"
+            app:met_baseColor="@android:color/white"
+            app:met_floatingLabel="normal"
+            app:met_primaryColor="@color/colorPrimaryDark"
+            app:met_underlineColor="#fff"
+            app:met_singleLineEllipsis="true"
+            app:met_iconLeft="@drawable/grey_download"
+            app:met_iconPadding="0dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.2"
+            android:weightSum="1"
+            android:background="@color/backGroundDark"
+            android:layout_margin="10dp">
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:layout_height="wrap_content"
+            android:text="Download"
+            android:id="@+id/button_download_config"
+            android:background="@drawable/button"
+            android:textColor="@color/colorPrimaryText"
+            android:layout_marginRight="20dp"
+            android:layout_marginLeft="20dp"/>
+
+        </LinearLayout>
+    </LinearLayout>
+
+
+</LinearLayout>

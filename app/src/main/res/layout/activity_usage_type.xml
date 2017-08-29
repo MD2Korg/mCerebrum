@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:fancy="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorbackground"
+    android:orientation="vertical"
+    android:weightSum="1">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.5"
+        android:layout_gravity="center"
+        android:background="@color/backGroundDark"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:weightSum="1"
+        android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="0.6"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="20dp">
+                        <ImageView
+                            android:id="@+id/imageView14"
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+
+                            android:layout_marginLeft="120dp"
+                            android:background="@drawable/mcerebrum" />
+                </LinearLayout>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="0.4">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textAppearance="@style/CodeFont"
+                            android:layout_marginLeft="10dp"
+                            android:layout_marginRight="10dp"
+                            android:text="An Open Source Software Suite for Mobile Sensor data \n Version 1.4.12"
+                            android:textAlignment="center" />
+                </LinearLayout>
+        </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.4"
+        android:background="@color/backGroundDark"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp">
+        <mehdi.sakout.fancybuttons.FancyButton
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/button_usage_general"
+            fancy:fb_defaultColor="@color/backGroundDark"
+            fancy:fb_borderWidth="0dp"
+            fancy:fb_borderColor="@color/tealsecondary"
+            fancy:fb_text="FreeBie"
+            fancy:fb_textSize="16sp"
+            fancy:fb_textColor="@color/fontPrimanry"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.1"
+        android:background="@color/backGroundDark"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp">
+        <mehdi.sakout.fancybuttons.FancyButton
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/button_usage_login"
+            fancy:fb_defaultColor="@color/backGroundDark"
+            fancy:fb_borderWidth="0dp"
+            fancy:fb_borderColor="@color/tealsecondary"
+            fancy:fb_text="Participate on Study"
+            fancy:fb_textSize="16sp"
+            fancy:fb_textColor="@color/fontPrimanry"/>
+
+    </LinearLayout>
+
+</LinearLayout>

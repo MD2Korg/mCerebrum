@@ -56,5 +56,11 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginRight">@dimen/micro_padding</item>
     </style>
+    <style name="CodeFont" parent="@android:style/TextAppearance">
+        <item name="android:textColor">#FFFF</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:thumbTextPadding">10dp</item>
+    </style>
+
 
 </resources>

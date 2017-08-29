@@ -88,7 +88,7 @@ public class ActivityLogin extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_join_study);
 
         mVisible = true;
         hide();
