@@ -1,24 +1,27 @@
 package org.md2k.mcerebrum;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 
-import org.md2k.mcerebrum.menu.Menu;
+import org.md2k.mcerebrum.login.ActivityLogin;
+import org.md2k.mcerebrum.login.FragmentLogin;
+import org.md2k.mcerebrum.menu.AbstractMenu;
 import org.md2k.mcerebrum.menu.ResponseCallBack;
 
-public abstract class AbstractActivityUI extends AbstractActivityBasics {
-    private AccountHeader headerResult = null;
-    private static final int REQUEST_CODE=101;
+import es.dmoral.toasty.Toasty;
+
+public abstract class AbstractActivityMenu extends AbstractActivityBasics {
+    private static final int REQUEST_CODE_JOIN=102;
     private Drawer result = null;
-//    private int prevState=0, curState=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,45 +32,29 @@ public abstract class AbstractActivityUI extends AbstractActivityBasics {
         getSupportActionBar().setTitle(R.string.app_name);
     }
 
-    void updateUI() {
-        switch (currentState) {
-            case STATE_CONFIGURE_STUDY:
-                Intent intent = new Intent(this, ActivityConfigureStudy.class);
-                startActivityForResult(intent, REQUEST_CODE);
-                break;
-        }
-    }
-
-    void refresh() {
+    @Override
+    public void updateMenu(int state) {
         createDrawer();
-        result.setSelection(0, false);
+        result.resetDrawerContent();
+        result.getHeader().refreshDrawableState();
+        result.setSelection(state, false);
     }
 
     void createDrawer() {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        headerResult = new AccountHeaderBuilder()
+        AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
-//                .withHeaderBackground(user.getBackground(this))
+                .withHeaderBackground(studyInfo.getCoverImage(this))
                 .withCompactStyle(true)
-                .addProfiles(Menu.getHeaderContent(this, responseCallBack))
+                .addProfiles(AbstractMenu.getHeaderContent(this, userInfo, studyInfo, responseCallBack))
                 .build();
 
         result = new DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(toolbar)
                 .withAccountHeader(headerResult) //set the AccountHeader we created earlier for the header
-                .addDrawerItems(Menu.getMenuContent(this, responseCallBack))
+                .addDrawerItems(AbstractMenu.getMenuContent(this, studyInfo, responseCallBack))
                 .build();
-    }
-
-    public void refresh(int state) {
-        createDrawer();
-        result.resetDrawerContent();
-        result.getHeader().refreshDrawableState();
-//        prevState = curState;
-//        curState = state;
-//        result.setSelection(curState, false);
-//        changeState(prevState, curState);
     }
 
     @Override
@@ -104,24 +91,51 @@ public abstract class AbstractActivityUI extends AbstractActivityBasics {
         super.onSaveInstanceState(outState);
     }
 
-    abstract void changeState(int prevState, int curState);
-
     ResponseCallBack responseCallBack = new ResponseCallBack() {
         @Override
         public void onResponse(int response) {
-//            prevState = curState;
-//            curState = response;
-//            changeState(prevState, curState);
+            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+            switch (response) {
+                case AbstractMenu.MENU_ABOUT_STUDY:
+                    break;
+                case AbstractMenu.MENU_HELP:
+                    break;
+                case AbstractMenu.MENU_HOME:
+                    break;
+                case AbstractMenu.MENU_JOIN:
+                    Intent intent=new Intent(AbstractActivityMenu.this, ActivityLogin.class);
+                    startActivityForResult(intent, REQUEST_CODE_JOIN);
+                    break;
+                case AbstractMenu.MENU_LEAVE:
+                    break;
+                case AbstractMenu.MENU_LOGIN:
+                    ft.replace(R.id.fragment_container, new FragmentLogin());
+//                Intent i = new Intent(this, ActivityLogin.class);
+//                startActivityForResult(i, ID_JOIN_STUDY);
+                    break;
+                case AbstractMenu.MENU_LOGOUT:
+//                ((UserServer) user).setLoggedIn(this,false);
+                    Toasty.success(AbstractActivityMenu.this, "Success: Logged out", Toast.LENGTH_SHORT, true).show();
+                    // refresh(AbstractMenu.MENU_HOME);
+                    break;
+                case AbstractMenu.MENU_SETTINGS:
+                default:
+            }
+
         }
     };
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         // Check which request we're responding to
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_CODE) {
+        if (requestCode == REQUEST_CODE_JOIN) {
             // Make sure the request was successful
             if (resultCode == RESULT_CANCELED) {
-                finish();
+                updateMenu(0);
+            }
+            else{
+                updateMenu(0);
+//                updateState();
             }
         }
     }

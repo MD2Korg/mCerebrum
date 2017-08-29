@@ -1,22 +1,14 @@
 package org.md2k.mcerebrum.UI.joinstudy;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.rengwuxian.materialedittext.MaterialEditText;
 
-import org.md2k.mcerebrum.ActivityMain;
 import org.md2k.mcerebrum.R;
-import org.md2k.mcerebrum.login.ActivityLogin;
-import org.md2k.mcerebrum.menu.Menu;
 
 import mehdi.sakout.fancybuttons.FancyButton;
 

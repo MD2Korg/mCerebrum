@@ -28,6 +28,8 @@ package org.md2k.mcerebrum.configuration;
 
 import android.content.Context;
 
+import com.blankj.utilcode.util.TimeUtils;
+
 import org.md2k.mcerebrum.Constants;
 import org.md2k.mcerebrum.app.ApplicationManager;
 import org.md2k.mcerebrum.commons.storage.StorageRead;
@@ -35,6 +37,7 @@ import org.md2k.mcerebrum.commons.storage.StorageReadWrite;
 import org.md2k.mcerebrum.commons.storage.StorageType;
 import org.md2k.mcerebrum.data.MySharedPreference;
 import org.md2k.mcerebrum.data.StudyInfo;
+import org.md2k.mcerebrum.data.UserInfo;
 import org.md2k.mcerebrum.internet.download.DownloadFile;
 import org.md2k.mcerebrum.internet.download.DownloadInfo;
 import org.md2k.mcerebrum.internet.github.model.AssetInfo;
@@ -53,23 +56,29 @@ public class ConfigManager {
     private static final String DOWNLOAD_URL = ConfigManager.class.getSimpleName() + "_DOWNLOAD_URL";
     private static final String CONFIGURED = ConfigManager.class.getSimpleName() + "_CONFIGURED";
 
-
     private static final String DOWNLOAD_FROM_GITHUB = "DOWNLOAD_FROM_GITHUB";
     private static final String DOWNLOAD_FROM_URL = "DOWNLOAD_FROM_URL";
-    private static final String DOWNLOAD_FROM_STORAGE = "DOWNLOAD_FROM_STORAGE";
-    private static final String GITHUB_DOWNLOAD_LINK = "MD2Korg/mCerebrum-Configuration";
+
+    private String downloadFrom=null, configName=null, updatedAt=null, downloadUrl=null;
 
     public Observable<DownloadInfo> downloadAndExtract(final Context context, String text) {
-        final String zipFilePath= StorageReadWrite.get(context, StorageType.SDCARD_APPLICATION).getRootDirectory()+"/temp";
+        final String zipFilePath= StorageReadWrite.get(context, StorageType.SDCARD_INTERNAL).getRootDirectory()+"/mCerebrum/temp";
         final String zipFileName="config_temp.zip";
-        final String unzipFilePath= StorageReadWrite.get(context, StorageType.SDCARD_INTERNAL).getRootDirectory()+"/mCerebrum/";
-        final String mCerebrumFilePath="/mCerebrum/org.md2k.mCerebrum/";
-        final String mCerebrumFileName="config.zip";
+        final String unzipFilePath= StorageReadWrite.get(context, StorageType.SDCARD_INTERNAL).getRootDirectory()+"/";
+        final String mCerebrumFilePath="/mCerebrum/org.md2k.mcerebrum/";
+        final String mCerebrumFileName="config.json";
         Observable<DownloadInfo> observable;
-        if (text.contains("/"))
+        configName=text;
+
+        if (text.contains("/")) {
+            downloadFrom=DOWNLOAD_FROM_URL;
+            updatedAt= TimeUtils.getNowString();
             observable = downloadFromUrl(text, zipFilePath, zipFileName);
-        else
+        }
+        else {
+            downloadFrom=DOWNLOAD_FROM_GITHUB;
             observable = downloadFromGitHub(context, text, zipFilePath, zipFileName);
+        }
         return observable.flatMap(new Func1<DownloadInfo, Observable<DownloadInfo>>() {
             @Override
             public Observable<DownloadInfo> call(DownloadInfo downloadInfo) {
@@ -81,8 +90,14 @@ public class ConfigManager {
                         return Observable.error(new Throwable("Failed to unzip"));
                     try {
                         Config config = read(context, StorageType.SDCARD_INTERNAL, mCerebrumFilePath+mCerebrumFileName);
-                        StudyInfo.save(context, config);
+                        StudyInfo studyInfo=new StudyInfo();
+                        studyInfo.save(context, config);
                         ApplicationManager.save(context, config.getApplications());
+                        save(context, downloadUrl, configName, downloadFrom, updatedAt);
+                        if(studyInfo.getType(context)!=null && studyInfo.getType(context).equals(StudyInfo.FREEBIE))
+                            UserInfo.save(context, "Freebie", false);
+                        else if(studyInfo.getType(context)!=null && studyInfo.getType(context).equals(StudyInfo.CONFIGURED))
+                            UserInfo.save(context, studyInfo.getTitle(context), false);
                         return Observable.just(downloadInfo);
                     } catch (Exception e) {
                         return Observable.error(e);
@@ -93,7 +108,7 @@ public class ConfigManager {
     }
 
     private static Observable<AssetInfo> getLatestVersion(final String configName) {
-        String[] parts = GITHUB_DOWNLOAD_LINK.split("/");
+        String[] parts = Constants.CONFIG_DEFAULT_GITHUB.split("/");
         Github github = new Github();
         return github.getReleaseLatest(parts[0], parts[1]).map(new Func1<ReleaseInfo, AssetInfo>() {
             @Override
@@ -120,7 +135,8 @@ public class ConfigManager {
         });
     }
 
-    private static Observable<DownloadInfo> downloadFromUrl(String url, String filePath, String fileName) {
+    private Observable<DownloadInfo> downloadFromUrl(String url, String filePath, String fileName) {
+        downloadUrl=url;
         return new DownloadFile().download(url, filePath, fileName);
     }
 
@@ -128,10 +144,11 @@ public class ConfigManager {
         return unzipFile(zipFilePath, unzipFilePath);
     }
 
-    private static Observable<DownloadInfo> downloadFromGitHub(Context context, String text, final String filePath, final String fileName) {
+    private  Observable<DownloadInfo> downloadFromGitHub(Context context, String text, final String filePath, final String fileName) {
         return getLatestVersion(text).flatMap(new Func1<AssetInfo, Observable<DownloadInfo>>() {
             @Override
             public Observable<DownloadInfo> call(AssetInfo assetInfo) {
+                updatedAt= assetInfo.getUpdated_at();
                 return downloadFromUrl(assetInfo.getBrowser_download_url(), filePath, fileName);
             }
         });
@@ -160,6 +177,12 @@ public class ConfigManager {
     }
     public boolean isConfigured(Context context){
         return new MySharedPreference().getBoolean(context, CONFIGURED, false);
-
+    }
+    private void save(Context context, String downloadUrl, String configName, String downloadFrom, String updatedAt){
+        new MySharedPreference().set(context, DOWNLOAD_URL, downloadUrl);
+        new MySharedPreference().set(context, CONFIGURED, true);
+        new MySharedPreference().set(context, CONFIG_NAME, configName);
+        new MySharedPreference().set(context, DOWNLOAD_FROM, downloadFrom);
+        new MySharedPreference().set(context, UPDATED_AT, UPDATED_AT);
     }
 }

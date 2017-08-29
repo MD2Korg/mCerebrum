@@ -98,18 +98,10 @@ public class ActivityConfigureStudy extends AppCompatActivity {
                 .content("Downloading configuration file...")
                 .progress(false, 100, true)
                 .show();
-        subscription = configManager.downloadAndExtract(this, Constants.CONFIG_DEFAULT_URL)
+        subscription = configManager.downloadAndExtract(this, Constants.CONFIG_DEFAULT_FILENAME)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<DownloadInfo, Boolean>() {
-                    @Override
-                    public Boolean call(DownloadInfo downloadInfo) {
-                        if (downloadInfo.getProgress() == 100) return true;
-                        materialDialog.setProgress((int) downloadInfo.getProgress());
-                        return false;
-                    }
-                })
-                .subscribe(new Observer<Boolean>() {
+                .subscribe(new Observer<DownloadInfo>() {
                     @Override
                     public void onCompleted() {
                         materialDialog.dismiss();
@@ -126,8 +118,8 @@ public class ActivityConfigureStudy extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onNext(Boolean value) {
-
+                    public void onNext(DownloadInfo downloadInfo) {
+                        materialDialog.setProgress((int) downloadInfo.getProgress());
                     }
                 });
     }

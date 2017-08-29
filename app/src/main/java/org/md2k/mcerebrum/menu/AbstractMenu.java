@@ -37,51 +37,51 @@ import com.mikepenz.materialdrawer.model.SectionDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
-import org.md2k.mcerebrum.data.userinfo.UserInfo;
+import org.md2k.mcerebrum.data.StudyInfo;
+import org.md2k.mcerebrum.data.UserInfo;
 
-abstract public class Menu {
-    public static final int OP_JOIN = 0;
-    public static final int OP_ABOUT_STUDY = 1;
-    public static final int OP_LOGIN = 2;
-    public static final int OP_LOGOUT = 3;
-    public static final int OP_LEAVE = 4;
-    public static final int OP_HOME = 5;
-    public static final int OP_SETTINGS = 6;
+public abstract class AbstractMenu {
+    public static final int MENU_JOIN = 0;
+    public static final int MENU_ABOUT_STUDY = 1;
+    public static final int MENU_LOGIN = 2;
+    public static final int MENU_LOGOUT = 3;
+    public static final int MENU_LEAVE = 4;
+    public static final int MENU_HOME = 5;
+    public static final int MENU_SETTINGS = 6;
     //    public static final int OP_REPORT = 7;
 //    public static final int OP_PLOT = 8;
 //    public static final int OP_EXPORT_DATA = 9;
-    public static final int OP_HELP = 10;
+    public static final int MENU_HELP = 10;
 
 
-    abstract IProfile[] getHeaderContent(final Context context, UserInfo userInfo, final ResponseCallBack responseCallBack);
+    abstract IProfile[] getHeaderContentType(final Context context, UserInfo userInfo, StudyInfo studyInfo, final ResponseCallBack responseCallBack);
 
-    public static IProfile[] getHeaderContent(final Context context, final ResponseCallBack responseCallBack) {
-        UserInfo user = UserInfo.getUser(context);
-        switch (user.getType(context)) {
-            case UserInfo.TYPE_FREEBIE:
-                return new Freebie().getHeaderContent(context, user, responseCallBack);
-            case UserInfo.TYPE_DOWNLOAD:
-                return new Download().getHeaderContent(context, user, responseCallBack);
-            case UserInfo.TYPE_SERVER:
-                return new Server().getHeaderContent(context, user, responseCallBack);
+    public static IProfile[] getHeaderContent(final Context context, UserInfo userInfo, StudyInfo studyInfo, final ResponseCallBack responseCallBack) {
+        switch (studyInfo.getType(context)) {
+            case StudyInfo.FREEBIE:
+                return new MenuFreebie().getHeaderContentType(context, userInfo, studyInfo, responseCallBack);
+            case StudyInfo.CONFIGURED:
+                return new MenuConfigured().getHeaderContentType(context, userInfo, studyInfo, responseCallBack);
+            case StudyInfo.SERVER:
+                return new MenuServer().getHeaderContentType(context, userInfo, studyInfo, responseCallBack);
             default:
-                return new Freebie().getHeaderContent(context, user, responseCallBack);
+                return new MenuFreebie().getHeaderContent(context, userInfo, studyInfo, responseCallBack);
         }
     }
 
-    public static IDrawerItem[] getMenuContent(final Context context, final ResponseCallBack responseCallBack) {
-        UserInfo user = UserInfo.getUser(context);
-        switch (user.getType(context)) {
-            case UserInfo.TYPE_FREEBIE:
-                return new Freebie().getMenuContent(responseCallBack);
-            case UserInfo.TYPE_DOWNLOAD:
-                return new Download().getMenuContent(responseCallBack);
-            case UserInfo.TYPE_SERVER:
-                return new Server().getMenuContent(responseCallBack);
+    public static IDrawerItem[] getMenuContent(final Context context, StudyInfo studyInfo, final ResponseCallBack responseCallBack) {
+        switch (studyInfo.getType(context)) {
+            case StudyInfo.FREEBIE:
+                return new MenuFreebie().getMenuContent(responseCallBack);
+            case StudyInfo.CONFIGURED:
+                return new MenuConfigured().getMenuContent(responseCallBack);
+            case StudyInfo.SERVER:
+                return new MenuServer().getMenuContent(responseCallBack);
             default:
-                return new Freebie().getMenuContent(responseCallBack);
+                return new MenuFreebie().getMenuContent(responseCallBack);
         }
     }
+
 
     static IDrawerItem[] getMenuContent(MenuContent[] menuContent, final ResponseCallBack responseCallBack) {
         IDrawerItem[] iDrawerItems = new IDrawerItem[menuContent.length];

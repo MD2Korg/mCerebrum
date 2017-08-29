@@ -26,8 +26,6 @@ package org.md2k.mcerebrum.operation;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.md2k.mcerebrum.data.userinfo.UserInfo;
-
 public class DownloadConfig {
 /*    Observable<Boolean> getObservableStart(final Activity activity){
         return Observable.just(User.getUser(activity))

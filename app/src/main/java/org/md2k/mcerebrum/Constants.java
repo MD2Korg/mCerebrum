@@ -33,11 +33,6 @@ import org.md2k.mcerebrum.commons.storage.StorageType;
 
 public class Constants {
     public static final String CONFIG_DEFAULT_URL="http://software.md2k.org/resources/mCerebrum/config.zip";
-    public static final String CONFIG_FILENAME_ZIP="config.zip";
-    public static String getDirectoryTemp(Context context){
-        return context.getExternalFilesDir(null)+"/temp";
-    }
-    public static final String CONFIG_DIRECTORY_ROOT ="mCerebrum";
-    public static final String CONFIG_DIRECTORY_MCEREBRUM="org.md2k.mcerebrum";
-    public static final String CONFIG_FILENAME_MCEREBRUM="config.json";
+    public static final String CONFIG_DEFAULT_GITHUB="MD2Korg/mCerebrum-Configuration";
+    public static final String CONFIG_DEFAULT_FILENAME="default2.zip";
 }

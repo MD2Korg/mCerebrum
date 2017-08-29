@@ -19,8 +19,7 @@ import org.md2k.mcerebrum.ActivityMain;
 import org.md2k.mcerebrum.R;
 import org.md2k.mcerebrum.internet.download.DownloadFile;
 import org.md2k.mcerebrum.internet.download.DownloadInfo;
-import org.md2k.mcerebrum.menu.Menu;
-import org.md2k.mcerebrum.data.userinfo.UserInfo;
+import org.md2k.mcerebrum.menu.AbstractMenu;
 
 import rx.Observer;
 import rx.Subscription;
@@ -89,13 +88,7 @@ public class FragmentLogin extends Fragment {
         final Button button_cancel = (Button) view.findViewById(R.id.button_login_cancel);
         button_cancel.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                // Code here executes on main thread after user presses button
-                ((ActivityMain)getActivity()).refresh(Menu.OP_HOME);
-/*
-                Intent returnIntent = new Intent();
-                setResult(Activity.RESULT_CANCELED,returnIntent);
-                finish();
-*/
+                ((ActivityMain)getActivity()).updateMenu(0);
             }
         });
 
@@ -155,7 +148,7 @@ public class FragmentLogin extends Fragment {
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra("config_file",getActivity().getExternalFilesDir(null)+"/temp/config.zip");
 //                User.createServer(getActivity(), )
-                ((ActivityMain)getActivity()).refresh(Menu.OP_SETTINGS);
+//                ((ActivityMain)getActivity()).refresh(AbstractMenu.MENU_SETTINGS);
 
 //                setResult(Activity.RESULT_OK,returnIntent);
 //                Data data=new Data();

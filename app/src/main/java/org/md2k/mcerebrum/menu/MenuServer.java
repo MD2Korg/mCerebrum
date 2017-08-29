@@ -36,23 +36,41 @@ import com.mikepenz.materialdrawer.model.ProfileSettingDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
-import org.md2k.mcerebrum.data.userinfo.UserInfo;
+import org.md2k.mcerebrum.data.StudyInfo;
+import org.md2k.mcerebrum.data.UserInfo;
 
-public class Download extends Menu{
-    IProfile[] getHeaderContent(Context context, UserInfo userInfo, final ResponseCallBack responseCallBack){
-        IProfile[] iProfiles=new IProfile[3];
-        iProfiles[0]=new ProfileDrawerItem().withName(userInfo.getName(context)).withIcon(userInfo.getIcon(context));
+class MenuServer extends AbstractMenu{
+    IProfile[] getHeaderContentType(Context context, UserInfo user, StudyInfo studyInfo, final ResponseCallBack responseCallBack){
+        IProfile[] iProfiles=new IProfile[4];
+        iProfiles[0]=new ProfileDrawerItem().withName(user.getTitle(context)).withIcon(studyInfo.getIcon(context));
         iProfiles[1]=new ProfileSettingDrawerItem().withName("About Study").withIcon(FontAwesome.Icon.faw_info).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
             @Override
             public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                responseCallBack.onResponse(OP_ABOUT_STUDY);
+                responseCallBack.onResponse(MENU_ABOUT_STUDY);
                 return false;
             }
         });
-        iProfiles[2]= new ProfileSettingDrawerItem().withName("Leave Study").withIcon(FontAwesome.Icon.faw_chain_broken).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+        if(user.isLoggedIn(context)){
+            iProfiles[2] = new ProfileSettingDrawerItem().withName("Login").withIcon(FontAwesome.Icon.faw_sign_in).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                @Override
+                public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                    responseCallBack.onResponse(MENU_LOGIN);
+                    return false;
+                }
+            });
+        }else{
+            iProfiles[2] = new ProfileSettingDrawerItem().withName("Logout").withIcon(FontAwesome.Icon.faw_sign_in).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                @Override
+                public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
+                    responseCallBack.onResponse(MENU_LOGOUT);
+                    return false;
+                }
+            });
+        }
+        iProfiles[3]= new ProfileSettingDrawerItem().withName("Leave Study").withIcon(FontAwesome.Icon.faw_chain_broken).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
             @Override
             public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                responseCallBack.onResponse(OP_LEAVE);
+                responseCallBack.onResponse(MENU_LEAVE);
                 return false;
             }
         });
@@ -62,10 +80,10 @@ public class Download extends Menu{
         return getMenuContent(menuContent, responseCallBack);
     }
     private static MenuContent[] menuContent = new MenuContent[]{
-            new MenuContent("Home", FontAwesome.Icon.faw_home, MenuContent.PRIMARY_DRAWER_ITEM, OP_HOME),
-            new MenuContent("Settings", FontAwesome.Icon.faw_cog, MenuContent.PRIMARY_DRAWER_ITEM, OP_SETTINGS),
-            new MenuContent("Step by Step Settings", FontAwesome.Icon.faw_cogs, MenuContent.PRIMARY_DRAWER_ITEM, OP_SETTINGS),
-            new MenuContent("Start Study", FontAwesome.Icon.faw_play, MenuContent.PRIMARY_DRAWER_ITEM, OP_SETTINGS)
+            new MenuContent("Home", FontAwesome.Icon.faw_home, MenuContent.PRIMARY_DRAWER_ITEM, MENU_HOME),
+            new MenuContent("Settings", FontAwesome.Icon.faw_cog, MenuContent.PRIMARY_DRAWER_ITEM, MENU_SETTINGS),
+            new MenuContent("Step by Step Settings", FontAwesome.Icon.faw_cogs, MenuContent.PRIMARY_DRAWER_ITEM, MENU_SETTINGS),
+            new MenuContent("Start Study", FontAwesome.Icon.faw_play, MenuContent.PRIMARY_DRAWER_ITEM, MENU_SETTINGS)
 //            new MenuContent("Report",FontAwesome.Icon.faw_bar_chart,MenuContent.PRIMARY_DRAWER_ITEM, OP_REPORT),
 //            new MenuContent("Plot",FontAwesome.Icon.faw_line_chart,MenuContent.PRIMARY_DRAWER_ITEM, OP_PLOT),
 //            new MenuContent("Export Data",FontAwesome.Icon.faw_upload,MenuContent.PRIMARY_DRAWER_ITEM, OP_EXPORT_DATA),
@@ -79,6 +97,5 @@ public class Download extends Menu{
 //            new MenuContent("Contact",FontAwesome.Icon.faw_envelope_o,MenuContent.SECONDARY_DRAWER_ITEM),
 //            new MenuContent("Feedback",FontAwesome.Icon.faw_comment,MenuContent.SECONDARY_DRAWER_ITEM),
     };
-
 
 }

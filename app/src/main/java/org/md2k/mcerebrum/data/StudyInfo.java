@@ -27,8 +27,17 @@ package org.md2k.mcerebrum.data;
  */
 
 import android.content.Context;
+import android.content.res.AssetManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 
+import org.md2k.mcerebrum.commons.storage.StorageReadWrite;
+import org.md2k.mcerebrum.commons.storage.StorageType;
 import org.md2k.mcerebrum.configuration.Config;
+
+import java.io.IOException;
 
 public class StudyInfo {
     private static final String ID=StudyInfo.class.getSimpleName()+"_ID";
@@ -42,10 +51,15 @@ public class StudyInfo {
     private static final String NOT_DEFINED="<not defined>";
     private static final String START_AT_BOOT=StudyInfo.class.getSimpleName()+"_START_AT_BOOT";
     private static final String STARTED=StudyInfo.class.getSimpleName()+"_STARTED";
-    public static void save(Context context, Config config) {
+
+    public static final String FREEBIE="FREEBIE";
+    public static final String SERVER="SERVER";
+    public static final String CONFIGURED="CONFIGURED";
+
+    public void save(Context context, Config config) {
         MySharedPreference mySharedPreference=new MySharedPreference();
         mySharedPreference.set(context,ID,config.getId());
-        mySharedPreference.set(context,TYPE,config.getType());
+        mySharedPreference.set(context,TYPE,config.getType().toUpperCase());
         mySharedPreference.set(context,TITLE, config.getTitle());
         mySharedPreference.set(context,SUMMARY, config.getSummary());
         mySharedPreference.set(context,DESCRIPTION, config.getDescription());
@@ -58,6 +72,9 @@ public class StudyInfo {
 
     public String getId(Context context) {
         return new MySharedPreference().getString(context, ID,NOT_DEFINED);
+    }
+    public String getType(Context context) {
+        return new MySharedPreference().getString(context, TYPE,NOT_DEFINED);
     }
 
     public String getTitle(Context context) {
@@ -84,5 +101,43 @@ public class StudyInfo {
     public void setStarted(Context context, boolean value){
         new MySharedPreference().set(context, STARTED, value);
     }
+    public Drawable getIcon(Context context) {
+        String filePath = new MySharedPreference().getString(context, ICON, null);
+        try {
+            if (filePath != null) {
+                String actualPath=StorageReadWrite.get(context, StorageType.SDCARD_INTERNAL).getRootDirectory()+"/mCerebrum/org.md2k.mcerebrum/"+filePath;
+                Bitmap bitmap = BitmapFactory.decodeFile(actualPath);
+                if(bitmap!=null)
+                    return new BitmapDrawable(context.getResources(), bitmap);
+            }
+        } catch (Exception ignored) {
 
+        }
+        AssetManager am = context.getAssets();
+        try {
+            return new BitmapDrawable(context.getResources(), BitmapFactory.decodeStream(am.open("mcerebrum.png")));
+        } catch (IOException ignored) {
+        }
+        return null;
+    }
+
+    public Drawable getCoverImage(Context context) {
+        String filePath = new MySharedPreference().getString(context, COVER_IMAGE, null);
+        try {
+            if (filePath != null) {
+                String actualPath=StorageReadWrite.get(context, StorageType.SDCARD_INTERNAL).getRootDirectory()+"/mCerebrum/org.md2k.mcerebrum/"+filePath;
+                Bitmap bitmap = BitmapFactory.decodeFile(actualPath);
+                if(bitmap!=null)
+                    return new BitmapDrawable(context.getResources(), bitmap);
+            }
+        } catch (Exception ignored) {
+
+        }
+        AssetManager am = context.getAssets();
+        try {
+            return new BitmapDrawable(context.getResources(), BitmapFactory.decodeStream(am.open("header.jpg")));
+        } catch (IOException ignored) {
+        }
+        return null;
+    }
 }

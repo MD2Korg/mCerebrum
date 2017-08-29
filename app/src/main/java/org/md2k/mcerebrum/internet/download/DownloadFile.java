@@ -53,7 +53,7 @@ public class DownloadFile {
         try {
             String[] parts = getParts(source);
             RetrofitInterface downloadService = createService(RetrofitInterface.class, parts[0]);
-            observable = downloadService.downloadFileByUrlRx(parts[1])
+            observable = downloadService.downloadFileByUrlRx(parts[1]).subscribeOn(Schedulers.newThread())
                     .flatMap(processResponse(destinationPath, destinationFile));
         } catch (MalformedURLException e) {
             return Observable.error(e);

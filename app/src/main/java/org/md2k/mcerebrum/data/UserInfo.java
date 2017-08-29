@@ -1,4 +1,4 @@
-package org.md2k.mcerebrum.data.userinfo;
+package org.md2k.mcerebrum.data;
 /*
  * Copyright (c) 2016, The University of Memphis, MD2K Center
  * - Syed Monowar Hossain <monowar.hossain@gmail.com>
@@ -26,6 +26,27 @@ package org.md2k.mcerebrum.data.userinfo;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-public class UserInfoConfigure extends UserInfo{
+import android.content.Context;
 
+public class UserInfo {
+    private static final String TITLE=UserInfo.class.getSimpleName()+"_TITLE";
+    private static final String LOGGED_IN=UserInfo.class.getSimpleName()+"_LOGGED_IN";
+    public static void save(Context context, String title, boolean isLoggedIn){
+        setTitle(context, title);
+        setLoggedIn(context, isLoggedIn);
+    }
+
+    private static void setTitle(Context context, String value) {
+        if(value==null) value="<not defined>";
+        new MySharedPreference().set(context, TITLE, value);
+    }
+    private static void setLoggedIn(Context context, boolean value) {
+        new MySharedPreference().set(context, LOGGED_IN, value);
+    }
+    public String getTitle(Context context){
+        return new MySharedPreference().getString(context, TITLE, "<not_defined>");
+    }
+    public boolean isLoggedIn(Context context){
+        return new MySharedPreference().getBoolean(context,LOGGED_IN, false);
+    }
 }
