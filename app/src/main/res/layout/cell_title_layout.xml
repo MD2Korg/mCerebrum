@@ -5,18 +5,19 @@
     android:layout_height="wrap_content"
     android:background="@color/bgContent"
     android:baselineAligned="false"
-    android:weightSum="1"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:weightSum="1">
+
     <LinearLayout
-        android:layout_weight=".25"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:padding="10dp"
+        android:layout_weight=".25"
         android:background="@color/teal"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="10dp">
 
         <ImageView
-            android:id="@+id/imageview_icon"
+            android:id="@+id/imageview_icon_short"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:srcCompat="@drawable/img4" />
@@ -25,15 +26,16 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:padding="10dp"
         android:layout_weight=".75"
         android:background="@color/bgTitleRight"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="10dp">
+
         <LinearLayout
             android:layout_width="match_parent"
-            android:weightSum="1"
             android:layout_height="match_parent"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:weightSum="1">
 
             <TextView
                 android:id="@+id/textview_title"
@@ -46,6 +48,7 @@
                 android:textStyle="bold" />
 
             <TextView
+
                 android:id="@+id/textview_status"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -55,7 +58,7 @@
                 android:text="Installed"
                 android:textColor="@color/colorPrimary"
                 android:textSize="12dp" />
-    </LinearLayout>
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/title_from_to_dots_divider"
@@ -64,79 +67,80 @@
             android:layout_marginBottom="5dp"
             android:layout_marginTop="5dp"
             android:src="@color/contentDividerLine" />
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_weight="1">
-     <LinearLayout
-         android:layout_width="wrap_content"
-         android:layout_height="30dp"
 
-         android:orientation="horizontal">
-
-         <TextView
-             android:id="@+id/textview_description"
-             style="@style/Grey"
-             android:layout_width="500dp"
-             android:layout_height="30dp"
-             android:layout_weight=".95"
-             android:fadingEdge="horizontal"
-             android:paddingBottom="15dp"
-             android:text="asbafs asdfys as dfasdyfasdf asd fyasdf asdfaysdfa sdfashdfas"
-             android:textSize="12sp" />
-
-         <ImageView
-             android:id="@+id/imageView3"
-             android:layout_width="50dp"
-             android:layout_weight=".05"
-             android:layout_height="15dp"
-             android:layout_gravity="right"
-             app:srcCompat="@drawable/more1" />
-
-
-
-
-        </LinearLayout>
-
-</LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:weightSum="1"
-            android:orientation="horizontal">
+            android:layout_weight="1">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textview_description"
+                    style="@style/Grey"
+                    android:layout_width="500dp"
+                    android:layout_height="30dp"
+                    android:layout_weight=".95"
+                    android:fadingEdge="horizontal"
+                    android:paddingBottom="15dp"
+                    android:text="asbafs asdfys as dfasdyfasdf asd fyasdf asdfaysdfa sdfashdfas"
+                    android:textSize="12sp" />
+
+                <ImageView
+                    android:id="@+id/imageView3"
+                    android:layout_width="50dp"
+                    android:layout_height="15dp"
+                    android:layout_gravity="right"
+                    android:layout_weight=".05"
+                    app:srcCompat="@drawable/more1" />
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="1">
 
             <com.beardedhen.androidbootstrap.BootstrapButton
+                android:id="@+id/button_install_short"
                 style="@style/wrapping_button"
-                android:id="@+id/button_install"
-                android:text="Install"
-                android:enabled="false"
                 android:layout_weight=".3"
+                android:enabled="false"
+                android:text="Install"
                 app:bootstrapBrand="warning"
                 app:roundedCorners="true"
-                app:showOutline="true"
-                />
+                app:showOutline="true" />
 
 
             <com.beardedhen.androidbootstrap.BootstrapButton
-                android:id="@+id/button_update"
+                android:id="@+id/button_update_short"
                 style="@style/wrapping_button"
-                android:text="Update"
                 android:layout_weight=".3"
+                android:text="Update"
                 app:bootstrapBrand="warning"
+                app:roundedCorners="true"
 
-                app:roundedCorners="true" />
+                app:showOutline="true" />
 
 
             <com.beardedhen.androidbootstrap.BootstrapButton
+                android:id="@+id/button_uninstall_short"
                 style="@style/wrapping_button"
-                android:id="@+id/button_uninstall"
+                android:layout_weight=".3"
                 android:text="Uninstall"
                 android:textSize="5dp"
-                android:layout_weight=".3"
-
                 app:bootstrapBrand="warning"
+
                 app:roundedCorners="true"
-                />
+                app:showOutline="true" />
         </LinearLayout>
 
     </LinearLayout>
@@ -190,93 +194,93 @@
 
         </RelativeLayout>
         -->
-        <!-- RIGHT TITLE PART -->
-<!--
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:background="@color/bgTitleRight"
-        android:paddingBottom="20dp"
-        android:paddingEnd="10dp"
-        android:paddingStart="17dp"
-        android:paddingTop="20dp">
-
-
-
-        <TextView
-            android:id="@+id/title_from_address"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/title_from_to_dots"
-            android:layout_marginTop="-5dp"
-            android:layout_toEndOf="@+id/title_from_to_dots"
-            android:ellipsize="marquee"
-            android:fadingEdge="horizontal"
-            android:singleLine="true"
-            android:textColor="@android:color/black"
-            android:textSize="16sp" />
-
-        <ImageView
-            android:id="@+id/title_from_to_dots_divider"
+    <!-- RIGHT TITLE PART -->
+    <!--
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_below="@id/title_from_address"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="5dp"
-            android:layout_toEndOf="@+id/title_from_to_dots"
-            android:src="@color/contentDividerLine" />
-
-        <TextView
-            android:id="@+id/title_to_address"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/title_from_to_dots_divider"
-            android:layout_toEndOf="@id/title_from_to_dots"
-            android:ellipsize="marquee"
-            android:fadingEdge="horizontal"
-            style="@style/Grey"
-            android:textSize="12sp"
-            android:paddingBottom="15dp"/>
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="@color/bgTitleRight"
+            android:paddingBottom="20dp"
+            android:paddingEnd="10dp"
+            android:paddingStart="17dp"
+            android:paddingTop="20dp">
 
 
 
+            <TextView
+                android:id="@+id/title_from_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignTop="@+id/title_from_to_dots"
+                android:layout_marginTop="-5dp"
+                android:layout_toEndOf="@+id/title_from_to_dots"
+                android:ellipsize="marquee"
+                android:fadingEdge="horizontal"
+                android:singleLine="true"
+                android:textColor="@android:color/black"
+                android:textSize="16sp" />
 
-        <com.beardedhen.androidbootstrap.BootstrapButton
-            style="@style/wrapping_button"
-            android:layout_below="@id/title_to_address"
-            android:layout_alignStart="@id/title_to_address"
-            android:text="Install"
-            app:bootstrapBrand="warning"
-            app:roundedCorners="true"
-            />
+            <ImageView
+                android:id="@+id/title_from_to_dots_divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@id/title_from_address"
+                android:layout_marginBottom="5dp"
+                android:layout_marginTop="5dp"
+                android:layout_toEndOf="@+id/title_from_to_dots"
+                android:src="@color/contentDividerLine" />
+
+            <TextView
+                android:id="@+id/title_to_address"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/title_from_to_dots_divider"
+                android:layout_toEndOf="@id/title_from_to_dots"
+                android:ellipsize="marquee"
+                android:fadingEdge="horizontal"
+                style="@style/Grey"
+                android:textSize="12sp"
+                android:paddingBottom="15dp"/>
 
 
-        <com.beardedhen.androidbootstrap.BootstrapButton
-            style="@style/wrapping_button"
-            android:layout_below="@id/title_to_address"
-
-            android:text="Update"
-            app:bootstrapBrand="warning"
-            app:roundedCorners="true"
-
-            android:layout_centerInParent="true"
-            android:id="@+id/bootstrapButton"
-          />
 
 
-        <com.beardedhen.androidbootstrap.BootstrapButton
-            style="@style/wrapping_button"
-            android:text="Delete"
-            app:bootstrapBrand="warning"
-            app:roundedCorners="true"
-            android:layout_below="@+id/title_to_address"
-
-            android:layout_toEndOf="@+id/bootstrapButton"
-
-           />
+            <com.beardedhen.androidbootstrap.BootstrapButton
+                style="@style/wrapping_button"
+                android:layout_below="@id/title_to_address"
+                android:layout_alignStart="@id/title_to_address"
+                android:text="Install"
+                app:bootstrapBrand="warning"
+                app:roundedCorners="true"
+                />
 
 
-    </RelativeLayout>
-    -->
+            <com.beardedhen.androidbootstrap.BootstrapButton
+                style="@style/wrapping_button"
+                android:layout_below="@id/title_to_address"
+
+                android:text="Update"
+                app:bootstrapBrand="warning"
+                app:roundedCorners="true"
+
+                android:layout_centerInParent="true"
+                android:id="@+id/bootstrapButton"
+              />
+
+
+            <com.beardedhen.androidbootstrap.BootstrapButton
+                style="@style/wrapping_button"
+                android:text="Delete"
+                app:bootstrapBrand="warning"
+                app:roundedCorners="true"
+                android:layout_below="@+id/title_to_address"
+
+                android:layout_toEndOf="@+id/bootstrapButton"
+
+               />
+
+
+        </RelativeLayout>
+        -->
 </LinearLayout>

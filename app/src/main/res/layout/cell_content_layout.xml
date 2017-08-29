@@ -61,7 +61,7 @@
                 android:layout_marginBottom="5dp" />
 
             <ImageView
-                android:id="@+id/content_avatar"
+                android:id="@+id/imageview_icon_long"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
                 android:layout_below="@id/content_avatar_title"
@@ -74,10 +74,10 @@
                 android:id="@+id/textview_content_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignTop="@id/content_avatar"
+                android:layout_alignTop="@id/imageview_icon_long"
                 android:layout_marginBottom="2dp"
                 android:layout_marginStart="10dp"
-                android:layout_toEndOf="@id/content_avatar"
+                android:layout_toEndOf="@id/imageview_icon_long"
                 android:text="Phone Sensor"
                 android:textColor="@color/mainTextColor"
                 android:textSize="18sp"
@@ -90,7 +90,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="2dp"
                 android:layout_marginStart="10dp"
-                android:layout_toEndOf="@id/content_avatar"
+                android:layout_toEndOf="@id/imageview_icon_long"
                 android:layout_below="@id/textview_content_title"
                 android:text="Collects phone sensor data"
                 android:textColor="@color/titleBadgeText"
@@ -231,28 +231,29 @@
 
         <com.beardedhen.androidbootstrap.BootstrapButton
             style="@style/wrapping_button"
-            android:id="@+id/button_install"
+            android:id="@+id/button_install_long"
             android:text="Install"
             app:bootstrapBrand="warning"
             app:roundedCorners="true"
             android:padding= "50dp"
-            android:enabled="false"
             app:showOutline="true"
 
             />
         <com.beardedhen.androidbootstrap.BootstrapButton
             style="@style/wrapping_button"
-            android:id="@+id/button_update"
+            android:id="@+id/button_update_long"
             android:text="Update"
             app:bootstrapBrand="warning"
             app:roundedCorners="true"
+            app:showOutline="true"
             android:layout_gravity="center"
             />
         <com.beardedhen.androidbootstrap.BootstrapButton
             style="@style/wrapping_button"
-            android:id="@+id/button_uninstall"
-            android:text="Delete"
+            android:id="@+id/button_uninstall_long"
+            android:text="Uninstall"
             app:bootstrapBrand="warning"
+            app:showOutline="true"
             app:roundedCorners="true" />
 </LinearLayout>
         <TextView

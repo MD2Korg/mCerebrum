@@ -89,21 +89,19 @@ public abstract class AbstractActivityMenu extends AbstractActivityBasics {
         //add the values which need to be saved from the accountHeader to the bundle
         outState = headerResult.saveInstanceState(outState);
 */
-        super.onSaveInstanceState(outState);
+//        super.onSaveInstanceState(outState);
     }
 
     ResponseCallBack responseCallBack = new ResponseCallBack() {
         @Override
         public void onResponse(int response) {
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             switch (response) {
                 case AbstractMenu.MENU_ABOUT_STUDY:
                     break;
                 case AbstractMenu.MENU_HELP:
                     break;
                 case AbstractMenu.MENU_HOME:
-                    ft.replace(R.id.fragment_container, new FragmentFoldingUI());
-                    ft.commit();
+                    getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new FragmentFoldingUI()).commit();
                     break;
                 case AbstractMenu.MENU_JOIN:
                     Intent intent=new Intent(AbstractActivityMenu.this, ActivityLogin.class);
@@ -112,8 +110,7 @@ public abstract class AbstractActivityMenu extends AbstractActivityBasics {
                 case AbstractMenu.MENU_LEAVE:
                     break;
                 case AbstractMenu.MENU_LOGIN:
-                    ft.replace(R.id.fragment_container, new FragmentLogin());
-                    ft.commit();
+                    getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new FragmentLogin()).commit();
 //                Intent i = new Intent(this, ActivityLogin.class);
 //                startActivityForResult(i, ID_JOIN_STUDY);
                     break;
