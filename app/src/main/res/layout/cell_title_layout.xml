@@ -107,6 +107,7 @@
 
             <com.beardedhen.androidbootstrap.BootstrapButton
                 style="@style/wrapping_button"
+                android:id="@+id/button_install"
                 android:text="Install"
                 android:enabled="false"
                 android:layout_weight=".3"
@@ -117,7 +118,7 @@
 
 
             <com.beardedhen.androidbootstrap.BootstrapButton
-                android:id="@+id/bootstrapButton"
+                android:id="@+id/button_update"
                 style="@style/wrapping_button"
                 android:text="Update"
                 android:layout_weight=".3"
@@ -128,17 +129,13 @@
 
             <com.beardedhen.androidbootstrap.BootstrapButton
                 style="@style/wrapping_button"
+                android:id="@+id/button_uninstall"
                 android:text="Uninstall"
                 android:textSize="5dp"
                 android:layout_weight=".3"
 
                 app:bootstrapBrand="warning"
                 app:roundedCorners="true"
-
-
-
-
-
                 />
         </LinearLayout>
 

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -41,20 +42,16 @@ public class FoldingCellListAdapter extends ArrayAdapter<Application> {
             viewHolder = new ViewHolder();
             LayoutInflater vi = LayoutInflater.from(getContext());
             cell = (FoldingCell) vi.inflate(R.layout.cell, parent, false);
-            // binding view parts to view holder
-         //   viewHolder.time = (TextView) cell.findViewById(R.id.title_time_label);
-        //    viewHolder.date = (TextView) cell.findViewById(R.id.title_date_label);
             viewHolder.title = (TextView) cell.findViewById(R.id.textview_title);
             viewHolder.summary = (TextView) cell.findViewById(R.id.textview_description);
             viewHolder.icon = (ImageView) cell.findViewById(R.id.imageview_icon);
-        //    viewHolder.requestsCount = (TextView) cell.findViewById(R.id.title_requests_count);
-        //    viewHolder.pledgePrice = (TextView) cell.findViewById(R.id.title_pledge);
-       //   viewHolder.contentRequestBtn = (TextView) cell.findViewById(R.id.content_request_btn);
             viewHolder.content_title = (TextView) cell.findViewById(R.id.textview_content_title);
             viewHolder.content_summary = (TextView) cell.findViewById(R.id.textview_content_description);
             viewHolder.description =(TextView)cell.findViewById(R.id.textview_content_detail);
             viewHolder.version=(TextView)cell.findViewById(R.id.textview_version_number);
-            viewHolder.update=(TextView)cell.findViewById(R.id.textview_update_date);
+            viewHolder.updateVersion =(TextView)cell.findViewById(R.id.textview_update_date);
+            viewHolder.install=(Button)cell.findViewById(R.id.button_install);
+
             cell.setTag(viewHolder);
         } else {
             // for existing cell set valid valid state(without animation)
@@ -65,12 +62,7 @@ public class FoldingCellListAdapter extends ArrayAdapter<Application> {
             }
             viewHolder = (ViewHolder) cell.getTag();
         }
-
         // bind data from selected element to view through view holder
-     //   viewHolder.price.setText(item.getPrice());
-//        viewHolder.time.setText(item.getTime());
-//        viewHolder.date.setText(item.getDate());
-
         viewHolder.title.setText(app.getTitle(getContext()));
         viewHolder.summary.setText(app.getSummary(getContext()));
         viewHolder.content_title.setText(app.getTitle(getContext()));
@@ -78,7 +70,8 @@ public class FoldingCellListAdapter extends ArrayAdapter<Application> {
         viewHolder.description.setText(app.getDescription(getContext()));
 //        viewHolder.icon.setImageDrawable(app.getIcon(getContext());
 //        viewHolder.version.setText(app.getVersionName());
-        viewHolder.update.setText("N/A");
+        viewHolder.updateVersion.setText("N/A");
+
      //   viewHolder.requestsCount.setText(String.valueOf(item.getRequestsCount()));
    //     viewHolder.pledgePrice.setText(item.getPledgePrice());
         // set custom btn handler for list item from that item
@@ -127,10 +120,9 @@ public class FoldingCellListAdapter extends ArrayAdapter<Application> {
         TextView content_summary;
         TextView description;
         TextView version;
-        TextView update;
-
-      //  TextView requestsCount;
-        TextView date;
-        TextView time;
+        TextView updateVersion;
+        Button install;
+        Button uninstall;
+        Button update;
     }
 }

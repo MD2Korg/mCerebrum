@@ -231,6 +231,7 @@
 
         <com.beardedhen.androidbootstrap.BootstrapButton
             style="@style/wrapping_button"
+            android:id="@+id/button_install"
             android:text="Install"
             app:bootstrapBrand="warning"
             app:roundedCorners="true"
@@ -241,6 +242,7 @@
             />
         <com.beardedhen.androidbootstrap.BootstrapButton
             style="@style/wrapping_button"
+            android:id="@+id/button_update"
             android:text="Update"
             app:bootstrapBrand="warning"
             app:roundedCorners="true"
@@ -248,6 +250,7 @@
             />
         <com.beardedhen.androidbootstrap.BootstrapButton
             style="@style/wrapping_button"
+            android:id="@+id/button_uninstall"
             android:text="Delete"
             app:bootstrapBrand="warning"
             app:roundedCorners="true" />
