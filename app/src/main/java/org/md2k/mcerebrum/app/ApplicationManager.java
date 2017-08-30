@@ -53,6 +53,19 @@ public class ApplicationManager {
         }
         return applicationArrayList;
     }
+    public int[] getInstallStatus(Context context){
+        int result[]=new int[3];
+        result[0]=0;result[1]=0;result[2]=0;
+        ArrayList<Application> apps=getAppList(context);
+        for(int i=0;i<apps.size();i++){
+            if(!apps.get(i).isInstalled(context))
+                result[2]++;
+            else if(apps.get(i).isUpdateAvailable(context))
+                result[1]++;
+            else result[0]++;
+        }
+        return result;
+    }
 
 /*    public void read(String filePath){
         CApp[] cApps=new ConfigManager().read(filePath);

@@ -82,10 +82,10 @@ class MenuServer extends AbstractMenu{
         return getMenuContent(menuContent, responseCallBack);
     }
     private static MenuContent[] menuContent = new MenuContent[]{
-            new MenuContent("Home", FontAwesome.Icon.faw_home, MenuContent.PRIMARY_DRAWER_ITEM, MENU_HOME),
-            new MenuContent("Settings", FontAwesome.Icon.faw_cog, MenuContent.PRIMARY_DRAWER_ITEM, MENU_SETTINGS),
-            new MenuContent("Step by Step Settings", FontAwesome.Icon.faw_cogs, MenuContent.PRIMARY_DRAWER_ITEM, MENU_SETTINGS),
-            new MenuContent("Start Study", FontAwesome.Icon.faw_play, MenuContent.PRIMARY_DRAWER_ITEM, MENU_SETTINGS)
+            new MenuContent("Add/Remove Apps", FontAwesome.Icon.faw_home, MenuContent.PRIMARY_DRAWER_ITEM, MENU_APP_ADD_REMOVE),
+            new MenuContent("App Settings", FontAwesome.Icon.faw_cog, MenuContent.PRIMARY_DRAWER_ITEM, MENU_APP_SETTINGS),
+            new MenuContent("Step by Step Settings", FontAwesome.Icon.faw_cogs, MenuContent.PRIMARY_DRAWER_ITEM, MENU_APP_SETTINGS),
+            new MenuContent("Start Study", FontAwesome.Icon.faw_play, MenuContent.PRIMARY_DRAWER_ITEM, MENU_APP_SETTINGS)
 //            new MenuContent("Report",FontAwesome.Icon.faw_bar_chart,MenuContent.PRIMARY_DRAWER_ITEM, OP_REPORT),
 //            new MenuContent("Plot",FontAwesome.Icon.faw_line_chart,MenuContent.PRIMARY_DRAWER_ITEM, OP_PLOT),
 //            new MenuContent("Export Data",FontAwesome.Icon.faw_upload,MenuContent.PRIMARY_DRAWER_ITEM, OP_EXPORT_DATA),

@@ -58,12 +58,12 @@ public class FoldingCellListAdapterAppSettings extends ArrayAdapter<AppInfo> {
             viewHolder.version = (TextView) cell.findViewById(R.id.textview_version_number);
             viewHolder.updateVersion = (TextView) cell.findViewById(R.id.textview_update_date);
 
-            viewHolder.buttonSettingsLong = (BootstrapButton) cell.findViewById(R.id.button_install_long);
-            viewHolder.buttonRunLong = (BootstrapButton) cell.findViewById(R.id.button_update_long);
-            viewHolder.buttonOpenLong = (BootstrapButton) cell.findViewById(R.id.button_uninstall_long);
-            viewHolder.buttonSettingsShort = (BootstrapButton) cell.findViewById(R.id.button_install_short);
-            viewHolder.buttonRunShort = (BootstrapButton) cell.findViewById(R.id.button_update_short);
-            viewHolder.buttonOpenShort = (BootstrapButton) cell.findViewById(R.id.button_uninstall_short);
+            viewHolder.buttonSettingsLong = (BootstrapButton) cell.findViewById(R.id.button_settings_long);
+            viewHolder.buttonRunLong = (BootstrapButton) cell.findViewById(R.id.button_run_long);
+            viewHolder.buttonOpenLong = (BootstrapButton) cell.findViewById(R.id.button_open_long);
+            viewHolder.buttonSettingsShort = (BootstrapButton) cell.findViewById(R.id.button_settings_short);
+            viewHolder.buttonRunShort = (BootstrapButton) cell.findViewById(R.id.button_run_short);
+            viewHolder.buttonOpenShort = (BootstrapButton) cell.findViewById(R.id.button_open_short);
             viewHolder.status = (AwesomeTextView) cell.findViewById(R.id.textview_status);
 
 
@@ -107,19 +107,19 @@ public class FoldingCellListAdapterAppSettings extends ArrayAdapter<AppInfo> {
         viewHolder.status.setFontAwesomeIcon("fa-check-square");
 //            viewHolder.status.setText("installed");
 //            viewHolder.status.setTextColor(Color.GREEN);
-        View.OnClickListener onClickListenerUninstall = new View.OnClickListener() {
+        View.OnClickListener onClickListenerRun = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 //                responseCallBack.onResponse(position, FragmentFoldingUIAppSettings.UNINSTALL);
             }
         };
-        View.OnClickListener onClickListenerInstall = new View.OnClickListener() {
+        View.OnClickListener onClickListenerSettings = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 //                responseCallBack.onResponse(position, FragmentFoldingUIAppSettings.INSTALL);
             }
         };
-        View.OnClickListener onClickListenerUpdate = new View.OnClickListener() {
+        View.OnClickListener onClickListenerOpen = new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -127,10 +127,10 @@ public class FoldingCellListAdapterAppSettings extends ArrayAdapter<AppInfo> {
             }
         };
 
-        viewHolder.buttonOpenLong.setOnClickListener(onClickListenerUninstall);
-        viewHolder.buttonOpenShort.setOnClickListener(onClickListenerUninstall);
-        viewHolder.buttonSettingsLong.setOnClickListener(onClickListenerInstall);
-        viewHolder.buttonSettingsShort.setOnClickListener(onClickListenerInstall);
+        viewHolder.buttonOpenLong.setOnClickListener(onClickListenerOpen);
+        viewHolder.buttonOpenShort.setOnClickListener(onClickListenerOpen);
+        viewHolder.buttonSettingsLong.setOnClickListener(onClickListenerSettings);
+        viewHolder.buttonSettingsShort.setOnClickListener(onClickListenerSettings);
 
         viewHolder.updateVersion.setText("N/A");
 

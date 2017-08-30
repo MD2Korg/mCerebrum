@@ -9,6 +9,10 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.beardedhen.androidbootstrap.AwesomeTextView;
+import com.beardedhen.androidbootstrap.BootstrapButton;
+import com.beardedhen.androidbootstrap.BootstrapText;
+import com.beardedhen.androidbootstrap.api.defaults.DefaultBootstrapBrand;
 import com.ramotion.foldingcell.FoldingCell;
 
 import org.md2k.mcerebrum.R;
@@ -30,6 +34,11 @@ public class FragmentFoldingUIAppInstall extends Fragment {
     public static final int UPDATE=2;
     Subscription subscription;
     MaterialDialog materialDialog;
+    AwesomeTextView textViewInstalled;
+    AwesomeTextView textViewUpdate;
+    AwesomeTextView textViewNotInstalled;
+    AwesomeTextView textViewStatus;
+    BootstrapButton bootstrapButtonInstall;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
@@ -40,12 +49,42 @@ public class FragmentFoldingUIAppInstall extends Fragment {
     public void onViewCreated(final View view, Bundle savedInstanceState) {
         ListView theListView = (ListView) view.findViewById(R.id.listview_folding_ui);
         ApplicationManager applicationManager=new ApplicationManager();
+        int[] installed=applicationManager.getInstallStatus(getContext());
         // prepare elements to display
         final ArrayList<Application> items = applicationManager.getAppList(getContext());
         ArrayList<AppInfo> appInfos=new ArrayList<>();
         for(int i=0;i<items.size();i++){
             appInfos.add(new AppInfo(getContext(), items.get(i)));
         }
+        textViewInstalled = (AwesomeTextView) view.findViewById(R.id.textview_installed);
+        textViewUpdate = (AwesomeTextView) view.findViewById(R.id.textview_update);
+        textViewNotInstalled = (AwesomeTextView) view.findViewById(R.id.textview_not_installed);
+        textViewStatus = (AwesomeTextView) view.findViewById(R.id.textview_status);
+        bootstrapButtonInstall= (BootstrapButton) view.findViewById(R.id.button_install);
+        bootstrapButtonInstall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                downloadAndInstallAll(items);
+            }
+        });
+        BootstrapText bootstrapTextI=new BootstrapText.Builder(getContext()).addFontAwesomeIcon("fa_download").addText(" : "+String.valueOf(installed[0])).build();
+        BootstrapText bootstrapTextU=new BootstrapText.Builder(getContext()).addFontAwesomeIcon("fa_refresh").addText(" : "+String.valueOf(installed[1])).build();
+        BootstrapText bootstrapTextD=new BootstrapText.Builder(getContext()).addFontAwesomeIcon("fa_trash").addText(" : "+String.valueOf(installed[2])).build();
+        BootstrapText bootstrapTextS;
+        if(installed[1]+installed[2]==0) {
+            bootstrapTextS = new BootstrapText.Builder(getContext()).addText("Status: ").addFontAwesomeIcon("fa_check").build();
+            textViewStatus.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
+            textViewStatus.setBootstrapText(bootstrapTextS);
+        }else{
+            bootstrapTextS = new BootstrapText.Builder(getContext()).addText("Status: ").addFontAwesomeIcon("fa_times").build();
+            textViewStatus.setBootstrapBrand(DefaultBootstrapBrand.DANGER);
+            textViewStatus.setBootstrapText(bootstrapTextS);
+        }
+        textViewInstalled.setBootstrapText(bootstrapTextI);
+        textViewUpdate.setBootstrapText(bootstrapTextU);
+        textViewNotInstalled.setBootstrapText(bootstrapTextD);
+//        String st="{fa_download}: "+installed[0]+"   {fa_refresh}: "+installed[1]+"   {fa_trash}: "+installed[2];
+//        textViewInstalled.setBootstrapText(bootstrapText);
         // add custom btn handler to first list item
 /*
         items.get(0).setRequestBtnClickListener(new View.OnClickListener() {
@@ -82,6 +121,13 @@ public class FragmentFoldingUIAppInstall extends Fragment {
             }
         });
     }
+    void downloadAndInstallAll(ArrayList<Application> applications){
+        for(int i=0;i<applications.size();i++) {
+            if(!applications.get(i).isInstalled(getContext())){
+                downloadAndInstall(applications.get(i));
+            }
+        }
+    }
     void downloadAndInstall(Application application){
         materialDialog = new MaterialDialog.Builder(getActivity())
                 .content("Downloading "+application.getTitle(getActivity())+" app...")
@@ -113,6 +159,7 @@ public class FragmentFoldingUIAppInstall extends Fragment {
                 });
 
     }
+
     @Override
     public void onDestroy(){
         if (subscription != null && !subscription.isUnsubscribed()) subscription.unsubscribe();

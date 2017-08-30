@@ -31,6 +31,7 @@ import android.content.Context;
 import com.blankj.utilcode.util.TimeUtils;
 
 import org.md2k.mcerebrum.Constants;
+import org.md2k.mcerebrum.MyApplication;
 import org.md2k.mcerebrum.app.ApplicationManager;
 import org.md2k.mcerebrum.commons.storage.StorageRead;
 import org.md2k.mcerebrum.commons.storage.StorageReadWrite;
@@ -188,5 +189,10 @@ public class ConfigManager {
         new MySharedPreference().set(context, CONFIG_NAME, configName);
         new MySharedPreference().set(context, DOWNLOAD_FROM, downloadFrom);
         new MySharedPreference().set(context, UPDATED_AT, UPDATED_AT);
+    }
+
+    public void clear() {
+        save(MyApplication.getContext(), null, null, null, null);
+        new MySharedPreference().set(MyApplication.getContext(), CONFIGURED, false);
     }
 }

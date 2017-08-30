@@ -199,7 +199,9 @@ public class Application {
 //        return get(context, CURRENT_VERSION);
     }
     boolean isUpdateAvailable(Context context){
-        return isInstalled(context) && !getVersionName(context).equals(getExpectedVersion(context));
+        return false;
+        //TODO: check app update
+//        return isInstalled(context) && !getVersionName(context).equals(getExpectedVersion(context));
     }
 /*
     Drawable getIcon(Context context, String filePath){

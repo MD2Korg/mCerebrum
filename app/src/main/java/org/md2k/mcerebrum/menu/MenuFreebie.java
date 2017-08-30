@@ -41,8 +41,9 @@ import org.md2k.mcerebrum.data.UserInfo;
 
 class MenuFreebie extends AbstractMenu {
      IProfile[] getHeaderContentType(final Context context, UserInfo userInfo, StudyInfo studyInfo, final ResponseCallBack responseCallBack){
-        IProfile[] iProfiles=new IProfile[2];
+        IProfile[] iProfiles=new IProfile[1];
         iProfiles[0]=new ProfileDrawerItem().withName(userInfo.getTitle(context)).withIcon(studyInfo.getIcon(context));
+/*
         iProfiles[1]=new ProfileSettingDrawerItem().withName("Join Study").withIcon(FontAwesome.Icon.faw_link).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
             @Override
             public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
@@ -50,14 +51,15 @@ class MenuFreebie extends AbstractMenu {
                 return true;
             }
         });
+*/
         return iProfiles;
     }
     IDrawerItem[] getMenuContent(ResponseCallBack responseCallBack){
         return getMenuContent(menuContent, responseCallBack);
     }
     private  MenuContent[] menuContent = new MenuContent[]{
-            new MenuContent("Home", FontAwesome.Icon.faw_home, MenuContent.PRIMARY_DRAWER_ITEM, MENU_HOME),
-            new MenuContent("Settings", FontAwesome.Icon.faw_cog, MenuContent.PRIMARY_DRAWER_ITEM, MENU_SETTINGS),
+            new MenuContent("Add/Remove Apps", FontAwesome.Icon.faw_home, MenuContent.PRIMARY_DRAWER_ITEM, MENU_APP_ADD_REMOVE),
+            new MenuContent("App Settings", FontAwesome.Icon.faw_cog, MenuContent.PRIMARY_DRAWER_ITEM, MENU_APP_SETTINGS),
             new MenuContent("Join Study", FontAwesome.Icon.faw_link, MenuContent.PRIMARY_DRAWER_ITEM, MENU_JOIN)
 //            new MenuContent("Report",FontAwesome.Icon.faw_bar_chart,MenuContent.PRIMARY_DRAWER_ITEM, OP_REPORT),
 //            new MenuContent("Plot",FontAwesome.Icon.faw_line_chart,MenuContent.PRIMARY_DRAWER_ITEM, OP_PLOT),

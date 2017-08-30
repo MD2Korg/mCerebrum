@@ -27,16 +27,19 @@ package org.md2k.mcerebrum.menu;
  */
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.View;
 
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 import com.mikepenz.materialdrawer.Drawer;
+import com.mikepenz.materialdrawer.holder.BadgeStyle;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.SectionDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
+import org.md2k.mcerebrum.R;
 import org.md2k.mcerebrum.data.StudyInfo;
 import org.md2k.mcerebrum.data.UserInfo;
 
@@ -46,8 +49,8 @@ public abstract class AbstractMenu {
     public static final int MENU_LOGIN = 2;
     public static final int MENU_LOGOUT = 3;
     public static final int MENU_LEAVE = 4;
-    public static final int MENU_HOME = 5;
-    public static final int MENU_SETTINGS = 6;
+    public static final int MENU_APP_ADD_REMOVE = 5;
+    public static final int MENU_APP_SETTINGS = 6;
     //    public static final int OP_REPORT = 7;
 //    public static final int OP_PLOT = 8;
 //    public static final int OP_EXPORT_DATA = 9;
@@ -95,6 +98,9 @@ public abstract class AbstractMenu {
                             return false;
                         }
                     });
+                    if(menuContent[i].badgeValue>0){
+                        ((PrimaryDrawerItem)(iDrawerItems[i])).withBadge(String.valueOf(menuContent[i].badgeValue)).withBadgeStyle(new BadgeStyle().withTextColor(Color.WHITE).withColorRes(R.color.md_red_700));;
+                    }
                     break;
                 case MenuContent.SECONDARY_DRAWER_ITEM:
                     iDrawerItems[i] = new SecondaryDrawerItem().withName(menuContent[i].name).withIcon(menuContent[i].icon).withIdentifier(menuContent[i].identifier).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
@@ -104,6 +110,9 @@ public abstract class AbstractMenu {
                             return false;
                         }
                     });
+                    if(menuContent[i].badgeValue>0){
+                        ((SecondaryDrawerItem)(iDrawerItems[i])).withBadge(String.valueOf(menuContent[i].badgeValue)).withBadgeStyle(new BadgeStyle().withTextColor(Color.WHITE).withColorRes(R.color.md_red_700));;
+                    }
                     break;
                 case MenuContent.SECTION_DRAWER_ITEM:
                     iDrawerItems[i] = new SectionDrawerItem().withName(menuContent[i].name).withIdentifier(menuContent[i].identifier).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
@@ -113,7 +122,6 @@ public abstract class AbstractMenu {
                             return false;
                         }
                     });
-                    break;
             }
         }
         return iDrawerItems;
@@ -128,11 +136,14 @@ class MenuContent {
     FontAwesome.Icon icon;
     String type;
     long identifier;
+    int badgeValue;
 
     MenuContent(String name, FontAwesome.Icon icon, String type, long identifier) {
         this.name = name;
         this.icon = icon;
         this.type = type;
         this.identifier = identifier;
+        this.badgeValue=1;
+
     }
 }

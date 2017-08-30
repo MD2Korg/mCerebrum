@@ -88,7 +88,7 @@ public class FragmentLogin extends Fragment {
         final Button button_cancel = (Button) view.findViewById(R.id.button_login_cancel);
         button_cancel.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                ((ActivityMain)getActivity()).updateMenu(AbstractMenu.MENU_HOME);
+                ((ActivityMain)getActivity()).updateMenu(AbstractMenu.MENU_APP_ADD_REMOVE);
             }
         });
 
@@ -148,7 +148,7 @@ public class FragmentLogin extends Fragment {
                 Intent returnIntent = new Intent();
                 returnIntent.putExtra("config_file",getActivity().getExternalFilesDir(null)+"/temp/config.zip");
 //                User.createServer(getActivity(), )
-//                ((ActivityMain)getActivity()).refresh(AbstractMenu.MENU_SETTINGS);
+//                ((ActivityMain)getActivity()).refresh(AbstractMenu.MENU_APP_SETTINGS);
 
 //                setResult(Activity.RESULT_OK,returnIntent);
 //                Data data=new Data();
