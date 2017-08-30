@@ -10,9 +10,9 @@
     folding-cell:cameraHeight="30">
 
     <!-- CONTENT (UNFOLDED) LAYOUT (MUST BE AT LEAST 2x times BIGGER than content layout bellow)-->
-    <include layout="@layout/cell_content_layout" />
+    <include layout="@layout/cell_content_layout_app_install" />
 
     <!-- TITLE (FOLDED) LAYOUT (MUST BE AT LEAST 2x times SMALLER than content layout above) -->
-    <include layout="@layout/cell_title_layout" />
+    <include layout="@layout/cell_title_layout_app_install" />
 
 </com.ramotion.foldingcell.FoldingCell>

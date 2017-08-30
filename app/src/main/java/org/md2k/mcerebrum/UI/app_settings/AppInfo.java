@@ -1,4 +1,4 @@
-package org.md2k.mcerebrum.UI.folding_ui;
+package org.md2k.mcerebrum.UI.app_settings;
 /*
  * Copyright (c) 2016, The University of Memphis, MD2K Center
  * - Syed Monowar Hossain <monowar.hossain@gmail.com>
@@ -26,9 +26,49 @@ package org.md2k.mcerebrum.UI.folding_ui;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import android.content.Context;
+import android.graphics.drawable.Drawable;
 
 import org.md2k.mcerebrum.app.Application;
 
-interface ResponseCallBack {
-    void onResponse(Application application, int operation);
+class AppInfo {
+    private String title;
+    private String summary;
+    private String description;
+    private String versionName;
+    private Drawable icon;
+    private boolean installed;
+
+    AppInfo(Context context, Application application) {
+        this.title=application.getTitle(context);
+        this.summary=application.getSummary(context);
+        this.description=application.getDescription(context);
+        this.versionName=application.getVersionName(context);
+        this.icon=application.getIcon(context);
+        this.installed=application.isInstalled(context);
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getVersionName() {
+        return versionName;
+    }
+
+    public Drawable getIcon() {
+        return icon;
+    }
+
+    public boolean isInstalled() {
+        return installed;
+    }
 }

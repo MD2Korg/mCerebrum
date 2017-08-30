@@ -43,6 +43,7 @@ class MenuConfigured extends AbstractMenu{
     IProfile[] getHeaderContentType(Context context, UserInfo userInfo, StudyInfo studyInfo, final ResponseCallBack responseCallBack){
         IProfile[] iProfiles=new IProfile[3];
         iProfiles[0]=new ProfileDrawerItem().withName(studyInfo.getTitle(context)).withIcon(studyInfo.getIcon(context));
+/*
         iProfiles[1]=new ProfileSettingDrawerItem().withName("About Study").withIcon(FontAwesome.Icon.faw_info).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
             @Override
             public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
@@ -50,7 +51,8 @@ class MenuConfigured extends AbstractMenu{
                 return false;
             }
         });
-        iProfiles[2]= new ProfileSettingDrawerItem().withName("Leave Study").withIcon(FontAwesome.Icon.faw_chain_broken).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+*/
+        iProfiles[1]= new ProfileSettingDrawerItem().withName("Leave Study").withIcon(FontAwesome.Icon.faw_chain_broken).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
             @Override
             public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
                 responseCallBack.onResponse(MENU_LEAVE);

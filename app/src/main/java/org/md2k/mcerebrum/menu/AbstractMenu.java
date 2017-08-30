@@ -65,7 +65,7 @@ public abstract class AbstractMenu {
             case StudyInfo.SERVER:
                 return new MenuServer().getHeaderContentType(context, userInfo, studyInfo, responseCallBack);
             default:
-                return new MenuFreebie().getHeaderContent(context, userInfo, studyInfo, responseCallBack);
+                return new MenuFreebie().getHeaderContentType(context, userInfo, studyInfo, responseCallBack);
         }
     }
 

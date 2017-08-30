@@ -67,6 +67,8 @@ public class Application {
     private static final String DOWNLOAD_FROM_URL="DOWNLOAD_FROM_URL";
     private static final String EXPECTED_VERSION="EXPECTED_VERSION";
     private static final String UPDATE="UPDATE";
+//    private static final String INSTALLED="INSTALLED";
+//    private static final String CURRENT_VERSION="CURRENT_VERSION";
     private static final int REQUEST_CODE=2000;
     private String packageName;
 
@@ -92,6 +94,9 @@ public class Application {
         new MySharedPreference().set(context,getKey(p, UPDATE),cApp.getUpdate());
         new MySharedPreference().set(context,getKey(p, ICON),cApp.getIcon());
         new MySharedPreference().set(context,getKey(p, EXPECTED_VERSION),cApp.getVersion());
+//        boolean isInstalled=AppUtils.isInstallApp(p);
+//        new MySharedPreference().set(context, getKey(p, INSTALLED), isInstalled);
+//        if(isInstalled) new MySharedPreference().set(context, getKey(p, CURRENT_VERSION), AppUtils.getAppVersionName(p));
     }
     public boolean isInstallFromPlayStore(Context context){
         return getDownloadFromPlaystore(context) != null;
@@ -183,24 +188,20 @@ public class Application {
     private void installURL(Activity activity, String filePath , int requestCode){
         AppUtils.installApp(activity,filePath, "org.md2k.mcerebrum.provider",requestCode);
     }
-    public boolean isInstalled(){
-        Log.d("abc","packageName="+packageName);
-        return AppUtils.isInstallApp(packageName);
-    }
     public void uninstall(Activity activity, int requestCode){
         AppUtils.uninstallApp(activity, packageName, requestCode);
     }
     int getVersionCode(){
         return AppUtils.getAppVersionCode(packageName);
     }
-    public String getVersionName(){
-        String version=AppUtils.getAppVersionName(packageName);
-        if(version==null) return "<not installed>";
-        else return version;
+    public String getVersionName(Context context){
+        return AppUtils.getAppVersionName(packageName);
+//        return get(context, CURRENT_VERSION);
     }
     boolean isUpdateAvailable(Context context){
-        return isInstalled() && !getVersionName().equals(getExpectedVersion(context));
+        return isInstalled(context) && !getVersionName(context).equals(getExpectedVersion(context));
     }
+/*
     Drawable getIcon(Context context, String filePath){
         if(isInstalled()) return AppUtils.getAppIcon(packageName);
         else{
@@ -209,6 +210,7 @@ public class Application {
             return new BitmapDrawable(context.getResources(), bitmap);
         }
     }
+*/
     private String get(Context context, String key){
         return new MySharedPreference().getString(context, getKey(packageName, key), null);
     }
@@ -228,9 +230,9 @@ public class Application {
         return get(context, DESCRIPTION);
     }
     public Drawable getIcon(Context context) {
-        if(isInstalled()) return AppUtils.getAppIcon(packageName);
+        if(isInstalled(context)) return AppUtils.getAppIcon(packageName);
         else {
-            String filePath = new MySharedPreference().getString(context, ICON, null);
+            String filePath = get(context, ICON);
             try {
                 if (filePath != null) {
                     String actualPath= StorageReadWrite.get(context, StorageType.SDCARD_INTERNAL).getRootDirectory()+"/mCerebrum/org.md2k.mcerebrum/"+filePath;
@@ -267,6 +269,10 @@ public class Application {
     }
     public String getPackageName(){
         return packageName;
+    }
+    public boolean isInstalled(Context context){
+        return AppUtils.isInstallApp(packageName);
+//        return new MySharedPreference().getBoolean(context, getKey(packageName, INSTALLED), false);
     }
 
 }

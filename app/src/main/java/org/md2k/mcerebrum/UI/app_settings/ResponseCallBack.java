@@ -1,4 +1,4 @@
-package org.md2k.mcerebrum;
+package org.md2k.mcerebrum.UI.app_settings;
 /*
  * Copyright (c) 2016, The University of Memphis, MD2K Center
  * - Syed Monowar Hossain <monowar.hossain@gmail.com>
@@ -26,14 +26,7 @@ package org.md2k.mcerebrum;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import android.content.Context;
 
-import org.md2k.mcerebrum.commons.storage.StorageReadWrite;
-import org.md2k.mcerebrum.commons.storage.StorageType;
-
-public class Constants {
-    public static final String CONFIG_DEFAULT_URL="http://software.md2k.org/resources/mCerebrum/config.zip";
-    public static final String CONFIG_DEFAULT_GITHUB="MD2Korg/mCerebrum-Configuration";
-    public static final String CONFIG_DEFAULT_FILENAME="default2.zip";
-    public static final String CONFIG_MPERF_FILENAME="mperf.zip";
+interface ResponseCallBack {
+    void onResponse(int position, int operation);
 }

@@ -28,20 +28,18 @@ package org.md2k.mcerebrum.data;
 
 import android.content.Context;
 
+import org.md2k.mcerebrum.MyApplication;
+
 public class UserInfo {
     private static final String TITLE=UserInfo.class.getSimpleName()+"_TITLE";
     private static final String LOGGED_IN=UserInfo.class.getSimpleName()+"_LOGGED_IN";
-    public static void save(Context context, String title, boolean isLoggedIn){
-        setTitle(context, title);
-        setLoggedIn(context, isLoggedIn);
-    }
 
-    private static void setTitle(Context context, String value) {
+    public static void setTitle( String value) {
         if(value==null) value="<not defined>";
-        new MySharedPreference().set(context, TITLE, value);
+        new MySharedPreference().set(MyApplication.getContext(), TITLE, value);
     }
-    private static void setLoggedIn(Context context, boolean value) {
-        new MySharedPreference().set(context, LOGGED_IN, value);
+    public static void setLoggedIn(boolean value) {
+        new MySharedPreference().set(MyApplication.getContext(), LOGGED_IN, value);
     }
     public String getTitle(Context context){
         return new MySharedPreference().getString(context, TITLE, "<not_defined>");

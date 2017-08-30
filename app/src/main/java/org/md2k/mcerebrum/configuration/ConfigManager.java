@@ -94,10 +94,14 @@ public class ConfigManager {
                         studyInfo.save(context, config);
                         ApplicationManager.save(context, config.getApplications());
                         save(context, downloadUrl, configName, downloadFrom, updatedAt);
-                        if(studyInfo.getType(context)!=null && studyInfo.getType(context).equals(StudyInfo.FREEBIE))
-                            UserInfo.save(context, "Freebie", false);
-                        else if(studyInfo.getType(context)!=null && studyInfo.getType(context).equals(StudyInfo.CONFIGURED))
-                            UserInfo.save(context, studyInfo.getTitle(context), false);
+                        if(studyInfo.getType(context)!=null && studyInfo.getType(context).equals(StudyInfo.FREEBIE)) {
+                            UserInfo.setTitle("Freebie");
+                            UserInfo.setLoggedIn(false);
+                        }
+                        else if(studyInfo.getType(context)!=null && studyInfo.getType(context).equals(StudyInfo.CONFIGURED)) {
+                            UserInfo.setTitle(studyInfo.getTitle(context));
+                            UserInfo.setLoggedIn(false);
+                        }
                         return Observable.just(downloadInfo);
                     } catch (Exception e) {
                         return Observable.error(e);

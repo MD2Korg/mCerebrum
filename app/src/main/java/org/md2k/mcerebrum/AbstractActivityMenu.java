@@ -2,7 +2,6 @@ package org.md2k.mcerebrum;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -12,7 +11,8 @@ import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 
-import org.md2k.mcerebrum.UI.folding_ui.FragmentFoldingUI;
+import org.md2k.mcerebrum.UI.app_install_uninstall.FragmentFoldingUIAppInstall;
+import org.md2k.mcerebrum.data.UserInfo;
 import org.md2k.mcerebrum.login.ActivityLogin;
 import org.md2k.mcerebrum.login.FragmentLogin;
 import org.md2k.mcerebrum.menu.AbstractMenu;
@@ -101,7 +101,7 @@ public abstract class AbstractActivityMenu extends AbstractActivityBasics {
                 case AbstractMenu.MENU_HELP:
                     break;
                 case AbstractMenu.MENU_HOME:
-                    getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new FragmentFoldingUI()).commit();
+                    getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new FragmentFoldingUIAppInstall()).commitAllowingStateLoss();
                     break;
                 case AbstractMenu.MENU_JOIN:
                     Intent intent=new Intent(AbstractActivityMenu.this, ActivityLogin.class);
@@ -110,14 +110,15 @@ public abstract class AbstractActivityMenu extends AbstractActivityBasics {
                 case AbstractMenu.MENU_LEAVE:
                     break;
                 case AbstractMenu.MENU_LOGIN:
-                    getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new FragmentLogin()).commit();
+                    getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new FragmentLogin()).commitAllowingStateLoss();
 //                Intent i = new Intent(this, ActivityLogin.class);
 //                startActivityForResult(i, ID_JOIN_STUDY);
                     break;
                 case AbstractMenu.MENU_LOGOUT:
 //                ((UserServer) user).setLoggedIn(this,false);
+                    UserInfo.setLoggedIn(false);
                     Toasty.success(AbstractActivityMenu.this, "Success: Logged out", Toast.LENGTH_SHORT, true).show();
-                    // refresh(AbstractMenu.MENU_HOME);
+                    updateMenu(AbstractMenu.MENU_HOME);
                     break;
                 case AbstractMenu.MENU_SETTINGS:
                 default:

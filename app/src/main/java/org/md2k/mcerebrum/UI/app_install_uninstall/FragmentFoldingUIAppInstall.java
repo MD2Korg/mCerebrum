@@ -1,7 +1,5 @@
-package org.md2k.mcerebrum.UI.folding_ui;
+package org.md2k.mcerebrum.UI.app_install_uninstall;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,13 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.ramotion.foldingcell.FoldingCell;
 
-import org.md2k.mcerebrum.ActivityConfigureStudy;
-import org.md2k.mcerebrum.Constants;
 import org.md2k.mcerebrum.R;
 import org.md2k.mcerebrum.app.Application;
 import org.md2k.mcerebrum.app.ApplicationManager;
@@ -29,7 +24,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class FragmentFoldingUI extends Fragment {
+public class FragmentFoldingUIAppInstall extends Fragment {
     public static final int INSTALL=0;
     public static final int UNINSTALL=1;
     public static final int UPDATE=2;
@@ -39,7 +34,7 @@ public class FragmentFoldingUI extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         // Defines the xml file for the fragment
-        return inflater.inflate(R.layout.fragment_folding_ui, parent, false);
+        return inflater.inflate(R.layout.fragment_folding_ui_app_install, parent, false);
     }
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
@@ -47,8 +42,10 @@ public class FragmentFoldingUI extends Fragment {
         ApplicationManager applicationManager=new ApplicationManager();
         // prepare elements to display
         final ArrayList<Application> items = applicationManager.getAppList(getContext());
-
-
+        ArrayList<AppInfo> appInfos=new ArrayList<>();
+        for(int i=0;i<items.size();i++){
+            appInfos.add(new AppInfo(getContext(), items.get(i)));
+        }
         // add custom btn handler to first list item
 /*
         items.get(0).setRequestBtnClickListener(new View.OnClickListener() {
@@ -58,19 +55,19 @@ public class FragmentFoldingUI extends Fragment {
             }
         });
 */
-        final FoldingCellListAdapter adapter = new FoldingCellListAdapter(getActivity(), items, new ResponseCallBack() {
+        final FoldingCellListAdapterAppInstall adapter = new FoldingCellListAdapterAppInstall(getActivity(), appInfos, new ResponseCallBack() {
             @Override
-            public void onResponse(Application application, int operation) {
+            public void onResponse(int position, int operation) {
                 if(operation==UNINSTALL){
-                    application.uninstall(getActivity(), 1000);
+                    items.get(position).uninstall(getActivity(), 1000);
                 }else if(operation==INSTALL){
-                    if(application.isInstallFromPlayStore(getActivity()))
-                        application.installPlayStore(getActivity());
+                    if(items.get(position).isInstallFromPlayStore(getActivity()))
+                        items.get(position).installPlayStore(getActivity());
                     else {
-                        downloadAndInstall(application);
+                        downloadAndInstall(items.get(position));
                     }
                 }
-            }
+           }
         });
         theListView.setAdapter(adapter);
 
@@ -87,7 +84,7 @@ public class FragmentFoldingUI extends Fragment {
     }
     void downloadAndInstall(Application application){
         materialDialog = new MaterialDialog.Builder(getActivity())
-                .content("Downloading configuration file...")
+                .content("Downloading "+application.getTitle(getActivity())+" app...")
                 .progress(false, 100, true)
                 .show();
         subscription = application.installURL(getActivity())

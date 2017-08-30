@@ -1,4 +1,4 @@
-package org.md2k.mcerebrum;
+package org.md2k.mcerebrum.UI.app_install_uninstall;
 /*
  * Copyright (c) 2016, The University of Memphis, MD2K Center
  * - Syed Monowar Hossain <monowar.hossain@gmail.com>
@@ -27,13 +27,48 @@ package org.md2k.mcerebrum;
  */
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 
-import org.md2k.mcerebrum.commons.storage.StorageReadWrite;
-import org.md2k.mcerebrum.commons.storage.StorageType;
+import org.md2k.mcerebrum.app.Application;
 
-public class Constants {
-    public static final String CONFIG_DEFAULT_URL="http://software.md2k.org/resources/mCerebrum/config.zip";
-    public static final String CONFIG_DEFAULT_GITHUB="MD2Korg/mCerebrum-Configuration";
-    public static final String CONFIG_DEFAULT_FILENAME="default2.zip";
-    public static final String CONFIG_MPERF_FILENAME="mperf.zip";
+class AppInfo {
+    private String title;
+    private String summary;
+    private String description;
+    private String versionName;
+    private Drawable icon;
+    private boolean installed;
+
+    AppInfo(Context context, Application application) {
+        this.title=application.getTitle(context);
+        this.summary=application.getSummary(context);
+        this.description=application.getDescription(context);
+        this.versionName=application.getVersionName(context);
+        this.icon=application.getIcon(context);
+        this.installed=application.isInstalled(context);
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getSummary() {
+        return summary;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public String getVersionName() {
+        return versionName;
+    }
+
+    public Drawable getIcon() {
+        return icon;
+    }
+
+    public boolean isInstalled() {
+        return installed;
+    }
 }

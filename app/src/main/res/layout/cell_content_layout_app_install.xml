@@ -1,40 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:visibility="gone">
-
-    <!-- content header line -->
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/colorPrimary"
-        android:paddingBottom="7dp"
-        android:paddingLeft="12dp"
-        android:paddingRight="12dp"
-        android:paddingTop="7dp">
-
-
-
-
-    </RelativeLayout>
-
-    <!-- content header image -->
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <ImageView
-            android:id="@+id/head_image"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:scaleType="centerCrop"
-
-            />
-
-    </RelativeLayout>
 
     <!-- content body layout -->
     <LinearLayout
@@ -51,7 +21,6 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent">
-
             <TextView
                 android:id="@+id/content_avatar_title"
                 style="@style/ContentMainBadgeTitle"
@@ -59,7 +28,6 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentStart="true"
                 android:layout_marginBottom="5dp" />
-
             <ImageView
                 android:id="@+id/imageview_icon_long"
                 android:layout_width="50dp"
@@ -88,14 +56,13 @@
                 android:id="@+id/textview_content_description"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/textview_content_title"
                 android:layout_marginBottom="2dp"
                 android:layout_marginStart="10dp"
                 android:layout_toEndOf="@id/imageview_icon_long"
-                android:layout_below="@id/textview_content_title"
                 android:text="Collects phone sensor data"
                 android:textColor="@color/titleBadgeText"
-                android:textSize="12sp"
-                 />
+                android:textSize="12sp" />
 
         </RelativeLayout>
 
@@ -115,7 +82,6 @@
             android:layout_height="wrap_content"
             android:baselineAligned="false"
             android:orientation="horizontal">
-
 
 
         </LinearLayout>
@@ -155,8 +121,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true"
-                    android:textSize="12sp"
-                    />
+                    android:textSize="12sp" />
 
                 <TextView
                     android:id="@+id/textview_version"
@@ -215,47 +180,55 @@
             </RelativeLayout>
 
 
-            </LinearLayout>
+        </LinearLayout>
+
         <ImageView
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:layout_marginBottom="6dp"
             android:layout_marginTop="9dp"
             android:src="@color/contentDividerLine" />
-<LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="horizontal"
-    android:paddingLeft="40dp"
-    >
 
-        <com.beardedhen.androidbootstrap.BootstrapButton
-            style="@style/wrapping_button"
-            android:id="@+id/button_install_long"
-            android:text="Install"
-            app:bootstrapBrand="warning"
-            app:roundedCorners="true"
-            android:padding= "50dp"
-            app:showOutline="true"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:paddingEnd="10dp"
+            android:paddingStart="10dp"
+            android:weightSum="1">
 
-            />
-        <com.beardedhen.androidbootstrap.BootstrapButton
-            style="@style/wrapping_button"
-            android:id="@+id/button_update_long"
-            android:text="Update"
-            app:bootstrapBrand="warning"
-            app:roundedCorners="true"
-            app:showOutline="true"
-            android:layout_gravity="center"
-            />
-        <com.beardedhen.androidbootstrap.BootstrapButton
-            style="@style/wrapping_button"
-            android:id="@+id/button_uninstall_long"
-            android:text="Uninstall"
-            app:bootstrapBrand="warning"
-            app:showOutline="true"
-            app:roundedCorners="true" />
-</LinearLayout>
+            <com.beardedhen.androidbootstrap.BootstrapButton
+                android:id="@+id/button_install_long"
+                style="@style/wrapping_button"
+                android:layout_weight=".3"
+                app:bootstrapBrand="warning"
+                app:bootstrapText="{fa_download} Install"
+                app:roundedCorners="true"
+                app:showOutline="true"
+
+                />
+
+            <com.beardedhen.androidbootstrap.BootstrapButton
+                android:id="@+id/button_update_long"
+                style="@style/wrapping_button"
+                android:layout_gravity="center"
+                android:layout_weight=".3"
+                app:bootstrapBrand="warning"
+                app:bootstrapText="{fa_refresh} Update"
+                app:fontAwesomeIcon="fa_refresh"
+                app:roundedCorners="true"
+                app:showOutline="true" />
+
+            <com.beardedhen.androidbootstrap.BootstrapButton
+                android:id="@+id/button_uninstall_long"
+                style="@style/wrapping_button"
+                android:layout_weight=".3"
+                app:bootstrapBrand="warning"
+                app:bootstrapText="{fa_trash} Uninstall"
+                app:roundedCorners="true"
+                app:showOutline="true" />
+        </LinearLayout>
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -263,7 +236,7 @@
             android:textAlignment="center"
             android:textColor="@color/bgContent"
             android:textSize="12sp" />
-       
+
 
     </LinearLayout>
 

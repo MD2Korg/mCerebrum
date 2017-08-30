@@ -41,8 +41,9 @@ import org.md2k.mcerebrum.data.UserInfo;
 
 class MenuServer extends AbstractMenu{
     IProfile[] getHeaderContentType(Context context, UserInfo user, StudyInfo studyInfo, final ResponseCallBack responseCallBack){
-        IProfile[] iProfiles=new IProfile[4];
+        IProfile[] iProfiles=new IProfile[3];
         iProfiles[0]=new ProfileDrawerItem().withName(user.getTitle(context)).withIcon(studyInfo.getIcon(context));
+/*
         iProfiles[1]=new ProfileSettingDrawerItem().withName("About Study").withIcon(FontAwesome.Icon.faw_info).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
             @Override
             public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
@@ -50,8 +51,9 @@ class MenuServer extends AbstractMenu{
                 return false;
             }
         });
-        if(user.isLoggedIn(context)){
-            iProfiles[2] = new ProfileSettingDrawerItem().withName("Login").withIcon(FontAwesome.Icon.faw_sign_in).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+*/
+        if(!user.isLoggedIn(context)){
+            iProfiles[1] = new ProfileSettingDrawerItem().withName("Login").withIcon(FontAwesome.Icon.faw_sign_in).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                 @Override
                 public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
                     responseCallBack.onResponse(MENU_LOGIN);
@@ -59,7 +61,7 @@ class MenuServer extends AbstractMenu{
                 }
             });
         }else{
-            iProfiles[2] = new ProfileSettingDrawerItem().withName("Logout").withIcon(FontAwesome.Icon.faw_sign_in).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+            iProfiles[1] = new ProfileSettingDrawerItem().withName("Logout").withIcon(FontAwesome.Icon.faw_sign_in).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                 @Override
                 public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
                     responseCallBack.onResponse(MENU_LOGOUT);
@@ -67,7 +69,7 @@ class MenuServer extends AbstractMenu{
                 }
             });
         }
-        iProfiles[3]= new ProfileSettingDrawerItem().withName("Leave Study").withIcon(FontAwesome.Icon.faw_chain_broken).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+        iProfiles[2]= new ProfileSettingDrawerItem().withName("Leave Study").withIcon(FontAwesome.Icon.faw_chain_broken).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
             @Override
             public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
                 responseCallBack.onResponse(MENU_LEAVE);

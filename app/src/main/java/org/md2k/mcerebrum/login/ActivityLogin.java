@@ -3,7 +3,6 @@ package org.md2k.mcerebrum.login;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.ActionBar;
@@ -11,15 +10,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
+import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
+import org.md2k.mcerebrum.Constants;
 import org.md2k.mcerebrum.R;
-import org.md2k.mcerebrum.data.Data;
-import org.md2k.mcerebrum.internet.download.DownloadFile;
+import org.md2k.mcerebrum.configuration.ConfigManager;
+import org.md2k.mcerebrum.data.UserInfo;
 import org.md2k.mcerebrum.internet.download.DownloadInfo;
 
+import es.dmoral.toasty.Toasty;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -84,6 +86,7 @@ public class ActivityLogin extends AppCompatActivity {
         }
     };
     Subscription subscription;
+    MaterialDialog materialDialog;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -103,47 +106,63 @@ public class ActivityLogin extends AppCompatActivity {
                 finish();
             }
         });
-
-
-        MaterialEditText mEdit = null;
-        final String[] uname = {null};
         final Button button_login = (Button) findViewById(R.id.button_login);
-        final MaterialEditText finalMEdit = mEdit;
-        final TextView t=(TextView) findViewById(R.id.textview_logininfo);
         button_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 MaterialEditText materialEditText = (MaterialEditText) findViewById(R.id.edittext_username);
                 MaterialEditText materialEditText1 = (MaterialEditText) findViewById(R.id.edittext_password);
-             //   Toast.makeText(ActivityLogin.this, "username=" + materialEditText.getText(), Toast.LENGTH_LONG).show();
-            //    Toast.makeText(ActivityLogin.this, "password=" + materialEditText1.getText(), Toast.LENGTH_LONG).show();
-
-
-
-
-                    if(materialEditText.getText().toString().equals("")){
-                    t.setText("Error: User Name is required");
-                        t.setTextColor(Color.RED);
-
-                }
-                else if(materialEditText1.getText().toString().equals("")){
-                    t.setText("Error: Password is required");
-                        t.setTextColor(Color.RED);
-
-                }
-
-                    else if(materialEditText.getText().toString().equals("abc")&& materialEditText1.getText().toString().equals("123")){
-                        downloadConfig();
-                    }
-                    else if(!materialEditText.getText().toString().equals("abc")|| !materialEditText1.getText().toString().equals("123")){
-                        t.setText("Error: Invalid username/password");
-                        t.setTextColor(Color.RED);
+                MaterialEditText materialEditText2 = (MaterialEditText) findViewById(R.id.edittext_login_server);
+                    if(materialEditText.getText().toString().equals("") ||
+                            materialEditText1.getText().toString().equals("") ||
+                            materialEditText2.getText().toString().equals("") ||
+                            !materialEditText.getText().toString().equals("abc") ||
+                            !materialEditText1.getText().toString().equals("123")){
+                        Toasty.error(ActivityLogin.this, "Error: Invalid Username and/or password", Toast.LENGTH_SHORT, true).show();
+                    }else{
+                        downloadConfig(Constants.CONFIG_MPERF_FILENAME, materialEditText.getText().toString());
                     }
             };
 
 
         });
     }
+    void downloadConfig(String downloadName, final String userName) {
+
+        ConfigManager configManager = new ConfigManager();
+        materialDialog = new MaterialDialog.Builder(this)
+                .content("Downloading configuration file...")
+                .progress(false, 100, true)
+                .show();
+        subscription = configManager.downloadAndExtract(this, downloadName)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<DownloadInfo>() {
+                    @Override
+                    public void onCompleted() {
+                        materialDialog.dismiss();
+                        UserInfo.setLoggedIn(true);
+                        UserInfo.setTitle(userName);
+//                        Intent returnIntent = new Intent();
+//                        returnIntent.putExtra("type", TYPE_GENERAL);
+//                        setResult(Activity.RESULT_OK, returnIntent);
+                        finish();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Toasty.error(ActivityLogin.this, "Error: Download failed (e=" + e.getMessage() + ")").show();
+                        materialDialog.dismiss();
+                    }
+
+                    @Override
+                    public void onNext(DownloadInfo downloadInfo) {
+                        materialDialog.setProgress((int) downloadInfo.getProgress());
+                    }
+                });
+    }
+
+/*
     private void downloadConfig(){
         final TextView t=(TextView) findViewById(R.id.textview_logininfo);
         t.setText("Success: Downloading configuration file...");
@@ -183,6 +202,7 @@ public class ActivityLogin extends AppCompatActivity {
             }
         });
     }
+*/
 
     // A method to find height of the status bar
     public int getStatusBarHeight() {
