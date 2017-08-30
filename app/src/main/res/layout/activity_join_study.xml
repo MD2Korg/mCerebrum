@@ -46,7 +46,7 @@
     <!--login section -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="20dp"
         android:layout_weight="0.5"
         android:orientation="vertical"
         android:background="@color/backGroundDark"
@@ -54,10 +54,19 @@
         android:layout_marginRight="5dp"
         android:layout_marginBottom="5dp"
         android:weightSum="1">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.4"
+            android:text="Option 1"
+            android:layout_marginTop="5dp"
+            android:textColor="#ffff"
+            android:textSize="15sp"
+            android:textAlignment="center"
+            android:layout_gravity="center"/>
         <com.rengwuxian.materialedittext.MaterialEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight=".1"
             android:hint="Username"
             android:id="@+id/edittext_username"
             app:met_baseColor="@android:color/white"
@@ -67,13 +76,12 @@
             app:met_singleLineEllipsis="true"
             app:met_iconLeft="@drawable/ic_person_white_48dp"
             app:met_iconPadding="0dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"/>
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"/>
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/edittext_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight=".1"
             android:hint="Password"
             app:met_baseColor="@android:color/white"
             app:met_floatingLabel="normal"
@@ -82,15 +90,13 @@
             app:met_iconLeft="@drawable/ic_lock_white_48dp"
             app:met_iconPadding="0dp"
             app:met_singleLineEllipsis="true"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"/>
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"/>
         <com.rengwuxian.materialedittext.MaterialEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight=".1"
             android:hint="Server"
             android:id="@+id/edittext_login_server"
-
             app:met_baseColor="@android:color/white"
             app:met_floatingLabel="normal"
             app:met_primaryColor="@color/colorPrimaryDark"
@@ -98,14 +104,14 @@
             app:met_iconLeft="@drawable/servericon"
             app:met_iconPadding="0dp"
             app:met_singleLineEllipsis="true"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"/>
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:orientation="horizontal"
-            android:layout_weight="0.2"
+            android:layout_weight="0.6"
             android:weightSum="1"
             android:paddingBottom="5dp"
             android:background="@color/backGroundDark"
@@ -113,29 +119,39 @@
 
 
 
-            <Button
-                android:layout_width="0dp"
-                android:layout_weight="0.5"
-                android:paddingRight="15dp"
-                android:layout_height="wrap_content"
-                android:text="Login"
+            <com.beardedhen.androidbootstrap.BootstrapButton
                 android:id="@+id/button_login"
-                android:layout_gravity="left"
-                android:background="@drawable/button"
-                android:textColor="@color/colorPrimaryText"
-                android:layout_marginLeft="20dp" />
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_weight="0.5"
+                android:layout_marginLeft="60dp"
 
-            <Button
+                style="@style/wrapping_button"
+                android:enabled="true"
+                app:bootstrapSize="md"
+                app:bootstrapText="{fa_sign_in} Login"
+                app:bootstrapBrand="warning"
+                app:roundedCorners="true"
+                app:showOutline="true" />
+
+            <com.beardedhen.androidbootstrap.BootstrapButton
+                android:id="@+id/button_login_cancel"
+                android:layout_height="wrap_content"
                 android:layout_width="0dp"
                 android:layout_weight="0.5"
-                android:paddingLeft="15dp"
-                android:layout_height="wrap_content"
-                android:text="Cancel"
-                android:id="@+id/button_login_cancel"
-                android:layout_gravity="right"
-                android:background="@drawable/button"
-                android:textColor="@color/colorPrimaryText"
-                android:layout_marginRight="20dp"/>
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_marginRight="60dp"
+
+                style="@style/wrapping_button"
+                android:enabled="true"
+                app:bootstrapSize="md"
+                app:bootstrapText="{fa_ban} Cancel"
+                app:bootstrapBrand="warning"
+                app:roundedCorners="true"
+                app:showOutline="true" />
         </LinearLayout>
 
 
@@ -154,6 +170,16 @@
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_marginBottom="5dp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.45"
+            android:text="Option 2"
+            android:layout_marginTop="5dp"
+            android:textColor="#ffff"
+            android:textSize="15sp"
+            android:textAlignment="center"
+            android:layout_gravity="center"/>
         <com.rengwuxian.materialedittext.MaterialEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -167,26 +193,32 @@
             app:met_singleLineEllipsis="true"
             app:met_iconLeft="@drawable/grey_download"
             app:met_iconPadding="0dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"/>
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"/>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.2"
+            android:orientation="horizontal"
+            android:layout_height="0dp"
+            android:layout_weight="0.7"
             android:weightSum="1"
             android:background="@color/backGroundDark"
             android:layout_margin="10dp">
 
-        <Button
-            android:layout_width="match_parent"
-            android:layout_gravity="center_horizontal"
-            android:layout_height="wrap_content"
-            android:text="Download"
-            android:id="@+id/button_download_config"
-            android:background="@drawable/button"
-            android:textColor="@color/colorPrimaryText"
-            android:layout_marginRight="20dp"
-            android:layout_marginLeft="20dp"/>
+            <com.beardedhen.androidbootstrap.BootstrapButton
+                android:id="@+id/button_install_short"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_marginLeft="60dp"
+                android:layout_marginRight="60dp"
+                style="@style/wrapping_button"
+                android:enabled="true"
+                app:bootstrapSize="md"
+                app:bootstrapText="{fa_download} Download"
+                app:bootstrapBrand="warning"
+                app:roundedCorners="true"
+                app:showOutline="true" />
 
         </LinearLayout>
     </LinearLayout>

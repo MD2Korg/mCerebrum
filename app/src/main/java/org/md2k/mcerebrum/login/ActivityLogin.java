@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import org.md2k.mcerebrum.Constants;
@@ -97,7 +98,7 @@ public class ActivityLogin extends AppCompatActivity {
         hide();
 
 
-        final Button button_cancel = (Button) findViewById(R.id.button_login_cancel);
+        final BootstrapButton button_cancel = (BootstrapButton) findViewById(R.id.button_login_cancel);
         button_cancel.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 // Code here executes on main thread after user presses button
@@ -106,7 +107,7 @@ public class ActivityLogin extends AppCompatActivity {
                 finish();
             }
         });
-        final Button button_login = (Button) findViewById(R.id.button_login);
+        final BootstrapButton button_login = (BootstrapButton) findViewById(R.id.button_login);
         button_login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
