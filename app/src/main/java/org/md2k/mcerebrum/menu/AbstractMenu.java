@@ -138,12 +138,11 @@ class MenuContent {
     long identifier;
     int badgeValue;
 
-    MenuContent(String name, FontAwesome.Icon icon, String type, long identifier) {
+    MenuContent(String name, FontAwesome.Icon icon, String type, long identifier, int badgeValue) {
         this.name = name;
         this.icon = icon;
         this.type = type;
         this.identifier = identifier;
-        this.badgeValue=1;
-
+        this.badgeValue=badgeValue;
     }
 }

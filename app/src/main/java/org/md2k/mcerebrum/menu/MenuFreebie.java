@@ -58,9 +58,9 @@ class MenuFreebie extends AbstractMenu {
         return getMenuContent(menuContent, responseCallBack);
     }
     private  MenuContent[] menuContent = new MenuContent[]{
-            new MenuContent("Add/Remove Apps", FontAwesome.Icon.faw_home, MenuContent.PRIMARY_DRAWER_ITEM, MENU_APP_ADD_REMOVE),
-            new MenuContent("App Settings", FontAwesome.Icon.faw_cog, MenuContent.PRIMARY_DRAWER_ITEM, MENU_APP_SETTINGS),
-            new MenuContent("Join Study", FontAwesome.Icon.faw_link, MenuContent.PRIMARY_DRAWER_ITEM, MENU_JOIN)
+            new MenuContent("Add/Remove Apps", FontAwesome.Icon.faw_home, MenuContent.PRIMARY_DRAWER_ITEM, MENU_APP_ADD_REMOVE,0),
+            new MenuContent("App Settings", FontAwesome.Icon.faw_cog, MenuContent.PRIMARY_DRAWER_ITEM, MENU_APP_SETTINGS,0),
+            new MenuContent("Join Study", FontAwesome.Icon.faw_link, MenuContent.PRIMARY_DRAWER_ITEM, MENU_JOIN,0)
 //            new MenuContent("Report",FontAwesome.Icon.faw_bar_chart,MenuContent.PRIMARY_DRAWER_ITEM, OP_REPORT),
 //            new MenuContent("Plot",FontAwesome.Icon.faw_line_chart,MenuContent.PRIMARY_DRAWER_ITEM, OP_PLOT),
 //            new MenuContent("Export Data",FontAwesome.Icon.faw_upload,MenuContent.PRIMARY_DRAWER_ITEM, OP_EXPORT_DATA),
