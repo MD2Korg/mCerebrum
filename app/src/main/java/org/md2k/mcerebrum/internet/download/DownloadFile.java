@@ -36,6 +36,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
@@ -53,12 +54,12 @@ public class DownloadFile {
         try {
             String[] parts = getParts(source);
             RetrofitInterface downloadService = createService(RetrofitInterface.class, parts[0]);
-            observable = downloadService.downloadFileByUrlRx(parts[1]).subscribeOn(Schedulers.newThread())
+            observable = downloadService.downloadFileByUrlRx(parts[1])//.subscribeOn(Schedulers.newThread())
                     .flatMap(processResponse(destinationPath, destinationFile));
         } catch (MalformedURLException e) {
             return Observable.error(e);
         }
-        return observable;
+        return observable.throttleLast(200, TimeUnit.MILLISECONDS).onBackpressureLatest();
 
     }
     private Func1<Response<ResponseBody>, Observable<DownloadInfo>> processResponse(final String destinationPath, final String destinationFile) {

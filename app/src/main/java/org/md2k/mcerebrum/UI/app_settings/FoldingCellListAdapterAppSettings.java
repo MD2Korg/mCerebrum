@@ -14,6 +14,7 @@ import com.beardedhen.androidbootstrap.api.defaults.DefaultBootstrapBrand;
 import com.ramotion.foldingcell.FoldingCell;
 
 import org.md2k.mcerebrum.R;
+import org.md2k.mcerebrum.app.Application;
 
 import java.util.HashSet;
 import java.util.List;
@@ -22,7 +23,7 @@ import java.util.List;
  * Simple example of ListAdapter for using with Folding Cell
  * Adapter holds indexes of unfolded elements for correct work with default reusable views behavior
  */
-public class FoldingCellListAdapterAppSettings extends ArrayAdapter<AppInfo> {
+public class FoldingCellListAdapterAppSettings extends ArrayAdapter<Application> {
 
     private HashSet<Integer> unfoldedIndexes = new HashSet<>();
     private View.OnClickListener defaultRequestBtnClickListener;
@@ -30,8 +31,8 @@ public class FoldingCellListAdapterAppSettings extends ArrayAdapter<AppInfo> {
     Activity activity;
 
 
-    public FoldingCellListAdapterAppSettings(Activity activity, List<AppInfo> objects, ResponseCallBack responseCallBack) {
-        super(activity, 0, objects);
+    public FoldingCellListAdapterAppSettings(Activity activity, List<Application> applications, ResponseCallBack responseCallBack) {
+        super(activity, 0, applications);
         this.activity = activity;
         this.responseCallBack = responseCallBack;
     }
@@ -39,7 +40,7 @@ public class FoldingCellListAdapterAppSettings extends ArrayAdapter<AppInfo> {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         // get item for selected view
-        final AppInfo app = getItem(position);
+        final Application application = getItem(position);
         // if cell is exists - reuse it, if not - create the new one from resource
         FoldingCell cell = (FoldingCell) convertView;
         ViewHolder viewHolder;
@@ -78,16 +79,16 @@ public class FoldingCellListAdapterAppSettings extends ArrayAdapter<AppInfo> {
             viewHolder = (ViewHolder) cell.getTag();
         }
         // bind data from selected element to view through view holder
-        viewHolder.title.setText(app.getTitle());
-        viewHolder.summary.setText(app.getSummary());
-        viewHolder.content_title.setText(app.getTitle());
-        viewHolder.content_summary.setText(app.getSummary());
-        viewHolder.description.setText(app.getDescription());
-        String versionName = app.getVersionName();
+        viewHolder.title.setText(application.getTitle());
+        viewHolder.summary.setText(application.getSummary());
+        viewHolder.content_title.setText(application.getTitle());
+        viewHolder.content_summary.setText(application.getSummary());
+        viewHolder.description.setText(application.getDescription());
+        String versionName = application.getCurrentVersionName();
         if (versionName == null) versionName = "N/A";
         viewHolder.version.setText(versionName);
-        viewHolder.icon_short.setImageDrawable(app.getIcon());
-        viewHolder.icon_long.setImageDrawable(app.getIcon());
+        viewHolder.icon_short.setImageDrawable(application.getIcon(getContext()));
+        viewHolder.icon_long.setImageDrawable(application.getIcon(getContext()));
 
         viewHolder.buttonSettingsLong.setEnabled(true);
         viewHolder.buttonSettingsLong.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
@@ -110,20 +111,20 @@ public class FoldingCellListAdapterAppSettings extends ArrayAdapter<AppInfo> {
         View.OnClickListener onClickListenerRun = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                responseCallBack.onResponse(position, FragmentFoldingUIAppSettings.UNINSTALL);
+                responseCallBack.onResponse(position, FragmentFoldingUIAppSettings.RUN);
             }
         };
         View.OnClickListener onClickListenerSettings = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                responseCallBack.onResponse(position, FragmentFoldingUIAppSettings.INSTALL);
+                responseCallBack.onResponse(position, FragmentFoldingUIAppSettings.CONFIGURE);
             }
         };
         View.OnClickListener onClickListenerOpen = new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-//                responseCallBack.onResponse(position, FragmentFoldingUIAppSettings.UPDATE);
+                responseCallBack.onResponse(position, FragmentFoldingUIAppSettings.OPEN);
             }
         };
 

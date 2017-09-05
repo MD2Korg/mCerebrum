@@ -26,25 +26,30 @@ package org.md2k.mcerebrum.data;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import android.content.Context;
-
-import org.md2k.mcerebrum.MyApplication;
-
 public class UserInfo {
     private static final String TITLE=UserInfo.class.getSimpleName()+"_TITLE";
     private static final String LOGGED_IN=UserInfo.class.getSimpleName()+"_LOGGED_IN";
 
-    public static void setTitle( String value) {
+    public void set(){
+
+    }
+    public void clear(){
+        MySharedPreference mySharedPreference=new MySharedPreference();
+        mySharedPreference.clear(TITLE);
+        mySharedPreference.clear(LOGGED_IN);
+    }
+
+    public void setTitle( String value) {
         if(value==null) value="<not defined>";
-        new MySharedPreference().set(MyApplication.getContext(), TITLE, value);
+        new MySharedPreference().set(TITLE, value);
     }
-    public static void setLoggedIn(boolean value) {
-        new MySharedPreference().set(MyApplication.getContext(), LOGGED_IN, value);
+    public void setLoggedIn(boolean value) {
+        new MySharedPreference().set(LOGGED_IN, value);
     }
-    public String getTitle(Context context){
-        return new MySharedPreference().getString(context, TITLE, "<not_defined>");
+    public String getTitle(){
+        return new MySharedPreference().getString(TITLE, "<not_defined>");
     }
-    public boolean isLoggedIn(Context context){
-        return new MySharedPreference().getBoolean(context,LOGGED_IN, false);
+    public boolean isLoggedIn(){
+        return new MySharedPreference().getBoolean(LOGGED_IN, false);
     }
 }

@@ -44,23 +44,22 @@ import org.md2k.mcerebrum.data.StudyInfo;
 import org.md2k.mcerebrum.data.UserInfo;
 
 public abstract class AbstractMenu {
-    public static final int MENU_JOIN = 0;
-    public static final int MENU_ABOUT_STUDY = 1;
-    public static final int MENU_LOGIN = 2;
-    public static final int MENU_LOGOUT = 3;
-    public static final int MENU_LEAVE = 4;
-    public static final int MENU_APP_ADD_REMOVE = 5;
-    public static final int MENU_APP_SETTINGS = 6;
+    public static final int MENU_HOME=0;
+    public static final int MENU_JOIN = 1;
+    public static final int MENU_LOGIN = 3;
+    public static final int MENU_LOGOUT = 4;
+    public static final int MENU_LEAVE = 5;
+    public static final int MENU_APP_ADD_REMOVE = 6;
+    public static final int MENU_APP_SETTINGS = 7;
     //    public static final int OP_REPORT = 7;
 //    public static final int OP_PLOT = 8;
 //    public static final int OP_EXPORT_DATA = 9;
-    public static final int MENU_HELP = 10;
 
 
 //    abstract IProfile[] getHeaderContentType(final Context context, UserInfo userInfo, StudyInfo studyInfo, final ResponseCallBack responseCallBack);
 
     public static IProfile[] getHeaderContent(final Context context, UserInfo userInfo, StudyInfo studyInfo, final ResponseCallBack responseCallBack) {
-        switch (studyInfo.getType(context)) {
+        switch (studyInfo.getType()) {
             case StudyInfo.FREEBIE:
                 return new MenuFreebie().getHeaderContentType(context, userInfo, studyInfo, responseCallBack);
             case StudyInfo.CONFIGURED:
@@ -73,7 +72,7 @@ public abstract class AbstractMenu {
     }
 
     public static IDrawerItem[] getMenuContent(final Context context, StudyInfo studyInfo, final ResponseCallBack responseCallBack) {
-        switch (studyInfo.getType(context)) {
+        switch (studyInfo.getType()) {
             case StudyInfo.FREEBIE:
                 return new MenuFreebie().getMenuContent(responseCallBack);
             case StudyInfo.CONFIGURED:

@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:fancy="http://schemas.android.com/apk/res-auto"
+    tools:context="org.md2k.mcerebrum.login.ActivityLogin"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorbackground"
+    android:orientation="vertical"
+
+    android:weightSum="1">
+    <!--title and logo -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.25"
+        android:weightSum="1"
+        android:orientation="vertical"
+        android:background="@color/backGroundDark"
+        android:layout_margin="5dp"
+        android:layout_marginTop="20dp">
+
+        <TextView
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:textColor="#D6DBDF"
+            android:text="Join Study"
+            android:layout_marginTop="5dp"
+            android:textSize="20dp"
+            android:textStyle="bold"
+            android:layout_marginBottom="10dp"/>
+
+        <ImageView
+            android:layout_gravity="center_horizontal"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/mcerebrum" />
+
+
+    </LinearLayout>
+    <!--login section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="20dp"
+        android:layout_weight="0.5"
+        android:orientation="vertical"
+        android:background="@color/backGroundDark"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="5dp"
+        android:weightSum="1">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.4"
+            android:text="Option 1"
+            android:layout_marginTop="5dp"
+            android:textColor="#ffff"
+            android:textSize="15sp"
+            android:textAlignment="center"
+            android:layout_gravity="center"/>
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Username"
+            android:id="@+id/edittext_username"
+            app:met_baseColor="@android:color/white"
+            app:met_floatingLabel="normal"
+            app:met_primaryColor="@color/colorPrimaryDark"
+            app:met_underlineColor="#fff"
+            app:met_singleLineEllipsis="true"
+            app:met_iconLeft="@drawable/ic_person_white_48dp"
+            app:met_iconPadding="0dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"/>
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:id="@+id/edittext_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Password"
+            app:met_baseColor="@android:color/white"
+            app:met_floatingLabel="normal"
+            app:met_primaryColor="@color/colorPrimaryDark"
+            app:met_underlineColor="#fff"
+            app:met_iconLeft="@drawable/ic_lock_white_48dp"
+            app:met_iconPadding="0dp"
+            app:met_singleLineEllipsis="true"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"/>
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Server"
+            android:id="@+id/edittext_login_server"
+            app:met_baseColor="@android:color/white"
+            app:met_floatingLabel="normal"
+            app:met_primaryColor="@color/colorPrimaryDark"
+            app:met_underlineColor="#fff"
+            app:met_iconLeft="@drawable/servericon"
+            app:met_iconPadding="0dp"
+            app:met_singleLineEllipsis="true"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            android:layout_weight="0.6"
+            android:weightSum="1"
+            android:paddingBottom="5dp"
+            android:background="@color/backGroundDark"
+            android:layout_margin="10dp">
+
+
+
+            <com.beardedhen.androidbootstrap.BootstrapButton
+                android:id="@+id/button_login"
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_weight="0.5"
+                android:layout_marginLeft="60dp"
+
+                style="@style/wrapping_button"
+                android:enabled="true"
+                app:bootstrapSize="md"
+                app:bootstrapText="{fa_sign_in} Login"
+                app:bootstrapBrand="warning"
+                app:roundedCorners="true"
+                app:showOutline="true" />
+
+            <com.beardedhen.androidbootstrap.BootstrapButton
+                android:id="@+id/button_login_cancel"
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="0.5"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_marginRight="60dp"
+
+                style="@style/wrapping_button"
+                android:enabled="true"
+                app:bootstrapSize="md"
+                app:bootstrapText="{fa_ban} Cancel"
+                app:bootstrapBrand="warning"
+                app:roundedCorners="true"
+                app:showOutline="true" />
+        </LinearLayout>
+
+
+
+
+    </LinearLayout>
+
+    <!--download section -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="0.25"
+        android:weightSum="1"
+        android:orientation="vertical"
+        android:background="@color/backGroundDark"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginBottom="5dp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.45"
+            android:text="Option 2"
+            android:layout_marginTop="5dp"
+            android:textColor="#ffff"
+            android:textSize="15sp"
+            android:textAlignment="center"
+            android:layout_gravity="center"/>
+        <com.rengwuxian.materialedittext.MaterialEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:hint="Download Config File"
+            android:id="@+id/edittext_download"
+            app:met_baseColor="@android:color/white"
+            app:met_floatingLabel="normal"
+            app:met_primaryColor="@color/colorPrimaryDark"
+            app:met_underlineColor="#fff"
+            app:met_singleLineEllipsis="true"
+            app:met_iconLeft="@drawable/grey_download"
+            app:met_iconPadding="0dp"
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:layout_height="0dp"
+            android:layout_weight="0.7"
+            android:weightSum="1"
+            android:background="@color/backGroundDark"
+            android:layout_margin="10dp">
+
+            <com.beardedhen.androidbootstrap.BootstrapButton
+                android:id="@+id/button_install_short"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:layout_marginLeft="60dp"
+                android:layout_marginRight="60dp"
+                style="@style/wrapping_button"
+                android:enabled="true"
+                app:bootstrapSize="md"
+                app:bootstrapText="{fa_download} Download"
+                app:bootstrapBrand="warning"
+                app:roundedCorners="true"
+                app:showOutline="true" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+
+</LinearLayout>

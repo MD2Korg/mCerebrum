@@ -27,12 +27,9 @@ package org.md2k.mcerebrum.menu;
  */
 
 import android.content.Context;
-import android.view.View;
 
 import com.mikepenz.fontawesome_typeface_library.FontAwesome;
-import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
-import com.mikepenz.materialdrawer.model.ProfileSettingDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
@@ -42,7 +39,7 @@ import org.md2k.mcerebrum.data.UserInfo;
 class MenuFreebie extends AbstractMenu {
      IProfile[] getHeaderContentType(final Context context, UserInfo userInfo, StudyInfo studyInfo, final ResponseCallBack responseCallBack){
         IProfile[] iProfiles=new IProfile[1];
-        iProfiles[0]=new ProfileDrawerItem().withName(userInfo.getTitle(context)).withIcon(studyInfo.getIcon(context));
+        iProfiles[0]=new ProfileDrawerItem().withName(userInfo.getTitle()).withIcon(studyInfo.getIcon(context));
 /*
         iProfiles[1]=new ProfileSettingDrawerItem().withName("Join Study").withIcon(FontAwesome.Icon.faw_link).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
             @Override
@@ -58,7 +55,8 @@ class MenuFreebie extends AbstractMenu {
         return getMenuContent(menuContent, responseCallBack);
     }
     private  MenuContent[] menuContent = new MenuContent[]{
-            new MenuContent("Add/Remove Apps", FontAwesome.Icon.faw_home, MenuContent.PRIMARY_DRAWER_ITEM, MENU_APP_ADD_REMOVE,0),
+            new MenuContent("Home", FontAwesome.Icon.faw_home, MenuContent.PRIMARY_DRAWER_ITEM, MENU_HOME,0),
+            new MenuContent("Add/Remove Apps", FontAwesome.Icon.faw_plus, MenuContent.PRIMARY_DRAWER_ITEM, MENU_APP_ADD_REMOVE,0),
             new MenuContent("App Settings", FontAwesome.Icon.faw_cog, MenuContent.PRIMARY_DRAWER_ITEM, MENU_APP_SETTINGS,0),
             new MenuContent("Join Study", FontAwesome.Icon.faw_link, MenuContent.PRIMARY_DRAWER_ITEM, MENU_JOIN,0)
 //            new MenuContent("Report",FontAwesome.Icon.faw_bar_chart,MenuContent.PRIMARY_DRAWER_ITEM, OP_REPORT),

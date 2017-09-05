@@ -36,14 +36,13 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.util.Log;
 
 import com.blankj.utilcode.util.AppUtils;
 
-import org.md2k.mcerebrum.commons.storage.StorageReadWrite;
+import org.md2k.mcerebrum.Constants;
+import org.md2k.mcerebrum.commons.storage.Storage;
 import org.md2k.mcerebrum.commons.storage.StorageType;
 import org.md2k.mcerebrum.configuration.CApp;
-import org.md2k.mcerebrum.data.MySharedPreference;
 import org.md2k.mcerebrum.internet.download.DownloadFile;
 import org.md2k.mcerebrum.internet.download.DownloadInfo;
 import org.md2k.mcerebrum.internet.github.model.ReleaseInfo;
@@ -55,78 +54,77 @@ import rx.Observable;
 import rx.functions.Func1;
 
 public class Application {
-    private static final String ID="ID";
-    private static final String TYPE="TYPE";
-    private static final String TITLE="TITLE";
-    private static final String SUMMARY="SUMMARY";
-    private static final String DESCRIPTION="DESCRIPTION";
-    private static final String PACKAGE_NAME="PACKAGE_NAME";
-    private static final String ICON="ICON";
-    private static final String DOWNLOAD_FROM_GITHUB="DOWNLOAD_FROM_GITHUB";
-    private static final String DOWNLOAD_FROM_PLAYSTORE="DOWNLOAD_FROM_PLAYSTORE";
-    private static final String DOWNLOAD_FROM_URL="DOWNLOAD_FROM_URL";
-    private static final String EXPECTED_VERSION="EXPECTED_VERSION";
-    private static final String UPDATE="UPDATE";
-//    private static final String INSTALLED="INSTALLED";
-//    private static final String CURRENT_VERSION="CURRENT_VERSION";
-    private static final int REQUEST_CODE=2000;
+    private String id;
+    private String type;
+    private String title;
+    private String summary;
+    private String description;
     private String packageName;
+    private String icon;
+    private String downloadFromGithub;
+    private String downloadFromPlayStore;
+    private String downloadFromURL;
+    private String expectedVersion;
+    private String updateOption;
+    private String updateVersionName;
+    private String currentVersionName;
+    private int currentVersionCode;
+    private boolean installed;
 
-    Application(String packageName){
-        this.packageName=packageName;
-    }
-    private static String getKey(String packageName, String key){
-        return Application.class.getSimpleName()+"_"+packageName+"_"+key;
+    private static final int REQUEST_CODE = 2000;
+
+    Application(CApp capp) {
+        id = capp.getId();
+        type = capp.getType();
+        title = capp.getTitle();
+        summary = capp.getSummary();
+        description = capp.getDescription();
+        packageName = capp.getPackage_name();
+        icon = capp.getIcon();
+        downloadFromGithub = capp.getDownload_from_github();
+        downloadFromPlayStore = capp.getDownload_from_playstore();
+        downloadFromURL = capp.getDownload_from_url();
+        expectedVersion = capp.getVersion();
+        updateOption = capp.getUpdate();
+        installed = AppUtils.isInstallApp(packageName);
+        if (installed) {
+            currentVersionName = AppUtils.getAppVersionName(packageName);
+            currentVersionCode = AppUtils.getAppVersionCode(packageName);
+        }
     }
 
-
-    static void save(Context context, CApp cApp){
-        String p=cApp.getPackage_name();
-        new MySharedPreference().set(context,getKey(p, ID),cApp.getId());
-        new MySharedPreference().set(context,getKey(p, TYPE),cApp.getType());
-        new MySharedPreference().set(context,getKey(p, TITLE),cApp.getTitle());
-        new MySharedPreference().set(context,getKey(p, SUMMARY),cApp.getSummary());
-        new MySharedPreference().set(context,getKey(p, DESCRIPTION),cApp.getDescription());
-        new MySharedPreference().set(context,getKey(p, PACKAGE_NAME),cApp.getPackage_name());
-        new MySharedPreference().set(context,getKey(p, DOWNLOAD_FROM_GITHUB),cApp.getDownload_from_github());
-        new MySharedPreference().set(context,getKey(p, DOWNLOAD_FROM_PLAYSTORE),cApp.getDownload_from_playstore());
-        new MySharedPreference().set(context,getKey(p, DOWNLOAD_FROM_URL),cApp.getDownload_from_url());
-        new MySharedPreference().set(context,getKey(p, UPDATE),cApp.getUpdate());
-        new MySharedPreference().set(context,getKey(p, ICON),cApp.getIcon());
-        new MySharedPreference().set(context,getKey(p, EXPECTED_VERSION),cApp.getVersion());
-//        boolean isInstalled=AppUtils.isInstallApp(p);
-//        new MySharedPreference().set(context, getKey(p, INSTALLED), isInstalled);
-//        if(isInstalled) new MySharedPreference().set(context, getKey(p, CURRENT_VERSION), AppUtils.getAppVersionName(p));
-    }
-    public boolean isInstallFromPlayStore(Context context){
-        return getDownloadFromPlaystore(context) != null;
+    public void install(Activity activity){
+        if(downloadFromPlayStore!=null){
+            Intent goToMarket = new Intent(Intent.ACTION_VIEW)
+                    .setData(Uri.parse(downloadFromPlayStore));
+            goToMarket.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            activity.startActivityForResult(goToMarket, REQUEST_CODE);
+        }else{
+            final String fileDir = Storage.getRootDirectory(activity, StorageType.SDCARD_INTERNAL) + "/mCerebrum/temp";
+            final String fileName = "temp.apk";
+            AppUtils.installApp(activity, fileDir+"/"+fileName, "org.md2k.mcerebrum.provider", REQUEST_CODE);
+        }
     }
 
-    public void installPlayStore(Context context){
-        Intent goToMarket = new Intent(Intent.ACTION_VIEW)
-                .setData(Uri.parse(getDownloadFromPlaystore(context)));
-        goToMarket.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        context.startActivity(goToMarket);
-    }
-    public Observable<DownloadInfo> installURL(final Activity activity) {
-        final String downloadFilePath= StorageReadWrite.get(activity, StorageType.SDCARD_INTERNAL).getRootDirectory()+"/mCerebrum/temp";
-        final String downloadFileName="temp.apk";
+    public Observable<DownloadInfo> download(final Activity activity) {
+        final String fileDir = Storage.getRootDirectory(activity, StorageType.SDCARD_INTERNAL) + "/mCerebrum/temp";
+        final String fileName = "temp.apk";
 
-        Observable<DownloadInfo> observable=null;
-        if(getDownloadFromUrl(activity)!=null)
-            observable=downloadURL(activity, getDownloadFromUrl(activity), downloadFilePath, downloadFileName);
-        else if(getDownloadFromGithub(activity)!=null){
-            if(getExpectedVersion(activity)==null)
-                observable=downloadLatest(activity, downloadFilePath, downloadFileName);
-            else{
-                observable=getVersions(activity).flatMap(new Func1<ReleaseInfo[], Observable<DownloadInfo>>() {
+        Observable<DownloadInfo> observable;
+        if (downloadFromURL != null)
+            observable = new DownloadFile().download(downloadFromURL, fileDir, fileName);
+        else {
+            if (getExpectedVersion() == null)
+                observable = downloadLatest(fileDir, fileName);
+            else {
+                observable = getVersions().flatMap(new Func1<ReleaseInfo[], Observable<DownloadInfo>>() {
                     @Override
                     public Observable<DownloadInfo> call(ReleaseInfo[] releaseInfos) {
                         for (ReleaseInfo releaseInfo : releaseInfos) {
-                            if (releaseInfo.getName().equals(getExpectedVersion(activity))) {
+                            if (releaseInfo.getName().equals(getExpectedVersion())) {
                                 for (int j = 0; j < releaseInfo.getAssets().length; j++)
                                     if (releaseInfo.getAssets()[j].getName().endsWith(".apk"))
-                                        return downloadURL(activity, releaseInfo.getAssets()[j].getBrowser_download_url(), downloadFilePath, downloadFileName);
+                                        return new DownloadFile().download(releaseInfo.getAssets()[j].getBrowser_download_url(), fileDir, fileName);
                             }
                         }
                         return Observable.error(new Throwable("File not found in the server"));
@@ -134,112 +132,80 @@ public class Application {
                 });
             }
         }
-        return observable.flatMap(new Func1<DownloadInfo, Observable<DownloadInfo>>() {
-            @Override
-            public Observable<DownloadInfo> call(DownloadInfo downloadInfo) {
-                if(!downloadInfo.isCompleted())
-                    return Observable.just(downloadInfo);
-                else{
-                    installURL(activity, downloadFilePath+"/"+downloadFileName, REQUEST_CODE);
-                    return Observable.just(downloadInfo);
-                }
-            }
-        });
+        return observable;
     }
 
-
-    private Observable<DownloadInfo> downloadURL(Context context, String url, String filePath, String fileName){
-        if(getDownloadFromGithub(context)==null) return null;
-            return new DownloadFile().download(url, filePath, fileName);
-    }
-    private Observable<DownloadInfo> downloadLatest(final Context context, final String filePath, final String fileName){
-        return getLatestVersion(context).map(new Func1<ReleaseInfo, String>() {
+    private Observable<DownloadInfo> downloadLatest(final String filePath, final String fileName) {
+        return getLatestVersion().map(new Func1<ReleaseInfo, String>() {
             @Override
             public String call(ReleaseInfo releaseInfo) {
-                for(int i=0;i<releaseInfo.getAssets().length;i++) {
-                    if(releaseInfo.getAssets()[i].getBrowser_download_url().endsWith(".apk"))
-                            return releaseInfo.getAssets()[i].getBrowser_download_url();
+                for (int i = 0; i < releaseInfo.getAssets().length; i++) {
+                    if (releaseInfo.getAssets()[i].getBrowser_download_url().endsWith(".apk"))
+                        return releaseInfo.getAssets()[i].getBrowser_download_url();
                 }
                 return null;
             }
         }).flatMap(new Func1<String, Observable<DownloadInfo>>() {
             @Override
             public Observable<DownloadInfo> call(String s) {
-                if(s==null) return null;
+                if (s == null) return null;
                 return new DownloadFile().download(s, filePath, fileName);
             }
         });
     }
 
-    public Observable<ReleaseInfo[]> getVersions(Context context){
-        if(getDownloadFromGithub(context)==null) return null;
-        String[] parts=getDownloadFromGithub(context).split("/");
-        if(parts.length!=2) return null;
-        Github github=new Github();
+    private Observable<ReleaseInfo[]> getVersions() {
+        String[] parts = downloadFromGithub.split("/");
+        if (parts.length != 2) return Observable.error(new Throwable("Invalid download link in configuration file"));
+        Github github = new Github();
         return github.getReleases(parts[0], parts[1]);
     }
-    private Observable<ReleaseInfo> getLatestVersion(Context context){
-        if(getDownloadFromGithub(context)==null) return null;
-        String[] parts=getDownloadFromGithub(context).split("/");
-        if(parts.length!=2) return null;
-        Github github=new Github();
+
+    private Observable<ReleaseInfo> getLatestVersion() {
+        String[] parts = downloadFromGithub.split("/");
+        if (parts.length != 2) return null;
+        Github github = new Github();
         return github.getReleaseLatest(parts[0], parts[1]);
     }
-    private void installURL(Activity activity, String filePath , int requestCode){
-        AppUtils.installApp(activity,filePath, "org.md2k.mcerebrum.provider",requestCode);
-    }
-    public void uninstall(Activity activity, int requestCode){
+
+    public void uninstall(Activity activity, int requestCode) {
         AppUtils.uninstallApp(activity, packageName, requestCode);
     }
-    int getVersionCode(){
-        return AppUtils.getAppVersionCode(packageName);
+
+    int getCurrentVersionCode() {
+        return currentVersionCode;
     }
-    public String getVersionName(Context context){
-        return AppUtils.getAppVersionName(packageName);
-//        return get(context, CURRENT_VERSION);
+
+    public String getCurrentVersionName() {
+        return currentVersionName;
     }
-    boolean isUpdateAvailable(Context context){
-        return false;
-        //TODO: check app update
-//        return isInstalled(context) && !getVersionName(context).equals(getExpectedVersion(context));
+
+    boolean isUpdateAvailable() {
+        if (updateVersionName == null) return false;
+        if (!isInstalled()) return false;
+        if (getCurrentVersionName().equals(updateVersionName)) return false;
+        return true;
     }
-/*
-    Drawable getIcon(Context context, String filePath){
-        if(isInstalled()) return AppUtils.getAppIcon(packageName);
-        else{
-            String imageInSD = filePath+"/"+getIcon(context);
-            Bitmap bitmap = BitmapFactory.decodeFile(imageInSD);
-            return new BitmapDrawable(context.getResources(), bitmap);
-        }
+
+    public String getTitle() {
+        return title;
     }
-*/
-    private String get(Context context, String key){
-        return new MySharedPreference().getString(context, getKey(packageName, key), null);
+
+    public String getSummary() {
+        return summary;
     }
-    private String getId(Context context) {
-        return get(context, ID);
+
+    public String getDescription() {
+        return description;
     }
-    private String getType(Context context) {
-        return get(context, TYPE);
-    }
-    public String getTitle(Context context) {
-        return get(context, TITLE);
-    }
-    public String getSummary(Context context) {
-        return get(context, SUMMARY);
-    }
-    public String getDescription(Context context) {
-        return get(context, DESCRIPTION);
-    }
+
     public Drawable getIcon(Context context) {
-        if(isInstalled(context)) return AppUtils.getAppIcon(packageName);
+        if (isInstalled()) return AppUtils.getAppIcon(packageName);
         else {
-            String filePath = get(context, ICON);
             try {
-                if (filePath != null) {
-                    String actualPath= StorageReadWrite.get(context, StorageType.SDCARD_INTERNAL).getRootDirectory()+"/mCerebrum/org.md2k.mcerebrum/"+filePath;
-                    Bitmap bitmap = BitmapFactory.decodeFile(actualPath);
-                    if(bitmap!=null)
+                if (icon != null) {
+                    Bitmap bitmap = BitmapFactory.decodeFile(Constants.CONFIG_MCEREBRUM_DIR()+icon);
+                    if (bitmap != null)
                         return new BitmapDrawable(context.getResources(), bitmap);
                 }
             } catch (Exception ignored) {
@@ -254,27 +220,37 @@ public class Application {
 
         }
     }
-    private String getDownloadFromGithub(Context context) {
-        return get(context, DOWNLOAD_FROM_GITHUB);
-    }
-    private String getDownloadFromPlaystore(Context context) {
-        return get(context, DOWNLOAD_FROM_PLAYSTORE);
-    }
-    private String getDownloadFromUrl(Context context) {
-        return get(context, DOWNLOAD_FROM_URL);
-    }
-    private String getExpectedVersion(Context context) {
-        return get(context, EXPECTED_VERSION);
-    }
-    private String getUpdate(Context context) {
-        return get(context, UPDATE);
-    }
-    public String getPackageName(){
-        return packageName;
-    }
-    public boolean isInstalled(Context context){
-        return AppUtils.isInstallApp(packageName);
-//        return new MySharedPreference().getBoolean(context, getKey(packageName, INSTALLED), false);
+
+
+    public String getDownloadFromGithub() {
+        return downloadFromGithub;
     }
 
+    public String getDownloadFromPlayStore() {
+        return downloadFromPlayStore;
+    }
+
+    public String getDownloadFromURL() {
+        return downloadFromURL;
+    }
+
+    private String getExpectedVersion() {
+        return expectedVersion;
+    }
+
+    public String getPackageName() {
+        return packageName;
+    }
+
+    public boolean isInstalled() {
+        return installed;
+    }
+
+    public void updateInfo() {
+        installed = AppUtils.isInstallApp(packageName);
+        if (installed) {
+            currentVersionName = AppUtils.getAppVersionName(packageName);
+            currentVersionCode = AppUtils.getAppVersionCode(packageName);
+        }
+    }
 }

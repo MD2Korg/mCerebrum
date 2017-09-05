@@ -41,15 +41,15 @@ import rx.schedulers.Schedulers;
 public class Github {
     public Observable<ReleaseInfo[]> getReleases(String owner, String repo){
         GitHubAPI service = createRetrofitService(GitHubAPI.class);
-        return service.getReleases(owner, repo)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread());
+        return service.getReleases(owner, repo);
+//                .subscribeOn(Schedulers.newThread())
+//                .observeOn(AndroidSchedulers.mainThread());
     }
     public Observable<ReleaseInfo> getReleaseLatest(String owner, String repo){
         GitHubAPI service = createRetrofitService(GitHubAPI.class);
-        return service.getReleaseLatest(owner, repo)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread());
+        return service.getReleaseLatest(owner, repo);
+//                .subscribeOn(Schedulers.newThread())
+//                .observeOn(AndroidSchedulers.mainThread());
     }
 
     /**

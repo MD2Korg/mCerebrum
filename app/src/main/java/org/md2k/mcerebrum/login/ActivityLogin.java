@@ -142,8 +142,8 @@ public class ActivityLogin extends AppCompatActivity {
                     @Override
                     public void onCompleted() {
                         materialDialog.dismiss();
-                        UserInfo.setLoggedIn(true);
-                        UserInfo.setTitle(userName);
+//                        UserInfo.setLoggedIn(true);
+//                        UserInfo.setTitle(userName);
 //                        Intent returnIntent = new Intent();
 //                        returnIntent.putExtra("type", TYPE_GENERAL);
 //                        setResult(Activity.RESULT_OK, returnIntent);

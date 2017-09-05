@@ -21,8 +21,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".intro.ActivityIntro"
-            android:theme="@style/Theme.Intro" />
         <activity android:name=".login.ActivityLogin"/>
         <activity android:name=".ActivityConfigureStudy"/>
         <activity android:name=".setup_step.ActivityConfig"

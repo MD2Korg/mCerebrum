@@ -26,14 +26,24 @@ package org.md2k.mcerebrum;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import android.content.Context;
-
-import org.md2k.mcerebrum.commons.storage.StorageReadWrite;
+import org.md2k.mcerebrum.commons.storage.Storage;
 import org.md2k.mcerebrum.commons.storage.StorageType;
 
 public class Constants {
-    public static final String CONFIG_DEFAULT_URL="http://software.md2k.org/resources/mCerebrum/config.zip";
     public static final String CONFIG_DEFAULT_GITHUB="MD2Korg/mCerebrum-Configuration";
     public static final String CONFIG_DEFAULT_FILENAME="default2.zip";
     public static final String CONFIG_MPERF_FILENAME="mperf.zip";
+
+    public static String CONFIG_MCEREBRUM_CONFIGFILE(){
+        return Storage.getRootDirectory(MyApplication.getContext(), StorageType.SDCARD_INTERNAL)+"/mCerebrum/org.md2k.mcerebrum/config.json";
+    }
+    public static String CONFIG_MCEREBRUM_ROOT_DIRH(){
+        return Storage.getRootDirectory(MyApplication.getContext(), StorageType.SDCARD_INTERNAL)+"/mCerebrum/";
+    }
+    public static String CONFIG_MCEREBRUM_DIR(){
+        return Storage.getRootDirectory(MyApplication.getContext(), StorageType.SDCARD_INTERNAL)+"/mCerebrum/org.md2k.mcerebrum/";
+    }
+    public static String CONFIG_ROOT_DIR(){
+        return Storage.getRootDirectory(MyApplication.getContext(), StorageType.SDCARD_INTERNAL)+"/";
+    }
 }

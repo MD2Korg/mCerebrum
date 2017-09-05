@@ -3,9 +3,9 @@ package org.md2k.mcerebrum;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 
-import org.md2k.mcerebrum.data.Data;
+import org.md2k.mcerebrum.app.ApplicationManager;
+import org.md2k.mcerebrum.configuration.ConfigManager;
 import org.md2k.mcerebrum.data.StudyInfo;
 
 /**
@@ -38,12 +38,18 @@ public class BootReceiver extends BroadcastReceiver
 {
     @Override
     public void onReceive(Context context, Intent intent) {
-        StudyInfo studyInfo=new StudyInfo();
-        if(!studyInfo.isStartAtBoot(context)) return;
-        if(!studyInfo.isStarted(context)) return;
-        // TODO: start app
+        ConfigManager configManager=new ConfigManager();
+        ApplicationManager applicationManager;
+        if(configManager.isConfigured()) {
+//        StudyInfo studyInfo=new StudyInfo(configManager.getConfig());
+//        if(!studyInfo.isStartAtBoot()) return;
+//        if(!studyInfo.isStarted()) return;
+//            applicationManager=new ApplicationManager(configManager.getConfig().getApplications());
+//            applicationManager.
+            // TODO: start app
 //        Intent myIntent = new Intent(context, ActivityStartScreen.class);
 //        myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 //        context.startActivity(myIntent);
+        }
     }
 }

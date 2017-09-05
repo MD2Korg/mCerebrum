@@ -26,8 +26,6 @@ package org.md2k.mcerebrum.data;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import android.content.Context;
-
 public class Data {
     private static final String FIRST_TIME_RUNNING="FIRST_TIME_RUNNING";
     private static final String USER_ID="USER_ID";
@@ -43,63 +41,63 @@ public class Data {
     public static final String TYPE_DOWNLOAD="DOWNLOAD";
 
 
-    public static boolean isFirstTimeRunning(Context context){
+    public static boolean isFirstTimeRunning(){
         MySharedPreference mySharedPreference=new MySharedPreference();
-        return mySharedPreference.getBoolean(context, FIRST_TIME_RUNNING, true);
+        return mySharedPreference.getBoolean(FIRST_TIME_RUNNING, true);
     }
-    public static void setFirstTimeRunning(Context context){
+    public static void setFirstTimeRunning(){
         MySharedPreference mySharedPreference=new MySharedPreference();
-        mySharedPreference.set(context, FIRST_TIME_RUNNING, false);
+        mySharedPreference.set(FIRST_TIME_RUNNING, false);
     }
-    public static void setUserType(Context context, String value){
+    public static void setUserType(String value){
         MySharedPreference mySharedPreference=new MySharedPreference();
-        mySharedPreference.set(context,USER_TYPE, value);
+        mySharedPreference.set(USER_TYPE, value);
     }
-    public static String getUserType(Context context) {
+    public static String getUserType() {
         MySharedPreference mySharedPreference=new MySharedPreference();
-        return mySharedPreference.getString(context, USER_TYPE,null);
+        return mySharedPreference.getString(USER_TYPE,null);
     }
-    public static String getUserId(Context context){
+    public static String getUserId(){
         MySharedPreference mySharedPreference=new MySharedPreference();
-        return mySharedPreference.getString(context, USER_ID,null);
+        return mySharedPreference.getString(USER_ID,null);
     }
-    public static void setUserId(Context context, String value){
+    public static void setUserId(String value){
         MySharedPreference mySharedPreference=new MySharedPreference();
-        mySharedPreference.set(context,USER_ID, value);
+        mySharedPreference.set(USER_ID, value);
     }
-    public static void setUserPassword(Context context, String value){
+    public static void setUserPassword(String value){
         MySharedPreference mySharedPreference=new MySharedPreference();
-        mySharedPreference.set(context,USER_PASSWORD, value);
+        mySharedPreference.set(USER_PASSWORD, value);
     }
-    public static String getUserPassword(Context context){
+    public static String getUserPassword(){
         MySharedPreference mySharedPreference=new MySharedPreference();
-        return mySharedPreference.getString(context, USER_PASSWORD,null);
+        return mySharedPreference.getString(USER_PASSWORD,null);
     }
-    public static String getServer(Context context){
+    public static String getServer(){
         MySharedPreference mySharedPreference=new MySharedPreference();
-        return mySharedPreference.getString(context, USER_SERVER,null);
+        return mySharedPreference.getString(USER_SERVER,null);
     }
-    public static void setServer(Context context, String value){
+    public static void setServer(String value){
         MySharedPreference mySharedPreference=new MySharedPreference();
-        mySharedPreference.set(context,USER_SERVER, value);
+        mySharedPreference.set(USER_SERVER, value);
     }
-    public static void setToken(Context context, String value){
+    public static void setToken(String value){
         MySharedPreference mySharedPreference=new MySharedPreference();
-        mySharedPreference.set(context,USER_TOKEN, value);
+        mySharedPreference.set(USER_TOKEN, value);
     }
-    public static String getToken(Context context){
+    public static String getToken(){
         MySharedPreference mySharedPreference=new MySharedPreference();
-        return mySharedPreference.getString(context, USER_TOKEN,null);
+        return mySharedPreference.getString(USER_TOKEN,null);
     }
 
 
-    public static void setRefresh(Context context, boolean value) {
+    public static void setRefresh(boolean value) {
         MySharedPreference mySharedPreference=new MySharedPreference();
-        mySharedPreference.set(context, REFRESH, value);
+        mySharedPreference.set(REFRESH, value);
     }
-    public static boolean isRefresh(Context context) {
+    public static boolean isRefresh() {
         MySharedPreference mySharedPreference=new MySharedPreference();
-        return mySharedPreference.getBoolean(context,REFRESH,false);
+        return mySharedPreference.getBoolean(REFRESH,false);
     }
 
 }

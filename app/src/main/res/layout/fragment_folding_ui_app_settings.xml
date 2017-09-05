@@ -58,14 +58,118 @@
 
     </LinearLayout>
     -->
-    <FrameLayout
-        android:id="@+id/frame_container"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:orientation="vertical">
+            <com.beardedhen.androidbootstrap.AwesomeTextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                app:bootstrapBrand="secondary"
+                app:bootstrapText="Application Settings"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:textSize="20sp"
+                app:fontAwesomeIcon="fa_download"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:weightSum="1">
+                <com.beardedhen.androidbootstrap.AwesomeTextView
+                    android:id="@+id/textview_installed"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".33"
+                    android:gravity="center"
+                    app:bootstrapBrand="success"
+                    app:bootstrapText="configured: 4"
+                    app:fontAwesomeIcon="fa_download"/>
+
+                <com.beardedhen.androidbootstrap.AwesomeTextView
+                    android:id="@+id/textview_not_installed"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".33"
+                    android:gravity="center"
+                    app:bootstrapText="not configured: 0"
+                    app:bootstrapBrand="danger"
+                    app:fontAwesomeIcon="fa_trash"/>
+                <com.beardedhen.androidbootstrap.AwesomeTextView
+                    android:id="@+id/textview_status"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".33"
+                    android:gravity="center"
+                    app:bootstrapText="Status: {fa_tick_o}"
+                    app:bootstrapBrand="danger"
+                    app:fontAwesomeIcon="fa_trash"/>
+
+            </LinearLayout>
+<!--
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0"
+                android:paddingTop="5dp"
+                android:orientation="horizontal"
+                android:paddingLeft="@dimen/activity_horizontal_margin"
+                android:paddingRight="@dimen/activity_horizontal_margin"
+                android:weightSum="1">
+                <com.beardedhen.androidbootstrap.BootstrapButton
+                    android:id="@+id/button_install"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".50"
+                    android:layout_gravity="left"
+                    android:layout_margin="5dp"
+                    android:gravity="center"
+                    app:roundedCorners="true"
+                    app:bootstrapBrand="success"
+                    app:bootstrapText="{fa_download} Install All"
+                    app:fontAwesomeIcon="fa_download"/>
+
+                <com.beardedhen.androidbootstrap.BootstrapButton
+                    android:id="@+id/button_update"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".50"
+                    android:layout_margin="5dp"
+                    android:layout_gravity="right"
+                    app:roundedCorners="true"
+                    android:gravity="center"
+                    app:bootstrapBrand="warning"
+                    app:bootstrapText="{fa_refresh} Check Update"
+                    app:fontAwesomeIcon="fa_refresh"/>
+            </LinearLayout>
+
+
+                            <com.beardedhen.androidbootstrap.AwesomeTextView
+                                android:id="@+id/textview_installed"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:gravity="center"
+                                app:bootstrapBrand="secondary"
+                                app:bootstrapText="{fa_download}: 10"
+                                android:paddingTop="5dp"
+                                android:paddingBottom="5dp"
+                                android:textSize="14sp"
+                                app:fontAwesomeIcon="fa_download"/>
+            -->
+        </LinearLayout>
         <ListView
             android:id="@+id/listview_folding_ui"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="0dp"
             android:clipChildren="false"
             android:clipToPadding="false"
             android:divider="@android:color/transparent"
@@ -74,7 +178,38 @@
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:paddingRight="@dimen/activity_horizontal_margin"
             android:paddingTop="@dimen/activity_vertical_margin"
-            android:scrollbars="none" />
-    </FrameLayout>
+            android:scrollbars="none"
+            android:layout_weight="1"/>
+        <!--
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="1"
+                        android:layout_weight="0">
+                        <com.beardedhen.androidbootstrap.BootstrapButton
+                            android:layout_height="wrap_content"
+                            android:layout_width="0dp"
+                            app:roundedCorners="true"
+                            app:bootstrapSize="lg"
+                            android:gravity="center"
+                            app:bootstrapBrand="regular"
+                            android:layout_marginRight="2dp"
+                            android:layout_weight="0.50"
+                            app:bootstrapText="Install all {fa_download}"
+                            />
+                    <com.beardedhen.androidbootstrap.BootstrapButton
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        app:roundedCorners="true"
+                        app:bootstrapSize="lg"
+                        android:gravity="end"
+                        app:bootstrapBrand="regular"
+                        android:layout_marginLeft="2dp"
+                        android:layout_weight="0.50"
+                        app:bootstrapText="Settings {fa_arrow_right}"
+                        />
+                    </LinearLayout>
+        -->        </LinearLayout>
 
 </RelativeLayout>

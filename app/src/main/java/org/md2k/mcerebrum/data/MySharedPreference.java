@@ -29,33 +29,42 @@ package org.md2k.mcerebrum.data;
 import android.content.Context;
 import android.content.SharedPreferences;
 
+import org.md2k.mcerebrum.MyApplication;
+
 
 public class MySharedPreference {
     private static final String NAME="MCEREBRUM";
-    public void set(Context context, String key, String value) {
-        SharedPreferences sharedPref = context.getSharedPreferences(NAME, Context.MODE_PRIVATE);
+    public void set(String key, String value) {
+        SharedPreferences sharedPref = MyApplication.getContext().getSharedPreferences(NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putString(key, value);
         editor.apply();
     }
-    public void set(Context context, String key, int value) {
-        SharedPreferences sharedPref = context.getSharedPreferences(NAME, Context.MODE_PRIVATE);
+    public void clear(String key) {
+        SharedPreferences sharedPref = MyApplication.getContext().getSharedPreferences(NAME, Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.remove(key);
+        editor.apply();
+    }
+
+    public void set(String key, int value) {
+        SharedPreferences sharedPref = MyApplication.getContext().getSharedPreferences(NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putInt(key, value);
         editor.apply();
     }
-    public void set(Context context, String key, boolean value) {
-        SharedPreferences sharedPref = context.getSharedPreferences(NAME, Context.MODE_PRIVATE);
+    public void set(String key, boolean value) {
+        SharedPreferences sharedPref = MyApplication.getContext().getSharedPreferences(NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         editor.putBoolean(key, value);
         editor.apply();
     }
-    public String getString(Context context, String key, String defaultValue) {
-        SharedPreferences sharedPref = context.getSharedPreferences(NAME, Context.MODE_PRIVATE);
+    public String getString(String key, String defaultValue) {
+        SharedPreferences sharedPref = MyApplication.getContext().getSharedPreferences(NAME, Context.MODE_PRIVATE);
         return sharedPref.getString(key, defaultValue);
     }
-    public void set(Context context, String key, String[] value) {
-        SharedPreferences sharedPref = context.getSharedPreferences(NAME, Context.MODE_PRIVATE);
+    public void set(String key, String[] value) {
+        SharedPreferences sharedPref = MyApplication.getContext().getSharedPreferences(NAME, Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = sharedPref.edit();
         StringBuilder sb = new StringBuilder();
         for (String aValue : value) {
@@ -64,18 +73,12 @@ public class MySharedPreference {
         editor.putString(key, sb.toString());
         editor.apply();
     }
-    public String[] getStringArray(Context context, String key, String defaultValue) {
-        SharedPreferences sharedPref = context.getSharedPreferences(NAME, Context.MODE_PRIVATE);
-        String res = sharedPref.getString(key, defaultValue);
-        if(res==null) return null;
-        else return res.split(",");
-    }
-    public boolean getBoolean(Context context, String key, boolean defaultValue) {
-        SharedPreferences sharedPref = context.getSharedPreferences(NAME, Context.MODE_PRIVATE);
+    public boolean getBoolean(String key, boolean defaultValue) {
+        SharedPreferences sharedPref = MyApplication.getContext().getSharedPreferences(NAME, Context.MODE_PRIVATE);
         return sharedPref.getBoolean(key, defaultValue);
     }
-    public int getInt(Context context, String key, int defaultValue) {
-        SharedPreferences sharedPref = context.getSharedPreferences(NAME, Context.MODE_PRIVATE);
+    public int getInt(String key, int defaultValue) {
+        SharedPreferences sharedPref = MyApplication.getContext().getSharedPreferences(NAME, Context.MODE_PRIVATE);
         return sharedPref.getInt(key, defaultValue);
     }
 

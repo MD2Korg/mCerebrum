@@ -29,72 +29,47 @@ package org.md2k.mcerebrum.app;
 import android.content.Context;
 
 import org.md2k.mcerebrum.configuration.CApp;
-import org.md2k.mcerebrum.configuration.ConfigManager;
 import org.md2k.mcerebrum.data.MySharedPreference;
 
-import java.util.ArrayList;
-
 public class ApplicationManager {
-    private static final String APP_LIST="APP_LIST";
-    public static void save(Context context,CApp[] cApps){
-        String[] apps=new String[cApps.length];
-        for(int i=0;i<cApps.length;i++){
-            apps[i]=cApps[i].getPackage_name();
-            Application.save(context, cApps[i]);
-        }
-        new MySharedPreference().set(context, APP_LIST, apps);
+    private Application[] applications;
 
-    }
-    public ArrayList<Application> getAppList(Context context) {
-        String[] apps= new MySharedPreference().getStringArray(context, APP_LIST, null);
-        ArrayList<Application> applicationArrayList=new ArrayList<>();
-        for (String app : apps) {
-            applicationArrayList.add(new Application(app));
+    public void set(CApp[] cApps){
+        applications=new Application[cApps.length];
+        for(int i=0;i<cApps.length;i++){
+            applications[i]=new Application(cApps[i]);
         }
-        return applicationArrayList;
     }
-    public int[] getInstallStatus(Context context){
+
+    public Application[] getApplications() {
+        return applications;
+    }
+    public Application getApplication(String packageName){
+        for (Application application : applications)
+            if (application.getPackageName().equals(packageName))
+                return application;
+        return null;
+    }
+
+    public int[] getInstallStatus(){
         int result[]=new int[3];
         result[0]=0;result[1]=0;result[2]=0;
-        ArrayList<Application> apps=getAppList(context);
-        for(int i=0;i<apps.size();i++){
-            if(!apps.get(i).isInstalled(context))
+        for (Application application : applications) {
+            if (!application.isInstalled())
                 result[2]++;
-            else if(apps.get(i).isUpdateAvailable(context))
+            else if (application.isUpdateAvailable())
                 result[1]++;
             else result[0]++;
         }
         return result;
     }
 
-/*    public void read(String filePath){
-        CApp[] cApps=new ConfigManager().read(filePath);
-        applications=new Application[cApps.length];
-        for(int i=0;i<cApps.length;i++){
-            applications[i]=getApplication(cApps[i]);
+    public void clear() {
+    }
+
+    public void updateInfo() {
+        for (Application application : applications) {
+            application.updateInfo();
         }
-        //TODO: read from memory
     }
-    public void update(){
-        //TODO: read from github
-    }
-    private void write(){
-        //TODO: write to memory
-    }
-    public Application[] get(){
-        return applications;
-    }
-    public Application get(int i){
-        return applications[i];
-    }
-    private Application getApplication(CApp cApp){
-        Application application=new Application();
-        application.id=cApp.getId();
-        application.title=cApp.getTitle();
-        application.summary=cApp.getSummary();
-        application.description=cApp.getDescription();
-        application.icon=cApp.getIcon();
-        return application;
-    }
-    */
 }

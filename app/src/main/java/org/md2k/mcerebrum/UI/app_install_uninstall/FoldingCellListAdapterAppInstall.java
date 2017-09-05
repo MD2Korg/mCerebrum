@@ -1,6 +1,7 @@
 package org.md2k.mcerebrum.UI.app_install_uninstall;
 
 import android.app.Activity;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,32 +15,31 @@ import com.beardedhen.androidbootstrap.api.defaults.DefaultBootstrapBrand;
 import com.ramotion.foldingcell.FoldingCell;
 
 import org.md2k.mcerebrum.R;
+import org.md2k.mcerebrum.app.Application;
 
 import java.util.HashSet;
-import java.util.List;
 
 /**
  * Simple example of ListAdapter for using with Folding Cell
  * Adapter holds indexes of unfolded elements for correct work with default reusable views behavior
  */
-public class FoldingCellListAdapterAppInstall extends ArrayAdapter<AppInfo> {
+class FoldingCellListAdapterAppInstall extends ArrayAdapter<Application> {
 
     private HashSet<Integer> unfoldedIndexes = new HashSet<>();
     private View.OnClickListener defaultRequestBtnClickListener;
     private ResponseCallBack responseCallBack;
-    Activity activity;
 
 
-    public FoldingCellListAdapterAppInstall(Activity activity, List<AppInfo> objects, ResponseCallBack responseCallBack) {
+    FoldingCellListAdapterAppInstall(Activity activity, Application[] objects, ResponseCallBack responseCallBack) {
         super(activity, 0, objects);
-        this.activity=activity;
         this.responseCallBack=responseCallBack;
     }
 
+    @NonNull
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
         // get item for selected view
-        final AppInfo app = getItem(position);
+        final Application app = getItem(position);
         // if cell is exists - reuse it, if not - create the new one from resource
         FoldingCell cell = (FoldingCell) convertView;
         ViewHolder viewHolder;
@@ -64,7 +64,7 @@ public class FoldingCellListAdapterAppInstall extends ArrayAdapter<AppInfo> {
             viewHolder.buttonInstallShort =(BootstrapButton)cell.findViewById(R.id.button_install_short);
             viewHolder.buttonUpdateShort =(BootstrapButton)cell.findViewById(R.id.button_update_short);
             viewHolder.buttonUninstallShort =(BootstrapButton)cell.findViewById(R.id.button_uninstall_short);
-            viewHolder.status= (AwesomeTextView) cell.findViewById(R.id.textview_status);
+            //viewHolder.status= (AwesomeTextView) cell.findViewById(R.id.textview_status);
 
 
             cell.setTag(viewHolder);
@@ -83,10 +83,10 @@ public class FoldingCellListAdapterAppInstall extends ArrayAdapter<AppInfo> {
         viewHolder.content_title.setText(app.getTitle());
         viewHolder.content_summary.setText(app.getSummary());
         viewHolder.description.setText(app.getDescription());
-        String versionName=app.getVersionName();if(versionName==null) versionName="N/A";
+        String versionName=app.getCurrentVersionName();if(versionName==null) versionName="N/A";
         viewHolder.version.setText(versionName);
-        viewHolder.icon_short.setImageDrawable(app.getIcon());
-        viewHolder.icon_long.setImageDrawable(app.getIcon());
+        viewHolder.icon_short.setImageDrawable(app.getIcon(getContext()));
+        viewHolder.icon_long.setImageDrawable(app.getIcon(getContext()));
 
         if(app.isInstalled()) {
             viewHolder.buttonInstallLong.setEnabled(false);
@@ -103,8 +103,8 @@ public class FoldingCellListAdapterAppInstall extends ArrayAdapter<AppInfo> {
             viewHolder.buttonUninstallLong.setBootstrapBrand(DefaultBootstrapBrand.DANGER);
             viewHolder.buttonUninstallShort.setEnabled(true);
             viewHolder.buttonUninstallShort.setBootstrapBrand(DefaultBootstrapBrand.DANGER);
-            viewHolder.status.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
-            viewHolder.status.setFontAwesomeIcon("fa-check-square");
+ //           viewHolder.status.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
+ //           viewHolder.status.setFontAwesomeIcon("fa-check-square");
 //            viewHolder.status.setText("installed");
 //            viewHolder.status.setTextColor(Color.GREEN);
         }
@@ -125,8 +125,8 @@ public class FoldingCellListAdapterAppInstall extends ArrayAdapter<AppInfo> {
             viewHolder.buttonUninstallLong.setBootstrapBrand(DefaultBootstrapBrand.SECONDARY);
             viewHolder.buttonUninstallShort.setEnabled(false);
             viewHolder.buttonUninstallShort.setBootstrapBrand(DefaultBootstrapBrand.SECONDARY);
-            viewHolder.status.setBootstrapBrand(DefaultBootstrapBrand.DANGER);
-            viewHolder.status.setFontAwesomeIcon("fa-times-circle");
+   //         viewHolder.status.setBootstrapBrand(DefaultBootstrapBrand.DANGER);
+     //       viewHolder.status.setFontAwesomeIcon("fa-times-circle");
 
 //            viewHolder.status.setText("not installed");
 //            viewHolder.status.setTextColor(Color.RED);
@@ -201,7 +201,7 @@ public class FoldingCellListAdapterAppInstall extends ArrayAdapter<AppInfo> {
     private static class ViewHolder {
         TextView title;
         TextView summary;
-        AwesomeTextView status;
+//        AwesomeTextView status;
         ImageView icon_short;
         ImageView icon_long;
         TextView content_title;

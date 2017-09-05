@@ -35,7 +35,7 @@ public class DownloadInfo{
         this.totalFileSize=totalFileSize;
         this.completed=completed;
         if(currentFileSize==totalFileSize) progress=100;
-        else progress = 100.0*(currentFileSize/totalFileSize);
+        else progress = (100.0*currentFileSize)/totalFileSize;
     }
 
     private double progress;
