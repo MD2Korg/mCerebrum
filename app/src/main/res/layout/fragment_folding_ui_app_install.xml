@@ -76,9 +76,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     app:bootstrapBrand="secondary"
-                    app:bootstrapText="Add/Remove Apps"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp"
+                    app:bootstrapText=""
                     android:textSize="20sp"
                     app:fontAwesomeIcon="fa_download"/>
                 <LinearLayout
@@ -88,7 +86,8 @@
                     android:orientation="horizontal"
                     android:paddingLeft="@dimen/activity_horizontal_margin"
                     android:paddingRight="@dimen/activity_horizontal_margin"
-                    android:weightSum="1">
+                    android:weightSum="1"
+                    android:layout_marginBottom="20dp">
                     <com.beardedhen.androidbootstrap.AwesomeTextView
                         android:id="@+id/textview_installed"
                         android:layout_width="0dp"
@@ -107,7 +106,6 @@
                         android:gravity="center"
                         app:bootstrapBrand="warning"
                         app:bootstrapText="{fa_refresh} Update available = 10"
-
                         app:fontAwesomeIcon="fa_refresh"/>
                     <com.beardedhen.androidbootstrap.AwesomeTextView
                         android:id="@+id/textview_not_installed"
