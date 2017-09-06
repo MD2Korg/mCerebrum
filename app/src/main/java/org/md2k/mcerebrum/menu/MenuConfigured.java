@@ -55,7 +55,7 @@ class MenuConfigured extends AbstractMenu{
         iProfiles[1]= new ProfileSettingDrawerItem().withName("Leave Study").withIcon(FontAwesome.Icon.faw_chain_broken).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
             @Override
             public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                responseCallBack.onResponse(MENU_LEAVE);
+                responseCallBack.onResponse(null, MENU_LEAVE);
                 return false;
             }
         });

@@ -207,21 +207,24 @@ public class FragmentFoldingUIAppInstall extends Fragment {
         textViewInstalled.setBootstrapText(bootstrapTextI);
         textViewUpdate.setBootstrapText(bootstrapTextU);
         textViewNotInstalled.setBootstrapText(bootstrapTextD);
-
-        if (installed[1] + installed[2] == 0) {
+        if(applicationManager.isStatusOk()) {
             bootstrapTextS = new BootstrapText.Builder(getContext()).addText("Status: ").addFontAwesomeIcon("fa_check").build();
             textViewStatus.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
             textViewStatus.setBootstrapText(bootstrapTextS);
+/*
             bootstrapButtonInstall.setEnabled(false);
             bootstrapButtonInstall.setBootstrapBrand(DefaultBootstrapBrand.SECONDARY);
             bootstrapButtonInstall.setShowOutline(true);
+*/
         } else {
             bootstrapTextS = new BootstrapText.Builder(getContext()).addText("Status: ").addFontAwesomeIcon("fa_times").build();
             textViewStatus.setBootstrapBrand(DefaultBootstrapBrand.DANGER);
             textViewStatus.setBootstrapText(bootstrapTextS);
+/*
             bootstrapButtonInstall.setEnabled(true);
             bootstrapButtonInstall.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
             bootstrapButtonInstall.setShowOutline(false);
+*/
         }
     }
 

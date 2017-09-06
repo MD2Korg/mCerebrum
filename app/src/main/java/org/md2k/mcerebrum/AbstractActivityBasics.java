@@ -31,6 +31,7 @@ public abstract class AbstractActivityBasics extends AppCompatActivity {
     public ConfigManager configManager;
     Subscription subscription;
     MaterialDialog materialDialog;
+    boolean isFirstTime;
 
     abstract void updateUI();
 
@@ -42,6 +43,7 @@ public abstract class AbstractActivityBasics extends AppCompatActivity {
         studyInfo=new StudyInfo();
         userInfo=new UserInfo();
         applicationManager=new ApplicationManager();
+        isFirstTime=true;
         Permission.requestPermission(this, new PermissionCallback() {
             @Override
             public void OnResponse(boolean isGranted) {
@@ -57,8 +59,12 @@ public abstract class AbstractActivityBasics extends AppCompatActivity {
     }
     @Override
     public void onResume(){
-        if(!configManager.isConfigured())
+        if(!configManager.isConfigured()) {
             prepareConfig();
+        }else if(isFirstTime){
+            isFirstTime=false;
+            updateUI();
+        }
         super.onResume();
     }
     public boolean readConfig(){

@@ -1,4 +1,4 @@
-package org.md2k.mcerebrum.configuration;
+package org.md2k.mcerebrum.menu;
 /*
  * Copyright (c) 2016, The University of Memphis, MD2K Center
  * - Syed Monowar Hossain <monowar.hossain@gmail.com>
@@ -26,70 +26,23 @@ package org.md2k.mcerebrum.configuration;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-public class CApp {
-    private String id;
-    private String type;
-    private String title;
-    private String summary;
-    private String description;
-    private String package_name;
-    private String download_from_github;
-    private String download_from_playstore;
-    private String download_from_url;
-    private String update;
-    private String status;
-    private String version;
-    private String icon;
+import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 
-    public String getId() {
-        return id;
-    }
+class MenuContent {
+    static final String PRIMARY_DRAWER_ITEM = "PRIMARY_DRAWER_ITEM";
+    static final String SECTION_DRAWER_ITEM = "SECTION_DRAWER_ITEM";
+    static final String SECONDARY_DRAWER_ITEM = "SECONDARY_DRAWER_ITEM";
+    String name;
+    FontAwesome.Icon icon;
+    String type;
+    long identifier;
+    int badgeValue;
 
-    public String getTitle() {
-        return title;
-    }
-
-    public String getSummary() {
-        return summary;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public String getIcon() {
-        return icon;
-    }
-
-    public String getDownload_from_github() {
-        return download_from_github;
-    }
-
-    public String getDownload_from_playstore() {
-        return download_from_playstore;
-    }
-
-    public String getDownload_from_url() {
-        return download_from_url;
-    }
-
-    public String getVersion() {
-        return version;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public String getPackage_name() {
-        return package_name;
-    }
-
-    public String getUpdate() {
-        return update;
-    }
-
-    public String getStatus() {
-        return status;
+    MenuContent(String name, FontAwesome.Icon icon, String type, long identifier, int badgeValue) {
+        this.name = name;
+        this.icon = icon;
+        this.type = type;
+        this.identifier = identifier;
+        this.badgeValue=badgeValue;
     }
 }

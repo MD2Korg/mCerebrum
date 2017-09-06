@@ -56,7 +56,7 @@ class MenuServer extends AbstractMenu{
             iProfiles[1] = new ProfileSettingDrawerItem().withName("Login").withIcon(FontAwesome.Icon.faw_sign_in).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                 @Override
                 public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                    responseCallBack.onResponse(MENU_LOGIN);
+                    responseCallBack.onResponse(null, MENU_LOGIN);
                     return false;
                 }
             });
@@ -64,7 +64,7 @@ class MenuServer extends AbstractMenu{
             iProfiles[1] = new ProfileSettingDrawerItem().withName("Logout").withIcon(FontAwesome.Icon.faw_sign_in).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                 @Override
                 public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                    responseCallBack.onResponse(MENU_LOGOUT);
+                    responseCallBack.onResponse(null, MENU_LOGOUT);
                     return false;
                 }
             });
@@ -72,7 +72,7 @@ class MenuServer extends AbstractMenu{
         iProfiles[2]= new ProfileSettingDrawerItem().withName("Leave Study").withIcon(FontAwesome.Icon.faw_chain_broken).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
             @Override
             public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                responseCallBack.onResponse(MENU_LEAVE);
+                responseCallBack.onResponse(null, MENU_LEAVE);
                 return false;
             }
         });

@@ -31,13 +31,21 @@ import android.content.Context;
 import org.md2k.mcerebrum.configuration.CApp;
 import org.md2k.mcerebrum.data.MySharedPreference;
 
+import java.util.ArrayList;
+
 public class ApplicationManager {
     private Application[] applications;
 
     public void set(CApp[] cApps){
-        applications=new Application[cApps.length];
-        for(int i=0;i<cApps.length;i++){
-            applications[i]=new Application(cApps[i]);
+        ArrayList<Application> applicationArrayList=new ArrayList<>();
+        for (CApp cApp : cApps) {
+            Application application = new Application(cApp);
+            if (application.isNotInUse()) continue;
+            applicationArrayList.add(application);
+        }
+        applications=new Application[applicationArrayList.size()];
+        for(int i=0;i<applicationArrayList.size();i++){
+            applications[i]=applicationArrayList.get(i);
         }
     }
 
@@ -62,6 +70,11 @@ public class ApplicationManager {
             else result[0]++;
         }
         return result;
+    }
+    public boolean isStatusOk(){
+        for(Application application: applications)
+            if(application.isRequired() && !application.isInstalled()) return false;
+        return true;
     }
 
     public void clear() {
