@@ -72,9 +72,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 app:bootstrapBrand="secondary"
-                app:bootstrapText="Application Settings"
-                android:paddingTop="5dp"
-                android:paddingBottom="5dp"
+                app:bootstrapText=""
                 android:textSize="20sp"
                 app:fontAwesomeIcon="fa_download"/>
             <LinearLayout
