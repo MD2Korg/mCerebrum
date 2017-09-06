@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import com.beardedhen.androidbootstrap.AwesomeTextView;
 import com.beardedhen.androidbootstrap.BootstrapButton;
+import com.beardedhen.androidbootstrap.api.attributes.BootstrapBrand;
 import com.beardedhen.androidbootstrap.api.defaults.DefaultBootstrapBrand;
 import com.ramotion.foldingcell.FoldingCell;
 
@@ -78,7 +79,10 @@ class FoldingCellListAdapterAppInstall extends ArrayAdapter<Application> {
             viewHolder = (ViewHolder) cell.getTag();
         }
         // bind data from selected element to view through view holder
-        viewHolder.title.setText(app.getTitle());
+        if(app.isRequired())
+            viewHolder.title.setText(app.getTitle()+" ("+app.getStatus()+")");
+        else
+            viewHolder.title.setText(app.getTitle());
         viewHolder.summary.setText(app.getSummary());
         viewHolder.content_title.setText(app.getTitle());
         viewHolder.content_summary.setText(app.getSummary());
@@ -88,49 +92,6 @@ class FoldingCellListAdapterAppInstall extends ArrayAdapter<Application> {
         viewHolder.icon_short.setImageDrawable(app.getIcon(getContext()));
         viewHolder.icon_long.setImageDrawable(app.getIcon(getContext()));
 
-        if(app.isInstalled()) {
-            viewHolder.buttonInstallLong.setEnabled(false);
-            viewHolder.buttonInstallLong.setBootstrapBrand(DefaultBootstrapBrand.SECONDARY);
-            viewHolder.buttonInstallShort.setEnabled(false);
-            viewHolder.buttonInstallShort.setBootstrapBrand(DefaultBootstrapBrand.SECONDARY);
-
-            viewHolder.buttonUpdateLong.setEnabled(false);
-            viewHolder.buttonUpdateLong.setBootstrapBrand(DefaultBootstrapBrand.SECONDARY);
-            viewHolder.buttonUpdateShort.setEnabled(false);
-            viewHolder.buttonUpdateShort.setBootstrapBrand(DefaultBootstrapBrand.SECONDARY);
-
-            viewHolder.buttonUninstallLong.setEnabled(true);
-            viewHolder.buttonUninstallLong.setBootstrapBrand(DefaultBootstrapBrand.DANGER);
-            viewHolder.buttonUninstallShort.setEnabled(true);
-            viewHolder.buttonUninstallShort.setBootstrapBrand(DefaultBootstrapBrand.DANGER);
- //           viewHolder.status.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
- //           viewHolder.status.setFontAwesomeIcon("fa-check-square");
-//            viewHolder.status.setText("installed");
-//            viewHolder.status.setTextColor(Color.GREEN);
-        }
-        else {
-            viewHolder.buttonInstallLong.setEnabled(true);
-            viewHolder.buttonInstallLong.setShowOutline(false);
-            viewHolder.buttonInstallLong.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
-            viewHolder.buttonInstallShort.setEnabled(true);
-            viewHolder.buttonInstallShort.setShowOutline(false);
-            viewHolder.buttonInstallShort.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
-
-            viewHolder.buttonUpdateLong.setEnabled(false);
-            viewHolder.buttonUpdateLong.setBootstrapBrand(DefaultBootstrapBrand.SECONDARY);
-            viewHolder.buttonUpdateShort.setEnabled(false);
-            viewHolder.buttonUpdateShort.setBootstrapBrand(DefaultBootstrapBrand.SECONDARY);
-
-            viewHolder.buttonUninstallLong.setEnabled(false);
-            viewHolder.buttonUninstallLong.setBootstrapBrand(DefaultBootstrapBrand.SECONDARY);
-            viewHolder.buttonUninstallShort.setEnabled(false);
-            viewHolder.buttonUninstallShort.setBootstrapBrand(DefaultBootstrapBrand.SECONDARY);
-   //         viewHolder.status.setBootstrapBrand(DefaultBootstrapBrand.DANGER);
-     //       viewHolder.status.setFontAwesomeIcon("fa-times-circle");
-
-//            viewHolder.status.setText("not installed");
-//            viewHolder.status.setTextColor(Color.RED);
-        }
         View.OnClickListener onClickListenerUninstall=new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -150,12 +111,21 @@ class FoldingCellListAdapterAppInstall extends ArrayAdapter<Application> {
                 responseCallBack.onResponse(position, FragmentFoldingUIAppInstall.UPDATE);
             }
         };
-
-        viewHolder.buttonUninstallLong.setOnClickListener(onClickListenerUninstall);
-        viewHolder.buttonUninstallShort.setOnClickListener(onClickListenerUninstall);
-        viewHolder.buttonInstallLong.setOnClickListener(onClickListenerInstall);
-        viewHolder.buttonInstallShort.setOnClickListener(onClickListenerInstall);
-
+        if(app.getType().toUpperCase().equals("MCEREBRUM")){
+            set(viewHolder.buttonInstallLong, viewHolder.buttonInstallShort, false, DefaultBootstrapBrand.SECONDARY, true, onClickListenerInstall);
+            set(viewHolder.buttonUpdateLong, viewHolder.buttonUpdateShort, false, DefaultBootstrapBrand.SECONDARY, true, onClickListenerUpdate);
+            set(viewHolder.buttonUninstallLong, viewHolder.buttonUninstallShort, false, DefaultBootstrapBrand.SECONDARY, true, onClickListenerUninstall);
+        }
+        else if(app.isInstalled()) {
+            set(viewHolder.buttonInstallLong, viewHolder.buttonInstallShort, false, DefaultBootstrapBrand.SECONDARY, true, onClickListenerInstall);
+            set(viewHolder.buttonUpdateLong, viewHolder.buttonUpdateShort, false, DefaultBootstrapBrand.SECONDARY, true, onClickListenerUpdate);
+            set(viewHolder.buttonUninstallLong, viewHolder.buttonUninstallShort, true, DefaultBootstrapBrand.DANGER, true, onClickListenerUninstall);
+        }
+        else {
+            set(viewHolder.buttonInstallLong, viewHolder.buttonInstallShort, true, DefaultBootstrapBrand.SUCCESS, false,onClickListenerInstall);
+            set(viewHolder.buttonUpdateLong, viewHolder.buttonUpdateShort, false, DefaultBootstrapBrand.SECONDARY, true,onClickListenerUpdate);
+            set(viewHolder.buttonUninstallLong, viewHolder.buttonUninstallShort, false, DefaultBootstrapBrand.SECONDARY, true, onClickListenerUninstall);
+       }
         viewHolder.updateVersion.setText("N/A");
 
      //   viewHolder.requestsCount.setText(String.valueOf(item.getRequestsCount()));
@@ -195,6 +165,16 @@ class FoldingCellListAdapterAppInstall extends ArrayAdapter<Application> {
 
     public void setDefaultRequestBtnClickListener(View.OnClickListener defaultRequestBtnClickListener) {
         this.defaultRequestBtnClickListener = defaultRequestBtnClickListener;
+    }
+    void set(BootstrapButton b1, BootstrapButton b2, boolean e, BootstrapBrand b, boolean o, View.OnClickListener l){
+        b1.setEnabled(e);
+        b1.setBootstrapBrand(b);
+        b1.setShowOutline(o);
+        b1.setOnClickListener(l);
+        b2.setEnabled(e);
+        b2.setBootstrapBrand(b);
+        b2.setShowOutline(o);
+        b2.setOnClickListener(l);
     }
 
     // View lookup cache

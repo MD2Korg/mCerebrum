@@ -1,10 +1,7 @@
 package org.md2k.mcerebrum;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -13,6 +10,8 @@ import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 
 import org.md2k.mcerebrum.UI.app_install_uninstall.FragmentFoldingUIAppInstall;
 import org.md2k.mcerebrum.UI.app_settings.FragmentFoldingUIAppSettings;
@@ -28,15 +27,17 @@ import es.dmoral.toasty.Toasty;
 
 public abstract class AbstractActivityMenu extends AbstractActivityBasics {
     private Drawer result = null;
+    int selectedMenu=AbstractMenu.MENU_HOME;
+    long backPressedLastTime=-1;
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(R.string.app_name);
-        updateUI();
     }
 
     @Override
@@ -83,7 +84,17 @@ public abstract class AbstractActivityMenu extends AbstractActivityBasics {
         if (result != null && result.isDrawerOpen()) {
             result.closeDrawer();
         } else {
-            super.onBackPressed();
+            if(selectedMenu!=AbstractMenu.MENU_HOME){
+                responseCallBack.onResponse(null, AbstractMenu.MENU_HOME);
+            }else{
+                long currentTime=System.currentTimeMillis();
+                if(currentTime-backPressedLastTime<2000)
+                    super.onBackPressed();
+                else{
+                    backPressedLastTime=currentTime;
+                    Toasty.warning(this, "Press BACK button again to QUIT", Toast.LENGTH_SHORT).show();
+                }
+            }
         }
     }
 
@@ -100,9 +111,14 @@ public abstract class AbstractActivityMenu extends AbstractActivityBasics {
 
     ResponseCallBack responseCallBack = new ResponseCallBack() {
         @Override
-        public void onResponse(int response) {
-            switch (response) {
+        public void onResponse(IDrawerItem drawerItem, int responseId) {
+            selectedMenu=responseId;
+            if(drawerItem!=null)
+                toolbar.setTitle(studyInfo.getTitle()+": "+((Nameable) drawerItem).getName().getText(AbstractActivityMenu.this));
+            else toolbar.setTitle(studyInfo.getTitle());
+            switch (responseId) {
                 case AbstractMenu.MENU_HOME:
+                    toolbar.setTitle(studyInfo.getTitle());
                     getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new FragmentHome()).commitAllowingStateLoss();
                     break;
                 case AbstractMenu.MENU_APP_ADD_REMOVE:

@@ -27,6 +27,8 @@ package org.md2k.mcerebrum.menu;
  */
 
 
+import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+
 public interface ResponseCallBack {
-    void onResponse(int response);
+    void onResponse(IDrawerItem drawerItem, int responseId);
 }

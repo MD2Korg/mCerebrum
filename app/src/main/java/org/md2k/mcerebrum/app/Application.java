@@ -55,6 +55,9 @@ import rx.Observable;
 import rx.functions.Func1;
 
 public class Application {
+    private static final String STATUS_REQUIRED="REQUIRED";
+    private static final String STATUS_OPTIONAL="OPTIONAL";
+    private static final String STATUS_NOT_IN_USE="NOT_IN_USE";
     private String id;
     private String type;
     private String title;
@@ -72,6 +75,7 @@ public class Application {
     private int currentVersionCode;
     private boolean installed;
     private boolean isConfigurable;
+    private String status;
 
     private static final int REQUEST_CODE = 2000;
     private boolean configured;
@@ -91,6 +95,7 @@ public class Application {
         downloadFromURL = capp.getDownload_from_url();
         expectedVersion = capp.getVersion();
         updateOption = capp.getUpdate();
+        status = capp.getStatus();
         installed = AppUtils.isInstallApp(packageName);
         if (installed) {
             currentVersionName = AppUtils.getAppVersionName(packageName);
@@ -304,5 +309,25 @@ public class Application {
 
     public long getRunningTime() {
         return runningTime;
+    }
+    public boolean isRequired(){
+        if(status==null) return false;
+        if(STATUS_REQUIRED.equals(status.toUpperCase())) return true;
+        return false;
+    }
+    public boolean isOptional(){
+        if(status==null) return true;
+        if(STATUS_OPTIONAL.equals(status.toUpperCase())) return true;
+        return false;
+    }
+    public boolean isNotInUse(){
+        if(status==null) return false;
+        if(STATUS_NOT_IN_USE.equals(status.toUpperCase())) return true;
+        return false;
+    }
+    public String getStatus(){
+        if(isRequired()) return "Required";
+        else if(isNotInUse()) return "Not in use";
+        else return "Optional";
     }
 }

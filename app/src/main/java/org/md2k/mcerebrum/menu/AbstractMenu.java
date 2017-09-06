@@ -93,7 +93,7 @@ public abstract class AbstractMenu {
                     iDrawerItems[i] = new PrimaryDrawerItem().withName(menuContent[i].name).withIcon(menuContent[i].icon).withIdentifier(menuContent[i].identifier).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                         @Override
                         public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                            responseCallBack.onResponse((int) drawerItem.getIdentifier());
+                            responseCallBack.onResponse(drawerItem, (int) drawerItem.getIdentifier());
                             return false;
                         }
                     });
@@ -105,7 +105,7 @@ public abstract class AbstractMenu {
                     iDrawerItems[i] = new SecondaryDrawerItem().withName(menuContent[i].name).withIcon(menuContent[i].icon).withIdentifier(menuContent[i].identifier).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                         @Override
                         public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                            responseCallBack.onResponse((int) drawerItem.getIdentifier());
+                            responseCallBack.onResponse(drawerItem, (int) drawerItem.getIdentifier());
                             return false;
                         }
                     });
@@ -117,7 +117,7 @@ public abstract class AbstractMenu {
                     iDrawerItems[i] = new SectionDrawerItem().withName(menuContent[i].name).withIdentifier(menuContent[i].identifier).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                         @Override
                         public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                            responseCallBack.onResponse((int) drawerItem.getIdentifier());
+                            responseCallBack.onResponse(drawerItem, (int) drawerItem.getIdentifier());
                             return false;
                         }
                     });
@@ -127,21 +127,3 @@ public abstract class AbstractMenu {
     }
 }
 
-class MenuContent {
-    static final String PRIMARY_DRAWER_ITEM = "PRIMARY_DRAWER_ITEM";
-    static final String SECTION_DRAWER_ITEM = "SECTION_DRAWER_ITEM";
-    static final String SECONDARY_DRAWER_ITEM = "SECONDARY_DRAWER_ITEM";
-    String name;
-    FontAwesome.Icon icon;
-    String type;
-    long identifier;
-    int badgeValue;
-
-    MenuContent(String name, FontAwesome.Icon icon, String type, long identifier, int badgeValue) {
-        this.name = name;
-        this.icon = icon;
-        this.type = type;
-        this.identifier = identifier;
-        this.badgeValue=badgeValue;
-    }
-}
