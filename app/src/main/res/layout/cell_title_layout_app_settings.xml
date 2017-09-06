@@ -125,7 +125,7 @@
                 android:id="@+id/button_open_short"
                 style="@style/wrapping_button"
                 android:layout_weight=".3"
-                app:fontAwesomeIcon="fa_folder_open_o"
+                app:fontAwesomeIcon="fa_bar_chart"
                 app:bootstrapBrand="warning"
                 app:roundedCorners="true"
                 app:showOutline="true" />

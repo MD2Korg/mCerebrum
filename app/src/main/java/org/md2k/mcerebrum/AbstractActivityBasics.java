@@ -1,5 +1,6 @@
 package org.md2k.mcerebrum;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
@@ -10,8 +11,8 @@ import com.blankj.utilcode.util.Utils;
 import org.md2k.mcerebrum.app.ApplicationManager;
 import org.md2k.mcerebrum.commons.dialog.Dialog;
 import org.md2k.mcerebrum.configuration.ConfigManager;
-import org.md2k.mcerebrum.core.permission.Permission;
-import org.md2k.mcerebrum.core.permission.PermissionCallback;
+import org.md2k.mcerebrum.commons.permission.Permission;
+import org.md2k.mcerebrum.commons.permission.PermissionCallback;
 import org.md2k.mcerebrum.data.StudyInfo;
 import org.md2k.mcerebrum.data.UserInfo;
 import org.md2k.mcerebrum.internet.download.DownloadInfo;
@@ -103,6 +104,11 @@ public abstract class AbstractActivityBasics extends AppCompatActivity {
                     }
                 });
 
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        //Handle Code
     }
     @Override
     public void onDestroy(){

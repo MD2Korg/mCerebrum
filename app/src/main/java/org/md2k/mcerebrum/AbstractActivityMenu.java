@@ -148,10 +148,5 @@ public abstract class AbstractActivityMenu extends AbstractActivityBasics {
             materialDialog.dismiss();
         super.onDestroy();
     }
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        //Handle Code
-    }
 }
 

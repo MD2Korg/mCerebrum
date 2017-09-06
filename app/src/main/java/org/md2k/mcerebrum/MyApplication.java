@@ -5,6 +5,8 @@ import android.content.Context;
 
 import com.beardedhen.androidbootstrap.TypefaceProvider;
 
+import rx_activity_result2.RxActivityResult;
+
 /*
  * Copyright (c) 2016, The University of Memphis, MD2K Center
  * - Syed Monowar Hossain <monowar.hossain@gmail.com>
@@ -39,6 +41,8 @@ public class MyApplication extends Application {
         super.onCreate();
         context=getApplicationContext();
         TypefaceProvider.registerDefaultIconSets();
+        RxActivityResult.register(this);
+
     }
     public static Context getContext(){
         return context;

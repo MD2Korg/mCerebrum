@@ -43,6 +43,7 @@ import org.md2k.mcerebrum.Constants;
 import org.md2k.mcerebrum.commons.storage.Storage;
 import org.md2k.mcerebrum.commons.storage.StorageType;
 import org.md2k.mcerebrum.configuration.CApp;
+import org.md2k.mcerebrum.core.access.Info;
 import org.md2k.mcerebrum.internet.download.DownloadFile;
 import org.md2k.mcerebrum.internet.download.DownloadInfo;
 import org.md2k.mcerebrum.internet.github.model.ReleaseInfo;
@@ -70,8 +71,12 @@ public class Application {
     private String currentVersionName;
     private int currentVersionCode;
     private boolean installed;
+    private boolean isConfigurable;
 
     private static final int REQUEST_CODE = 2000;
+    private boolean configured;
+    private boolean runInBackground;
+    private long runningTime;
 
     Application(CApp capp) {
         id = capp.getId();
@@ -252,5 +257,52 @@ public class Application {
             currentVersionName = AppUtils.getAppVersionName(packageName);
             currentVersionCode = AppUtils.getAppVersionCode(packageName);
         }
+    }
+
+    public void updateStatus(Info info) {
+        isConfigurable = info.isConfigurable();
+        runningTime = info.getRunningTime();
+        runInBackground = info.isRunInBackground();
+        configured = info.isConfigured();
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public String getUpdateOption() {
+        return updateOption;
+    }
+
+    public String getUpdateVersionName() {
+        return updateVersionName;
+    }
+
+    public boolean isConfigurable() {
+        return isConfigurable;
+    }
+
+    public static int getRequestCode() {
+        return REQUEST_CODE;
+    }
+
+    public boolean isConfigured() {
+        return configured;
+    }
+
+    public boolean isRunInBackground() {
+        return runInBackground;
+    }
+
+    public long getRunningTime() {
+        return runningTime;
     }
 }

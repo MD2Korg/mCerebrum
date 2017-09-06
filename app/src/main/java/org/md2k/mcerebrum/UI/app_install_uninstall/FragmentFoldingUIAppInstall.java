@@ -223,7 +223,6 @@ public class FragmentFoldingUIAppInstall extends Fragment {
             bootstrapButtonInstall.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
             bootstrapButtonInstall.setShowOutline(false);
         }
-
     }
 
 }

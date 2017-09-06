@@ -90,10 +90,29 @@ public class FoldingCellListAdapterAppSettings extends ArrayAdapter<Application>
         viewHolder.icon_short.setImageDrawable(application.getIcon(getContext()));
         viewHolder.icon_long.setImageDrawable(application.getIcon(getContext()));
 
-        viewHolder.buttonSettingsLong.setEnabled(true);
-        viewHolder.buttonSettingsLong.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
-        viewHolder.buttonSettingsShort.setEnabled(true);
-        viewHolder.buttonSettingsShort.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
+        if(application.isConfigurable() && application.isConfigured()){
+            viewHolder.buttonSettingsLong.setEnabled(true);
+            viewHolder.buttonSettingsLong.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
+            viewHolder.buttonSettingsLong.setShowOutline(true);
+            viewHolder.buttonSettingsShort.setEnabled(true);
+            viewHolder.buttonSettingsShort.setShowOutline(true);
+            viewHolder.buttonSettingsShort.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
+        }else if(application.isConfigurable()){
+            viewHolder.buttonSettingsLong.setEnabled(true);
+            viewHolder.buttonSettingsLong.setShowOutline(false);
+            viewHolder.buttonSettingsLong.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
+            viewHolder.buttonSettingsShort.setEnabled(true);
+            viewHolder.buttonSettingsShort.setShowOutline(false);
+            viewHolder.buttonSettingsShort.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
+        }else{
+            viewHolder.buttonSettingsLong.setEnabled(false);
+            viewHolder.buttonSettingsLong.setShowOutline(true);
+            viewHolder.buttonSettingsLong.setBootstrapBrand(DefaultBootstrapBrand.SECONDARY);
+            viewHolder.buttonSettingsShort.setEnabled(false);
+            viewHolder.buttonSettingsShort.setShowOutline(true);
+            viewHolder.buttonSettingsShort.setBootstrapBrand(DefaultBootstrapBrand.SECONDARY);
+        }
+
 
         viewHolder.buttonRunLong.setEnabled(true);
         viewHolder.buttonRunLong.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);

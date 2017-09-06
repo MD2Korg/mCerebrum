@@ -4,6 +4,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +17,8 @@ import org.md2k.mcerebrum.ActivityMain;
 import org.md2k.mcerebrum.R;
 import org.md2k.mcerebrum.app.Application;
 import org.md2k.mcerebrum.app.ApplicationManager;
+import org.md2k.mcerebrum.core.access.Access;
+import org.md2k.mcerebrum.core.access.Info;
 
 import java.util.ArrayList;
 
@@ -23,6 +26,9 @@ public class FragmentFoldingUIAppSettings extends Fragment {
     public static final int CONFIGURE = 0;
     public static final int OPEN = 1;
     public static final int RUN = 2;
+    public static final int REQUEST_INFO = 2000;
+    ApplicationManager applicationManager;
+    FoldingCellListAdapterAppSettings adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
@@ -33,30 +39,24 @@ public class FragmentFoldingUIAppSettings extends Fragment {
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
         ListView theListView = (ListView) view.findViewById(R.id.listview_folding_ui);
-        Application[] applications = ((ActivityMain) getActivity()).applicationManager.getApplications();
+        applicationManager = ((ActivityMain) getActivity()).applicationManager;
+        final Application[] applications = applicationManager.getApplications();
         // prepare elements to display
-        ArrayList<Application> appInfos = new ArrayList<>();
-        for (Application application : applications) {
-            if (!application.isInstalled()) continue;
-            appInfos.add(application);
+        final ArrayList<Application> appInfos = new ArrayList<>();
+        for(int i=0;i<applications.length;i++){
+            if (!applications[i].isInstalled()) continue;
+            appInfos.add(applications[i]);
+            getInfo(applications[i], REQUEST_INFO+i);
+
         }
-        // add custom btn handler to first list item
-/*
-        items.get(0).setRequestBtnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getActivity(), "CUSTOM HANDLER FOR FIRST BUTTON", Toast.LENGTH_SHORT).show();
-            }
-        });
-*/
-        final FoldingCellListAdapterAppSettings adapter = new FoldingCellListAdapterAppSettings(getActivity(), appInfos, new ResponseCallBack() {
+        adapter = new FoldingCellListAdapterAppSettings(getActivity(), appInfos, new ResponseCallBack() {
             @Override
             public void onResponse(int position, int operation) {
-
                 if (operation == CONFIGURE) {
                     Intent intent = new Intent();
-                    intent.putExtra("REQUEST", 1);
-                    intent.setComponent(new ComponentName("org.md2k.phonesensor", "org.md2k.phonesensor.ActivityMCerebrum"));
+                    intent.putExtra("REQUEST", Access.REQUEST_CONFIGURE);
+
+                    intent.setComponent(new ComponentName(appInfos.get(position).getPackageName(), appInfos.get(position).getPackageName()+".ActivityMCerebrum"));
                     startActivity(intent);
 
 //                    items.get(position).uninstall(getActivity(), 1000);
@@ -82,4 +82,61 @@ public class FragmentFoldingUIAppSettings extends Fragment {
             }
         });
     }
+
+    void getInfo(Application application, int requestCode) {
+        try {
+            Intent intent = new Intent();
+            intent.putExtra("REQUEST", Access.REQUEST_INFO);
+            intent.setComponent(new ComponentName(application.getPackageName(), application.getPackageName() + ".ActivityMCerebrum"));
+            startActivityForResult(intent, requestCode);
+        }catch (Exception ignored){
+
+        }
+
+/*
+        RxActivityResult.on(this).startIntent(intent)
+                .subscribe(new Consumer<Result<FragmentFoldingUIAppSettings>>() {
+                    @Override
+                    public void accept(Result<FragmentFoldingUIAppSettings> result) throws Exception {
+                        Intent data = result.data();
+                        int resultCode = result.resultCode();
+                        result.data().get
+                        // the requestCode using which the activity is started can be received here.
+                        int requestCode = result.requestCode();
+
+*/
+/*
+                    if(requestCode == YourActivity.YOUR_REQUEST_CODE)
+                    {
+                        // Do Something
+                    }
+
+                    if (resultCode == RESULT_OK) {
+//                        result.targetUI().showImage(data);
+                    } else {
+//                        result.targetUI().printUserCanceled();
+                    }
+*//*
+
+                    }
+                });
+*/
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        try {
+            if (requestCode >= 2000 && requestCode <= 3000) {
+                requestCode = requestCode - 2000;
+                Info info = data.getParcelableExtra(Access.RESPONSE);
+                Log.d("abc", "abc");
+                applicationManager.getApplications()[requestCode].updateStatus(info);
+                adapter.notifyDataSetChanged();
+            }
+        }catch (Exception ignored){
+
+        }
+    }
+
 }
