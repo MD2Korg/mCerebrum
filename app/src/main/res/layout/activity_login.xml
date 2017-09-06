@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:textAlignment="center"
             android:textColor="#D6DBDF"
-            android:text="Log In"
+            android:text="Join Study"
             android:layout_marginTop="50dp"
             android:textSize="20dp"
             android:textStyle="bold"/>
@@ -28,7 +28,7 @@
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="110dp"
+        android:layout_marginTop="90dp"
         android:id="@+id/linearLayout2">
 
         <RelativeLayout
@@ -49,13 +49,15 @@
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="360dp"
+        android:layout_height="310dp"
         android:paddingLeft="40dp"
         android:paddingRight="40dp"
+        android:background="@color/backGroundDark"
         android:id="@+id/linearLayout"
         android:layout_below="@+id/linearLayout2"
         android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true">
+        android:layout_alignParentEnd="true"
+        android:layout_margin="10dp">
         <com.rengwuxian.materialedittext.MaterialEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -69,7 +71,7 @@
             app:met_singleLineEllipsis="true"
             app:met_iconLeft="@drawable/ic_person_white_48dp"
             app:met_iconPadding="0dp"
-            android:layout_marginTop="20dp" />
+            android:layout_marginTop="0dp" />
         <com.rengwuxian.materialedittext.MaterialEditText
             android:id="@+id/edittext_password"
             android:layout_width="match_parent"
@@ -104,7 +106,7 @@
             android:paddingBottom="10dp"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
-            android:paddingTop="10dp"
+            android:paddingTop="0dp"
             fancy:fb_borderColor="#FFFFFF"
             fancy:fb_borderWidth="1dp"
             fancy:fb_defaultColor="#FFFFFF"
@@ -162,6 +164,13 @@
             android:background="@drawable/button"
             android:textColor="@color/colorPrimaryText" />
     </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.2">
+
+
+        </LinearLayout>
 </LinearLayout>
 
 

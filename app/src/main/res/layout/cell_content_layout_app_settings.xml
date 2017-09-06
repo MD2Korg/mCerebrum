@@ -94,7 +94,8 @@
             android:layout_marginTop="8dp"
             android:padding="5dp"
             android:text="Android is a mobile operating system developed by Google, based on the Linux kernel and designed primarily for touchscreen mobile devices such as smartphones and tablets."
-            android:textSize="14sp" />
+            android:textSize="12sp"
+            android:textColor="@color/titleBadgeText"/>
 
         <!-- divider line -->
         <ImageView
