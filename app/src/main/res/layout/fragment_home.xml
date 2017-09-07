@@ -81,7 +81,7 @@
                 <com.beardedhen.androidbootstrap.BootstrapLabel
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Configuration"
+                    android:text="Summary"
                     app:bootstrapBrand="warning"
                     app:bootstrapHeading="h6" />
 
@@ -109,7 +109,7 @@
                 <com.beardedhen.androidbootstrap.BootstrapLabel
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Application"
+                    android:text="Application Installation"
                     app:bootstrapBrand="warning"
                     app:bootstrapHeading="h6" />
 
@@ -119,6 +119,74 @@
                     android:paddingTop="10dp"
                     app:bootstrapBrand="success"
                     app:bootstrapText="Look, I'm in a large well" />
+            </LinearLayout>
+        </com.beardedhen.androidbootstrap.BootstrapWell>
+
+        <com.beardedhen.androidbootstrap.BootstrapWell
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="8dp"
+            app:bootstrapSize="md">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+            <com.beardedhen.androidbootstrap.BootstrapLabel
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:bootstrapBrand="info"
+                app:bootstrapHeading="h6"
+                app:bootstrapText="{fa_cog}   Application Setup"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:weightSum="1"
+                android:orientation="horizontal">
+
+                    <com.beardedhen.androidbootstrap.AwesomeTextView
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight=".7"
+                        android:paddingTop="10dp"
+                        android:gravity="start"
+                        app:bootstrapBrand="success"
+                        app:bootstrapText="Look, I'm in a large well" />
+
+                <com.beardedhen.androidbootstrap.BootstrapButton
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight=".3"
+                    android:paddingTop="10dp"
+                    app:bootstrapBrand="success"
+                    app:bootstrapText="Ok" />
+                </LinearLayout>
+            </LinearLayout>
+        </com.beardedhen.androidbootstrap.BootstrapWell>
+
+        <com.beardedhen.androidbootstrap.BootstrapWell
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="8dp"
+            app:bootstrapSize="md">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical">
+
+                <com.beardedhen.androidbootstrap.BootstrapButton
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:paddingTop="10dp"
+                    app:bootstrapBrand="success"
+                    app:bootstrapSize="lg"
+                    app:bootstrapText="{fa_play}  Start Study"
+                    app:roundedCorners="true" />
             </LinearLayout>
         </com.beardedhen.androidbootstrap.BootstrapWell>
     </LinearLayout>

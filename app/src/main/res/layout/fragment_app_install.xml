@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/login_background"
-    tools:context="org.md2k.mcerebrum.login.ActivityLogin">
+    tools:context="org.md2k.mcerebrum.ActivityMain">
 
     <RelativeLayout
         android:id="@+id/transparentOverlay"

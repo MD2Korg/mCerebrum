@@ -3,6 +3,7 @@ package org.md2k.mcerebrum.UI.app_settings;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,48 +25,69 @@ import java.util.ArrayList;
 
 public class FragmentFoldingUIAppSettings extends Fragment {
     public static final int CONFIGURE = 0;
-    public static final int OPEN = 1;
+    public static final int REPORT = 1;
     public static final int RUN = 2;
     public static final int REQUEST_INFO = 2000;
     ApplicationManager applicationManager;
     FoldingCellListAdapterAppSettings adapter;
+    ArrayList<Application> appInfos;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         // Defines the xml file for the fragment
         return inflater.inflate(R.layout.fragment_folding_ui_app_settings, parent, false);
     }
+    Handler handler;
+    Runnable runnable=new Runnable() {
+        @Override
+        public void run() {
+            Application[] applications=applicationManager.getApplications();
+            for(int i=0;i<applications.length;i++){
+                if (!applications[i].isInstalled()) continue;
+                if (applications[i].getType().toUpperCase().equals("MCEREBRUM")) continue;
+                getInfo(applications[i], REQUEST_INFO + i);
+            }
+            handler.postDelayed(this, 2000);
+        }
+    };
 
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
+        handler=new Handler();
         ListView theListView = (ListView) view.findViewById(R.id.listview_folding_ui);
         applicationManager = ((ActivityMain) getActivity()).applicationManager;
         final Application[] applications = applicationManager.getApplications();
         // prepare elements to display
-        final ArrayList<Application> appInfos = new ArrayList<>();
-        for(int i=0;i<applications.length;i++){
+        appInfos = new ArrayList<>();
+        for (int i = 0; i < applications.length; i++) {
             if (!applications[i].isInstalled()) continue;
+            if (applications[i].getType().toUpperCase().equals("MCEREBRUM")) continue;
             appInfos.add(applications[i]);
-            getInfo(applications[i], REQUEST_INFO+i);
-
         }
+        handler.post(runnable);
         adapter = new FoldingCellListAdapterAppSettings(getActivity(), appInfos, new ResponseCallBack() {
             @Override
             public void onResponse(int position, int operation) {
                 if (operation == CONFIGURE) {
                     Intent intent = new Intent();
                     intent.putExtra("REQUEST", Access.REQUEST_CONFIGURE);
-
-                    intent.setComponent(new ComponentName(appInfos.get(position).getPackageName(), appInfos.get(position).getPackageName()+".ActivityMCerebrum"));
+                    intent.setComponent(new ComponentName(appInfos.get(position).getPackageName(), appInfos.get(position).getPackageName() + ".ActivityMCerebrumAccess"));
                     startActivity(intent);
 
 //                    items.get(position).uninstall(getActivity(), 1000);
-                } else if (operation == OPEN) {
-//                    if(items.get(position).isInstallFromPlayStore(getActivity()))
-//                        items.get(position).installPlayStore(getActivity());
-//                    else {
-//                        downloadAndInstall(items.get(position));
-//                    }
+                } else if (operation == REPORT) {
+                    Intent intent = new Intent();
+                    intent.putExtra("REQUEST", Access.REQUEST_REPORT);
+                    intent.setComponent(new ComponentName(appInfos.get(position).getPackageName(), appInfos.get(position).getPackageName() + ".ActivityMCerebrumAccess"));
+                    startActivity(intent);
+                } else if (operation == RUN) {
+                    Intent intent = new Intent();
+                    if (appInfos.get(position).isRunning())
+                        intent.putExtra("REQUEST", Access.REQUEST_STOP);
+                    else
+                        intent.putExtra("REQUEST", Access.REQUEST_START);
+                    intent.setComponent(new ComponentName(appInfos.get(position).getPackageName(), appInfos.get(position).getPackageName() + ".ActivityMCerebrumAccess"));
+                    startActivity(intent);
                 }
             }
         });
@@ -87,9 +109,9 @@ public class FragmentFoldingUIAppSettings extends Fragment {
         try {
             Intent intent = new Intent();
             intent.putExtra("REQUEST", Access.REQUEST_INFO);
-            intent.setComponent(new ComponentName(application.getPackageName(), application.getPackageName() + ".ActivityMCerebrum"));
+            intent.setComponent(new ComponentName(application.getPackageName(), application.getPackageName() + ".ActivityMCerebrumAccess"));
             startActivityForResult(intent, requestCode);
-        }catch (Exception ignored){
+        } catch (Exception ignored) {
 
         }
 
@@ -122,7 +144,11 @@ public class FragmentFoldingUIAppSettings extends Fragment {
                 });
 */
     }
-
+    @Override
+    public void onDestroyView(){
+        handler.removeCallbacks(runnable);
+        super.onDestroyView();
+    }
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -134,7 +160,7 @@ public class FragmentFoldingUIAppSettings extends Fragment {
                 applicationManager.getApplications()[requestCode].updateStatus(info);
                 adapter.notifyDataSetChanged();
             }
-        }catch (Exception ignored){
+        } catch (Exception ignored) {
 
         }
     }

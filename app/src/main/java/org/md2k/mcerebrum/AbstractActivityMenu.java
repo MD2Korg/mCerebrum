@@ -1,7 +1,6 @@
 package org.md2k.mcerebrum;
 
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.widget.Toast;
@@ -19,7 +18,7 @@ import org.md2k.mcerebrum.UI.home.FragmentHome;
 import org.md2k.mcerebrum.UI.joinstudy.FragmentJoinStudy;
 import org.md2k.mcerebrum.commons.dialog.Dialog;
 import org.md2k.mcerebrum.commons.dialog.DialogCallback;
-import org.md2k.mcerebrum.login.FragmentLogin;
+import org.md2k.mcerebrum.UI.login.FragmentLogin;
 import org.md2k.mcerebrum.menu.AbstractMenu;
 import org.md2k.mcerebrum.menu.ResponseCallBack;
 
@@ -143,8 +142,6 @@ public abstract class AbstractActivityMenu extends AbstractActivityBasics {
                     break;
                 case AbstractMenu.MENU_LOGIN:
                     getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new FragmentLogin()).commitAllowingStateLoss();
-//                Intent i = new Intent(this, ActivityLogin.class);
-//                startActivityForResult(i, ID_JOIN_STUDY);
                     break;
                 case AbstractMenu.MENU_LOGOUT:
 //                ((UserServer) user).setLoggedIn(this,false);

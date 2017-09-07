@@ -209,7 +209,7 @@
                 />
 
             <com.beardedhen.androidbootstrap.BootstrapButton
-                android:id="@+id/button_open_long"
+                android:id="@+id/button_report_long"
                 style="@style/wrapping_button"
                 android:layout_gravity="center"
                 android:layout_weight=".3"

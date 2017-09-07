@@ -122,7 +122,7 @@
 
 
             <com.beardedhen.androidbootstrap.BootstrapButton
-                android:id="@+id/button_open_short"
+                android:id="@+id/button_report_short"
                 style="@style/wrapping_button"
                 android:layout_weight=".3"
                 app:fontAwesomeIcon="fa_bar_chart"

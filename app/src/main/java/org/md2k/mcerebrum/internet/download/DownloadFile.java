@@ -59,7 +59,7 @@ public class DownloadFile {
         } catch (MalformedURLException e) {
             return Observable.error(e);
         }
-        return observable.throttleLast(200, TimeUnit.MILLISECONDS).onBackpressureLatest();
+        return observable.throttleLast(100, TimeUnit.MILLISECONDS).onBackpressureLatest();
 
     }
     private Func1<Response<ResponseBody>, Observable<DownloadInfo>> processResponse(final String destinationPath, final String destinationFile) {

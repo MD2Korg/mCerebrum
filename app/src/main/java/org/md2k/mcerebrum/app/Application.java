@@ -81,6 +81,8 @@ public class Application {
     private boolean configured;
     private boolean runInBackground;
     private long runningTime;
+    private boolean report;
+    private boolean running;
 
     Application(CApp capp) {
         id = capp.getId();
@@ -269,6 +271,8 @@ public class Application {
         runningTime = info.getRunningTime();
         runInBackground = info.isRunInBackground();
         configured = info.isConfigured();
+        report=info.hasReport();
+        running = info.isRunning();
     }
 
     public String getId() {
@@ -329,5 +333,13 @@ public class Application {
         if(isRequired()) return "Required";
         else if(isNotInUse()) return "Not in use";
         else return "Optional";
+    }
+
+    public boolean hasReport() {
+        return report;
+    }
+
+    public boolean isRunning() {
+        return running;
     }
 }

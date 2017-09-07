@@ -1,4 +1,4 @@
-package org.md2k.mcerebrum.login;
+package org.md2k.mcerebrum.UI.login;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
@@ -19,7 +19,6 @@ import org.md2k.mcerebrum.ActivityMain;
 import org.md2k.mcerebrum.R;
 import org.md2k.mcerebrum.internet.download.DownloadFile;
 import org.md2k.mcerebrum.internet.download.DownloadInfo;
-import org.md2k.mcerebrum.menu.AbstractMenu;
 
 import rx.Observer;
 import rx.Subscription;
@@ -103,9 +102,6 @@ public class FragmentLogin extends Fragment {
             public void onClick(View v) {
                 MaterialEditText materialEditText = (MaterialEditText) view.findViewById(R.id.edittext_username);
                 MaterialEditText materialEditText1 = (MaterialEditText) view.findViewById(R.id.edittext_password);
-                //   Toast.makeText(ActivityLogin.this, "username=" + materialEditText.getText(), Toast.LENGTH_LONG).show();
-                //    Toast.makeText(ActivityLogin.this, "password=" + materialEditText1.getText(), Toast.LENGTH_LONG).show();
-
 
 
 
@@ -136,9 +132,8 @@ public class FragmentLogin extends Fragment {
     private void downloadConfig(){
         textview_loginInfo.setText("Success: Downloading configuration file...");
         textview_loginInfo.setTextColor(Color.GREEN);
-        DownloadFile downloadFile=new DownloadFile();
-
-        subscription = downloadFile.download("https://github.com/MD2Korg/mCerebrum-Configuration/releases/download/1.4/mperf.zip", getActivity().getExternalFilesDir(null)+"/temp","config.zip")
+        ActivityMain activityMain = (ActivityMain) getActivity();
+        subscription = activityMain.configManager.downloadAndExtract(getActivity(), "https://github.com/MD2Korg/mCerebrum-Configuration/releases/download/1.4/mperf.zip")
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<DownloadInfo>() {
@@ -157,7 +152,6 @@ public class FragmentLogin extends Fragment {
                 data.setUserId(FragmentLogin.this,((MaterialEditText) findViewById(R.id.edittext_username)).getText().toString());
                 data.setUserPassword(FragmentLogin.this,((MaterialEditText) findViewById(R.id.edittext_password)).getText().toString());
                 data.setServer(FragmentLogin.this,((MaterialEditText) findViewById(R.id.edittext_login_server)).getText().toString());
-//                data.setLoggedIn(ActivityLogin.this,true);
                 data.setRefresh(FragmentLogin.this, true);
                 finish();
 */

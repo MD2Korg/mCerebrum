@@ -120,6 +120,7 @@ public class FragmentJoinStudy extends Fragment {
                             if(userName!=null) {
                                 userInfo.setLoggedIn(true);
                                 userInfo.setTitle(userName);
+                                activityMain.updateUI();
                             }
                         }
                     }
@@ -136,48 +137,6 @@ public class FragmentJoinStudy extends Fragment {
                     }
                 });
     }
-
-/*
-    private void downloadConfig(){
-        final TextView t=(TextView) findViewById(R.id.textview_logininfo);
-        t.setText("Success: Downloading configuration file...");
-        t.setTextColor(Color.GREEN);
-        DownloadFile downloadFile=new DownloadFile();
-
-        subscription = downloadFile.download("https://github.com/MD2Korg/mCerebrum-Configuration/releases/download/1.4/mperftest.zip", this.getExternalFilesDir(null)+"/temp","config.zip")
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<DownloadInfo>() {
-            @Override
-            public void onCompleted() {
-                t.setTextColor(Color.GREEN);
-                Intent returnIntent = new Intent();
-                returnIntent.putExtra("config_file",ActivityLogin.this.getExternalFilesDir(null)+"/temp/config.zip");
-
-                setResult(Activity.RESULT_OK,returnIntent);
-                Data data=new Data();
-                data.setUserType(ActivityLogin.this,Data.TYPE_LOGIN);
-                data.setUserId(ActivityLogin.this,((MaterialEditText) findViewById(R.id.edittext_username)).getText().toString());
-                data.setUserPassword(ActivityLogin.this,((MaterialEditText) findViewById(R.id.edittext_password)).getText().toString());
-                data.setServer(ActivityLogin.this,((MaterialEditText) findViewById(R.id.edittext_login_server)).getText().toString());
-//                data.setLoggedIn(ActivityLogin.this,true);
-                data.setRefresh(ActivityLogin.this, true);
-                finish();
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                t.setTextColor(Color.RED);
-                t.setText("Error: download configuration file failed...please try again");
-            }
-
-            @Override
-            public void onNext(DownloadInfo downloadInfo) {
-
-            }
-        });
-    }
-*/
 
     @Override
     public void onDestroy(){

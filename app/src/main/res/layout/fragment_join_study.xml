@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:fancy="http://schemas.android.com/apk/res-auto"
-    tools:context="org.md2k.mcerebrum.login.ActivityLogin"
+    tools:context="org.md2k.mcerebrum.ActivityMain"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorbackground"
