@@ -46,11 +46,20 @@ public class FragmentFoldingUIAppInstall extends Fragment {
     ApplicationManager applicationManager;
     FoldingCellListAdapterAppInstall adapter;
     int installAllIndex=-1;
+    boolean isUpdateUI=false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         // Defines the xml file for the fragment
         return inflater.inflate(R.layout.fragment_folding_ui_app_install, parent, false);
+    }
+    @Override
+    public void onResume(){
+        if(isUpdateUI){
+            downloadAndInstallAll();
+            isUpdateUI=false;
+        }
+        super.onResume();
     }
 
     @Override
@@ -190,7 +199,7 @@ public class FragmentFoldingUIAppInstall extends Fragment {
                     applicationManager.updateInfo();
                     adapter.notifyDataSetChanged();
                     updateTextViewStatus();
-                    downloadAndInstallAll();
+                    isUpdateUI=true;
 //                    getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new FragmentFoldingUIAppInstall()).commitAllowingStateLoss();
                     break;
             }
