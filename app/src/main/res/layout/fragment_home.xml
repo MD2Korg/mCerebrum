@@ -68,6 +68,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/awesome_textview_summary"
                 android:paddingTop="10dp"
+                android:layout_marginLeft="5dp"
                 app:bootstrapBrand="success"
                 app:bootstrapText="Look, I'm in a large well" />
 
@@ -132,6 +133,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/awesome_textview_install"
                     android:paddingTop="10dp"
+                    android:layout_marginLeft="10dp"
                     app:bootstrapBrand="warning"
                     app:bootstrapText="Look, I'm in a large well" />
 
@@ -194,6 +196,7 @@
                     android:layout_height="wrap_content"
                     android:id="@+id/awesome_textview_setup"
                     android:paddingTop="10dp"
+                    android:layout_marginLeft="10dp"
                     app:bootstrapBrand="warning"
                     app:bootstrapText="Look, I'm in a large well" />
 
