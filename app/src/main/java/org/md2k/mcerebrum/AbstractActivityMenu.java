@@ -16,6 +16,7 @@ import org.md2k.mcerebrum.UI.app_install_uninstall.FragmentFoldingUIAppInstall;
 import org.md2k.mcerebrum.UI.app_settings.FragmentFoldingUIAppSettings;
 import org.md2k.mcerebrum.UI.home.FragmentHome;
 import org.md2k.mcerebrum.UI.joinstudy.FragmentJoinStudy;
+import org.md2k.mcerebrum.app.Application;
 import org.md2k.mcerebrum.commons.dialog.Dialog;
 import org.md2k.mcerebrum.commons.dialog.DialogCallback;
 import org.md2k.mcerebrum.UI.login.FragmentLogin;
@@ -149,6 +150,14 @@ public abstract class AbstractActivityMenu extends AbstractActivityBasics {
                     Toasty.success(AbstractActivityMenu.this, "Logged out", Toast.LENGTH_SHORT, true).show();
                     updateUI();
                     break;
+                case AbstractMenu.MENU_STUDY_START:
+                    if(applicationManager.isRequiredAppInstalled()){
+                        Application application = applicationManager.getStudy();
+                        if(application!=null)
+                            application.launch(AbstractActivityMenu.this);
+                    }
+                    break;
+
                 default:
             }
         }

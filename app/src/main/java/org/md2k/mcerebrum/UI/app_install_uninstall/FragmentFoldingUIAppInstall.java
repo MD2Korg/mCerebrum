@@ -205,7 +205,7 @@ public class FragmentFoldingUIAppInstall extends Fragment {
         textViewInstalled.setBootstrapText(bootstrapTextI);
         textViewUpdate.setBootstrapText(bootstrapTextU);
         textViewNotInstalled.setBootstrapText(bootstrapTextD);
-        if(applicationManager.isInstalledRequired()) {
+        if(applicationManager.isRequiredAppInstalled()) {
             bootstrapTextS = new BootstrapText.Builder(getContext()).addText("Status: ").addFontAwesomeIcon("fa_check").build();
             textViewStatus.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
             textViewStatus.setBootstrapText(bootstrapTextS);

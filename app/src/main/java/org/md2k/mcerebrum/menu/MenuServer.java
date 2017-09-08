@@ -86,7 +86,7 @@ class MenuServer extends AbstractMenu{
             new MenuContent("Add/Remove Apps", FontAwesome.Icon.faw_plus, MenuContent.PRIMARY_DRAWER_ITEM, MENU_APP_ADD_REMOVE,0),
             new MenuContent("App Settings", FontAwesome.Icon.faw_cog, MenuContent.PRIMARY_DRAWER_ITEM, MENU_APP_SETTINGS,0),
 //            new MenuContent("Step by Step Settings", FontAwesome.Icon.faw_cogs, MenuContent.PRIMARY_DRAWER_ITEM, MENU_APP_SETTINGS,0),
-            new MenuContent("Start Study", FontAwesome.Icon.faw_play, MenuContent.PRIMARY_DRAWER_ITEM, MENU_APP_SETTINGS,0)
+            new MenuContent("Start Study", FontAwesome.Icon.faw_play, MenuContent.PRIMARY_DRAWER_ITEM, MENU_STUDY_START,0)
 //            new MenuContent("Report",FontAwesome.Icon.faw_bar_chart,MenuContent.PRIMARY_DRAWER_ITEM, OP_REPORT),
 //            new MenuContent("Plot",FontAwesome.Icon.faw_line_chart,MenuContent.PRIMARY_DRAWER_ITEM, OP_PLOT),
 //            new MenuContent("Export Data",FontAwesome.Icon.faw_upload,MenuContent.PRIMARY_DRAWER_ITEM, OP_EXPORT_DATA),

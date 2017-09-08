@@ -76,11 +76,20 @@ public class ApplicationManager {
         }
         return result;
     }
-    public boolean isInstalledRequired(){
+    public boolean isRequiredAppInstalled(){
         if(applications==null) return false;
         for(Application application: applications)
             if(application.isRequired() && !application.isInstalled()) return false;
         return true;
+    }
+    public ArrayList<Application> getRequiredAppNotInstalled() {
+        ArrayList<Application> apps = new ArrayList<>();
+        for (Application application : applications) {
+            if (application.isRequired() && !application.isInstalled()) {
+                apps.add(application);
+            }
+        }
+        return apps;
     }
 
 
