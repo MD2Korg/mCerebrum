@@ -13,7 +13,7 @@
     <!--title and logo -->
     <!--login section -->
     <LinearLayout
-        android:layout_marginTop="200dp"
+        android:layout_marginTop="150dp"
         android:layout_width="match_parent"
         android:layout_height="20dp"
         android:layout_weight="1"
