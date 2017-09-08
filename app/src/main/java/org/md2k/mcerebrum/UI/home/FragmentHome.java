@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.beardedhen.androidbootstrap.AwesomeTextView;
@@ -23,6 +24,9 @@ import java.util.ArrayList;
 
 import es.dmoral.toasty.Toasty;
 
+import static org.md2k.mcerebrum.menu.AbstractMenu.MENU_APP_ADD_REMOVE;
+import static org.md2k.mcerebrum.menu.AbstractMenu.MENU_APP_SETTINGS;
+
 public class FragmentHome extends Fragment {
     ApplicationManager applicationManager;
     StudyInfo studyInfo;
@@ -34,6 +38,8 @@ public class FragmentHome extends Fragment {
     BootstrapButton bootstrapButtonStart;
     AwesomeTextView awesomeTextViewInstallStatus;
     AwesomeTextView awesomeTextViewSetupStatus;
+    LinearLayout linearLayoutAppInstall;
+    LinearLayout linearLayoutAppSetup;
 
 
     @Override
@@ -47,6 +53,21 @@ public class FragmentHome extends Fragment {
         applicationManager = ((ActivityMain) getActivity()).applicationManager;
         studyInfo = ((ActivityMain) getActivity()).studyInfo;
         userInfo = ((ActivityMain) getActivity()).userInfo;
+        linearLayoutAppInstall = (LinearLayout) view.findViewById(R.id.layout_app_install);
+        linearLayoutAppInstall.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((ActivityMain)getActivity()).responseCallBack.onResponse(null, MENU_APP_ADD_REMOVE);
+            }
+        });
+        linearLayoutAppSetup = (LinearLayout) view.findViewById(R.id.layout_app_setup);
+        linearLayoutAppSetup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((ActivityMain)getActivity()).responseCallBack.onResponse(null, MENU_APP_SETTINGS);
+            }
+        });
+
         awesomeTextViewSummary = (AwesomeTextView) view.findViewById(R.id.awesome_textview_summary);
         awesomeTextViewInstall = (AwesomeTextView) view.findViewById(R.id.awesome_textview_install);
         awesomeTextViewInstallStatus = (AwesomeTextView) view.findViewById(R.id.awesome_textview_install_status);

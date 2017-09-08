@@ -82,8 +82,10 @@ public class ApplicationManager {
             if(application.isRequired() && !application.isInstalled()) return false;
         return true;
     }
+
     public ArrayList<Application> getRequiredAppNotInstalled() {
         ArrayList<Application> apps = new ArrayList<>();
+        if(applications==null) return apps;
         for (Application application : applications) {
             if (application.isRequired() && !application.isInstalled()) {
                 apps.add(application);
@@ -91,12 +93,30 @@ public class ApplicationManager {
         }
         return apps;
     }
-
+    public ArrayList<Application> getAppConfigured() {
+        ArrayList<Application> apps = new ArrayList<>();
+        if(applications==null) return apps;
+        for (Application application : applications) {
+            if (application.isInstalled() && application.isConfigurable() && application.isConfigured()) {
+                apps.add(application);
+            }
+        }
+        return apps;
+    }
+    public ArrayList<Application> getAppNotConfigured() {
+        ArrayList<Application> apps = new ArrayList<>();
+        if(applications==null) return apps;
+        for (Application application : applications) {
+            if (application.isInstalled() && application.isConfigurable() && !application.isConfigured()) {
+                apps.add(application);
+            }
+        }
+        return apps;
+    }
 
     public void clear() {
         if(applications==null) return;
-        for(int i=0;i<applications.length;i++)
-            applications[i].stopService();
+        for (Application application : applications) application.stopService();
     }
 
     public void updateInfo() {

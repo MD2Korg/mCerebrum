@@ -84,7 +84,7 @@
                 android:paddingRight="@dimen/activity_horizontal_margin"
                 android:weightSum="1">
                 <com.beardedhen.androidbootstrap.AwesomeTextView
-                    android:id="@+id/textview_installed"
+                    android:id="@+id/textview_configured"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight=".33"
@@ -94,7 +94,7 @@
                     app:fontAwesomeIcon="fa_download"/>
 
                 <com.beardedhen.androidbootstrap.AwesomeTextView
-                    android:id="@+id/textview_not_installed"
+                    android:id="@+id/textview_not_configured"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight=".33"

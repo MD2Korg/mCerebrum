@@ -11,6 +11,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.beardedhen.androidbootstrap.AwesomeTextView;
+import com.beardedhen.androidbootstrap.BootstrapText;
+import com.beardedhen.androidbootstrap.api.defaults.DefaultBootstrapBrand;
 import com.ramotion.foldingcell.FoldingCell;
 
 import org.md2k.mcerebrum.ActivityMain;
@@ -27,6 +30,9 @@ public class FragmentFoldingUIAppSettings extends Fragment {
     ApplicationManager applicationManager;
     FoldingCellListAdapterAppSettings adapter;
     ArrayList<Application> appInfos;
+    AwesomeTextView textViewConfigured;
+    AwesomeTextView textViewNotConfigured;
+    AwesomeTextView textViewStatus;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
@@ -52,6 +58,9 @@ public class FragmentFoldingUIAppSettings extends Fragment {
     public void onViewCreated(final View view, Bundle savedInstanceState) {
         ListView theListView = (ListView) view.findViewById(R.id.listview_folding_ui);
         applicationManager = ((ActivityMain) getActivity()).applicationManager;
+        textViewConfigured = (AwesomeTextView) view.findViewById(R.id.textview_configured);
+        textViewNotConfigured = (AwesomeTextView) view.findViewById(R.id.textview_not_configured);
+        textViewStatus = (AwesomeTextView) view.findViewById(R.id.textview_status);
         final Application[] applications = applicationManager.getApplications();
         // prepare elements to display
         appInfos = new ArrayList<>();
@@ -60,6 +69,7 @@ public class FragmentFoldingUIAppSettings extends Fragment {
             if (applications[i].getType().toUpperCase().equals("MCEREBRUM")) continue;
             appInfos.add(applications[i]);
         }
+        updateTextViewStatus();
         adapter = new FoldingCellListAdapterAppSettings(getActivity(), appInfos, new ResponseCallBack() {
             @Override
             public void onResponse(int position, int operation) {
@@ -173,5 +183,31 @@ public class FragmentFoldingUIAppSettings extends Fragment {
         }
     }
 */
+    void updateTextViewStatus(){
+        BootstrapText bootstrapTextS;
+        BootstrapText bootstrapTextC = new BootstrapText.Builder(getContext()).addText("configured : " + String.valueOf(applicationManager.getAppConfigured().size())).build();
+        BootstrapText bootstrapTextN = new BootstrapText.Builder(getContext()).addText("not configured : " + String.valueOf(applicationManager.getAppNotConfigured().size())).build();
+        textViewConfigured.setBootstrapText(bootstrapTextC);
+        textViewNotConfigured.setBootstrapText(bootstrapTextN);
+        if(applicationManager.getAppNotConfigured().size()==0) {
+            bootstrapTextS = new BootstrapText.Builder(getContext()).addText("Status: ").addFontAwesomeIcon("fa_check").build();
+            textViewStatus.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
+            textViewStatus.setBootstrapText(bootstrapTextS);
+/*
+            bootstrapButtonInstall.setEnabled(false);
+            bootstrapButtonInstall.setBootstrapBrand(DefaultBootstrapBrand.SECONDARY);
+            bootstrapButtonInstall.setShowOutline(true);
+*/
+        } else {
+            bootstrapTextS = new BootstrapText.Builder(getContext()).addText("Status: ").addFontAwesomeIcon("fa_times").build();
+            textViewStatus.setBootstrapBrand(DefaultBootstrapBrand.DANGER);
+            textViewStatus.setBootstrapText(bootstrapTextS);
+/*
+            bootstrapButtonInstall.setEnabled(true);
+            bootstrapButtonInstall.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
+            bootstrapButtonInstall.setShowOutline(false);
+*/
+        }
+    }
 
 }

@@ -88,6 +88,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:weightSum="1"
+            android:id="@+id/layout_app_install"
             android:orientation="vertical">
             <LinearLayout
                 android:layout_width="match_parent"
@@ -143,6 +144,7 @@
         </LinearLayout>
         <!--App setup -->
         <LinearLayout
+            android:id="@+id/layout_app_setup"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.25"

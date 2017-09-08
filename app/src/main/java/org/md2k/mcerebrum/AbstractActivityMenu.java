@@ -21,13 +21,13 @@ import org.md2k.mcerebrum.UI.login.ActivityLogin;
 import org.md2k.mcerebrum.app.Application;
 import org.md2k.mcerebrum.commons.dialog.Dialog;
 import org.md2k.mcerebrum.commons.dialog.DialogCallback;
-import org.md2k.mcerebrum.UI.login.FragmentLogin;
 import org.md2k.mcerebrum.menu.AbstractMenu;
 import org.md2k.mcerebrum.menu.ResponseCallBack;
 
 import es.dmoral.toasty.Toasty;
 
 public abstract class AbstractActivityMenu extends AbstractActivityBasics {
+    private static final int REQUESTCODE_LOGIN = 1234;
     private Drawer result = null;
     int selectedMenu=AbstractMenu.MENU_HOME;
     long backPressedLastTime=-1;
@@ -111,7 +111,7 @@ public abstract class AbstractActivityMenu extends AbstractActivityBasics {
 //        super.onSaveInstanceState(outState);
     }
 
-    ResponseCallBack responseCallBack = new ResponseCallBack() {
+    public ResponseCallBack responseCallBack = new ResponseCallBack() {
         @Override
         public void onResponse(IDrawerItem drawerItem, int responseId) {
             selectedMenu=responseId;
@@ -145,7 +145,7 @@ public abstract class AbstractActivityMenu extends AbstractActivityBasics {
                     break;
                 case AbstractMenu.MENU_LOGIN:
                     Intent intent = new Intent(AbstractActivityMenu.this, ActivityLogin.class);
-                    startActivity(intent);
+                    startActivityForResult(intent, REQUESTCODE_LOGIN);
 //                    getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new FragmentLogin()).commitAllowingStateLoss();
                     break;
                 case AbstractMenu.MENU_LOGOUT:
@@ -166,6 +166,18 @@ public abstract class AbstractActivityMenu extends AbstractActivityBasics {
             }
         }
     };
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==REQUESTCODE_LOGIN){
+            if(resultCode==RESULT_OK){
+                String userName=data.getStringExtra("username");
+                userInfo.setTitle(userName);
+                userInfo.setLoggedIn(true);
+                updateUI();
+            }
+        }
+        //Handle Code
+    }
 
     @Override
     public void onDestroy() {

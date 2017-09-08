@@ -1,15 +1,8 @@
 package org.md2k.mcerebrum.UI.joinstudy;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -27,7 +20,6 @@ import org.md2k.mcerebrum.data.UserInfo;
 import org.md2k.mcerebrum.internet.download.DownloadInfo;
 
 import es.dmoral.toasty.Toasty;
-import mehdi.sakout.fancybuttons.FancyButton;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -93,6 +85,7 @@ public class FragmentJoinStudy extends Fragment {
                         !materialEditText1.getText().toString().equals("123")){
                     Toasty.error(getContext(), "Error: Invalid Username and/or password", Toast.LENGTH_SHORT, true).show();
                 }else{
+                    Toasty.success(getActivity(), "Successfully Logged in", Toast.LENGTH_SHORT, true).show();
                     downloadConfig(Constants.CONFIG_MPERF_FILENAME, materialEditText.getText().toString());
                 }
             };
