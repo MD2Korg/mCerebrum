@@ -1,6 +1,5 @@
 package org.md2k.mcerebrum.UI.app_settings;
 
-import android.content.ComponentName;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,51 +17,35 @@ import org.md2k.mcerebrum.ActivityMain;
 import org.md2k.mcerebrum.R;
 import org.md2k.mcerebrum.app.Application;
 import org.md2k.mcerebrum.app.ApplicationManager;
-import org.md2k.mcerebrum.core.access.Access;
 import org.md2k.mcerebrum.core.access.IMCerebrumService;
-import org.md2k.mcerebrum.core.access.Info;
 
 import java.util.ArrayList;
 
 public class FragmentFoldingUIAppSettings extends Fragment {
     public static final int CONFIGURE = 0;
-    public static final int REPORT = 1;
-    public static final int RUN = 2;
-    public static final int REQUEST_INFO = 2000;
+    public static final int LAUNCH = 1;
     ApplicationManager applicationManager;
     FoldingCellListAdapterAppSettings adapter;
     ArrayList<Application> appInfos;
-    private IMCerebrumService mService;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         // Defines the xml file for the fragment
         return inflater.inflate(R.layout.fragment_folding_ui_app_settings, parent, false);
     }
-    Handler handler=new Handler();
-    Runnable runnable=new Runnable() {
-        @Override
-        public void run() {
-            Log.d("abc","run");
-            Application[] applications=applicationManager.getApplications();
-            adapter.notifyDataSetChanged();
-            for(int i=0;i<applications.length;i++){
-                if (!applications[i].isInstalled()) continue;
-                if(!applications[i].isMCerebrumSupported()) continue;
-                applications[i].updateStatus();
-//                if (applications[i].getType().toUpperCase().equals("MCEREBRUM")) continue;
-//                getInfo(applications[i], REQUEST_INFO + i);
-            }
-            handler.postDelayed(this, 1000);
-        }
-    };
-    @Override
-    public void onStart(){
 
-        super.onStart();
-        Log.d("abc","onStart");
-        handler.removeCallbacks(runnable);
-        handler.post(runnable);
+    @Override
+    public void onResume() {
+
+        super.onResume();
+        Application[] applications = applicationManager.getApplications();
+        for (int i = 0; i < applications.length; i++) {
+            if (!applications[i].isInstalled()) continue;
+            if (!applications[i].isMCerebrumSupported()) continue;
+            applications[i].updateStatus();
+        }
+        adapter.notifyDataSetChanged();
+
     }
 
     @Override
@@ -90,19 +73,22 @@ public class FragmentFoldingUIAppSettings extends Fragment {
 */
 
 //                    items.get(position).uninstall(getActivity(), 1000);
-                } else if (operation == REPORT) {
+                } /*else if (operation == REPORT) {
                     appInfos.get(position).report();
-/*
+*//*
                     Intent intent = new Intent();
                     intent.putExtra("REQUEST", Access.REQUEST_REPORT);
                     intent.setComponent(new ComponentName(appInfos.get(position).getPackageName(), appInfos.get(position).getPackageName() + ".ActivityMCerebrumAccess"));
                     startActivity(intent);
-*/
-                } else if (operation == RUN) {
+*//*
+                }*/ else if (operation == LAUNCH) {
+                    appInfos.get(position).launch(getActivity());
+                    /*
                     if(appInfos.get(position).isRunning())
                         appInfos.get(position).stopService();
                     else
                         appInfos.get(position).startBackground();
+*/
 /*
                     Intent intent = new Intent();
                     if (appInfos.get(position).isRunning())
@@ -141,18 +127,18 @@ public class FragmentFoldingUIAppSettings extends Fragment {
         }
 */
 
-/*
-        RxActivityResult.on(this).startIntent(intent)
-                .subscribe(new Consumer<Result<FragmentFoldingUIAppSettings>>() {
-                    @Override
-                    public void accept(Result<FragmentFoldingUIAppSettings> result) throws Exception {
-                        Intent data = result.data();
-                        int resultCode = result.resultCode();
-                        result.data().get
-                        // the requestCode using which the activity is started can be received here.
-                        int requestCode = result.requestCode();
+    /*
+            RxActivityResult.on(this).startIntent(intent)
+                    .subscribe(new Consumer<Result<FragmentFoldingUIAppSettings>>() {
+                        @Override
+                        public void accept(Result<FragmentFoldingUIAppSettings> result) throws Exception {
+                            Intent data = result.data();
+                            int resultCode = result.resultCode();
+                            result.data().get
+                            // the requestCode using which the activity is started can be received here.
+                            int requestCode = result.requestCode();
 
-*/
+    */
 /*
                     if(requestCode == YourActivity.YOUR_REQUEST_CODE)
                     {
@@ -171,11 +157,6 @@ public class FragmentFoldingUIAppSettings extends Fragment {
     }
 
 */
-    @Override
-    public void onStop(){
-        handler.removeCallbacks(runnable);
-        super.onStop();
-    }
 /*
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

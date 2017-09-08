@@ -407,4 +407,9 @@ public class Application {
     public boolean isMCerebrumSupported() {
         return mCerebrumSupported;
     }
+
+    public void launch(Activity activity) {
+        Intent intent = activity.getPackageManager().getLaunchIntentForPackage(packageName);
+        activity.startActivity( intent );
+    }
 }

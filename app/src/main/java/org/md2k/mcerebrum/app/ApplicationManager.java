@@ -35,6 +35,9 @@ import java.util.ArrayList;
 
 public class ApplicationManager {
     private Application[] applications;
+    public static final String TYPE_STUDY="STUDY";
+    public static final String TYPE_MCEREBRUM="MCEREBRUM";
+    public static final String TYPE_DATA_KIT="DATAKIT";
 
     public void set(CApp[] cApps){
         clear();
@@ -63,6 +66,7 @@ public class ApplicationManager {
     public int[] getInstallStatus(){
         int result[]=new int[3];
         result[0]=0;result[1]=0;result[2]=0;
+        if(applications==null) return result;
         for (Application application : applications) {
             if (!application.isInstalled())
                 result[2]++;
@@ -73,6 +77,7 @@ public class ApplicationManager {
         return result;
     }
     public boolean isInstalledRequired(){
+        if(applications==null) return false;
         for(Application application: applications)
             if(application.isRequired() && !application.isInstalled()) return false;
         return true;
@@ -80,14 +85,35 @@ public class ApplicationManager {
 
 
     public void clear() {
-        for(int i=0;applications!=null && i<applications.length;i++)
+        if(applications==null) return;
+        for(int i=0;i<applications.length;i++)
             applications[i].stopService();
     }
 
     public void updateInfo() {
+        if(applications==null) return;
         for (Application application : applications) {
             application.updateInfo();
         }
     }
+    public Application getStudy(){
+        return get(TYPE_STUDY);
+    }
+    public Application getMCerebrum(){
+        return get(TYPE_MCEREBRUM);
+    }
 
+    public Application getDataKit(){
+        return get(TYPE_DATA_KIT);
+    }
+    public Application get(String type){
+        if(applications==null) return null;
+        for (Application application : applications) {
+            if (application.getType() == null) continue;
+            if (type.equals(application.getType().toUpperCase()))
+                return application;
+        }
+        return null;
+
+    }
 }

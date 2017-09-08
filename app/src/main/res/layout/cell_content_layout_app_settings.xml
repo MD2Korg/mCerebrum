@@ -201,7 +201,7 @@
             <com.beardedhen.androidbootstrap.BootstrapButton
                 android:id="@+id/button_settings_long"
                 style="@style/wrapping_button"
-                android:layout_weight=".3"
+                android:layout_weight=".45"
                 app:bootstrapBrand="warning"
                 app:bootstrapText="{fa_cog} Settings"
                 app:roundedCorners="true"
@@ -209,19 +209,9 @@
                 />
 
             <com.beardedhen.androidbootstrap.BootstrapButton
-                android:id="@+id/button_report_long"
+                android:id="@+id/button_launch_long"
                 style="@style/wrapping_button"
-                android:layout_gravity="center"
-                android:layout_weight=".3"
-                app:bootstrapBrand="warning"
-                app:bootstrapText="{fa_bar_chart} Report"
-                app:roundedCorners="true"
-                app:showOutline="true" />
-
-            <com.beardedhen.androidbootstrap.BootstrapButton
-                android:id="@+id/button_run_long"
-                style="@style/wrapping_button"
-                android:layout_weight=".3"
+                android:layout_weight=".45"
                 app:bootstrapBrand="warning"
                 app:bootstrapText="{fa_play} Start"
                 app:roundedCorners="true"

@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.beardedhen.androidbootstrap.AwesomeTextView;
 import com.beardedhen.androidbootstrap.BootstrapButton;
@@ -13,9 +14,12 @@ import com.beardedhen.androidbootstrap.api.defaults.DefaultBootstrapBrand;
 
 import org.md2k.mcerebrum.ActivityMain;
 import org.md2k.mcerebrum.R;
+import org.md2k.mcerebrum.app.Application;
 import org.md2k.mcerebrum.app.ApplicationManager;
 import org.md2k.mcerebrum.data.StudyInfo;
 import org.md2k.mcerebrum.data.UserInfo;
+
+import es.dmoral.toasty.Toasty;
 
 public class FragmentHome extends Fragment {
     ApplicationManager applicationManager;
@@ -47,6 +51,14 @@ public class FragmentHome extends Fragment {
         awesomeTextViewSetupStatus = (AwesomeTextView) view.findViewById(R.id.awesome_textview_setup_status);
         awesomeTextViewSetup = (AwesomeTextView) view.findViewById(R.id.awesome_textview_setup);
         bootstrapButtonStart = (BootstrapButton) view.findViewById(R.id.button_bootstrap_start);
+        bootstrapButtonStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Application application = applicationManager.getStudy();
+                if(application!=null) application.launch(getActivity());
+                else Toasty.error(getContext(),"Study App not found", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
     @Override
     public void onResume(){

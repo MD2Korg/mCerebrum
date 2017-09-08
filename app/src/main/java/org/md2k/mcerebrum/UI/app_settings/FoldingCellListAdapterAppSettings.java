@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.beardedhen.androidbootstrap.AwesomeTextView;
 import com.beardedhen.androidbootstrap.BootstrapButton;
-import com.beardedhen.androidbootstrap.BootstrapText.Builder;
 import com.beardedhen.androidbootstrap.api.attributes.BootstrapBrand;
 import com.beardedhen.androidbootstrap.api.defaults.DefaultBootstrapBrand;
 import com.ramotion.foldingcell.FoldingCell;
@@ -18,12 +17,8 @@ import com.ramotion.foldingcell.FoldingCell;
 import org.md2k.mcerebrum.R;
 import org.md2k.mcerebrum.app.Application;
 
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Simple example of ListAdapter for using with Folding Cell
@@ -66,11 +61,9 @@ public class FoldingCellListAdapterAppSettings extends ArrayAdapter<Application>
             viewHolder.updateVersion = (TextView) cell.findViewById(R.id.textview_update_date);
 
             viewHolder.buttonSettingsLong = (BootstrapButton) cell.findViewById(R.id.button_settings_long);
-            viewHolder.buttonRunLong = (BootstrapButton) cell.findViewById(R.id.button_run_long);
-            viewHolder.buttonReportLong = (BootstrapButton) cell.findViewById(R.id.button_report_long);
+            viewHolder.buttonLaunchLong = (BootstrapButton) cell.findViewById(R.id.button_launch_long);
             viewHolder.buttonSettingsShort = (BootstrapButton) cell.findViewById(R.id.button_settings_short);
-            viewHolder.buttonRunShort = (BootstrapButton) cell.findViewById(R.id.button_run_short);
-            viewHolder.buttonReportShort = (BootstrapButton) cell.findViewById(R.id.button_report_short);
+            viewHolder.buttonLaunchShort = (BootstrapButton) cell.findViewById(R.id.button_launch_short);
             viewHolder.status = (AwesomeTextView) cell.findViewById(R.id.textview_status);
 
 
@@ -99,20 +92,13 @@ public class FoldingCellListAdapterAppSettings extends ArrayAdapter<Application>
         View.OnClickListener onClickListenerRun = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                responseCallBack.onResponse(position, FragmentFoldingUIAppSettings.RUN);
+                responseCallBack.onResponse(position, FragmentFoldingUIAppSettings.LAUNCH);
             }
         };
         View.OnClickListener onClickListenerSettings = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 responseCallBack.onResponse(position, FragmentFoldingUIAppSettings.CONFIGURE);
-            }
-        };
-        View.OnClickListener onClickListenerReport = new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                responseCallBack.onResponse(position, FragmentFoldingUIAppSettings.REPORT);
             }
         };
 
@@ -123,31 +109,10 @@ public class FoldingCellListAdapterAppSettings extends ArrayAdapter<Application>
         else
             set(viewHolder.buttonSettingsLong, viewHolder.buttonSettingsShort, true, DefaultBootstrapBrand.SUCCESS, false, onClickListenerSettings);
 
-        if(!application.hasReport())
-            set(viewHolder.buttonReportLong, viewHolder.buttonReportShort, false, DefaultBootstrapBrand.SECONDARY, true, onClickListenerReport);
-        else
-            set(viewHolder.buttonReportLong, viewHolder.buttonReportShort, true, DefaultBootstrapBrand.SUCCESS, true, onClickListenerReport);
-
-        if(!application.isRunInBackground())
-            set(viewHolder.buttonRunLong, viewHolder.buttonRunShort, false, DefaultBootstrapBrand.SECONDARY, true, onClickListenerRun);
-        else if(application.isRunning()){
-            set(viewHolder.buttonRunLong, viewHolder.buttonRunShort, true, DefaultBootstrapBrand.DANGER, true, onClickListenerRun);
-            viewHolder.buttonRunLong.setFontAwesomeIcon("fa_stop");
-            viewHolder.buttonRunShort.setFontAwesomeIcon("fa_stop");
-        }else{
-            set(viewHolder.buttonRunLong, viewHolder.buttonRunShort, true, DefaultBootstrapBrand.SUCCESS, true, onClickListenerRun);
-            viewHolder.buttonRunLong.setFontAwesomeIcon("fa_play");
-            viewHolder.buttonRunShort.setFontAwesomeIcon("fa_play");
-        }
-        if(application.isRunning()) {
-            viewHolder.status.setBootstrapBrand(DefaultBootstrapBrand.WARNING);
-            long time=application.getRunningTime()/1000;
-            long sec=time%60;time/=60;
-            long min=time%60;time/=60;
-            long hour=time;
-            String timeStr=String.format("%02d:%02d:%02d",hour, min, sec);
-            viewHolder.status.setBootstrapText(new Builder(getContext()).addText(timeStr).build());
-        }else if(application.isConfigurable() && application.isConfigured()){
+        set(viewHolder.buttonLaunchLong, viewHolder.buttonLaunchShort, true, DefaultBootstrapBrand.SUCCESS, true, onClickListenerRun);
+        viewHolder.buttonLaunchLong.setFontAwesomeIcon("fa_play");
+        viewHolder.buttonLaunchShort.setFontAwesomeIcon("fa_play");
+        if(application.isConfigurable() && application.isConfigured()){
             viewHolder.status.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
             viewHolder.status.setText("configured");
         }else if(application.isConfigurable()){
@@ -221,10 +186,8 @@ public class FoldingCellListAdapterAppSettings extends ArrayAdapter<Application>
         TextView version;
         TextView updateVersion;
         BootstrapButton buttonSettingsLong;
-        BootstrapButton buttonReportLong;
-        BootstrapButton buttonRunLong;
+        BootstrapButton buttonLaunchLong;
         BootstrapButton buttonSettingsShort;
-        BootstrapButton buttonReportShort;
-        BootstrapButton buttonRunShort;
+        BootstrapButton buttonLaunchShort;
     }
 }
