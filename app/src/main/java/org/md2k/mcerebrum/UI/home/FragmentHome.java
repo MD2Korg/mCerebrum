@@ -88,7 +88,7 @@ public class FragmentHome extends Fragment {
         String notInstalledApp = getInstall();
         BootstrapText bt;
         if (notInstalledApp == null) {
-            bt = new BootstrapText.Builder(getContext()).addText("Applications are properly installed")
+            bt = new BootstrapText.Builder(getContext()).addText("Applications are installed")
                     .build();
             awesomeTextViewInstall.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
             awesomeTextViewInstallStatus.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
@@ -110,7 +110,7 @@ public class FragmentHome extends Fragment {
         String notConfiguredApp = getSetup();
         BootstrapText bt;
         if (notConfiguredApp == null) {
-            bt = new BootstrapText.Builder(getContext()).addText("Applications are properly configured.")
+            bt = new BootstrapText.Builder(getContext()).addText("Applications are configured.")
                     .build();
             awesomeTextViewSetup.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
             awesomeTextViewSetupStatus.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);

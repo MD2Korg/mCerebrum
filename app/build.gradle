@@ -47,7 +47,6 @@ dependencies {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     compile 'com.android.support:appcompat-v7:25.3.1'
-    compile 'agency.tango.android:material-intro-screen:0.0.5'
     compile 'com.rengwuxian.materialedittext:library:2.1.4'
     compile 'com.github.medyo:fancybuttons:1.8'
     compile 'com.mikepenz:fontawesome-typeface:4.7.0.0@aar'
@@ -75,6 +74,6 @@ dependencies {
     compile 'com.ramotion.foldingcell:folding-cell:1.2.1'
     //Bootstrap
     compile 'com.beardedhen:androidbootstrap:2.3.1'
-    
+
     testCompile 'junit:junit:4.12'
 }
