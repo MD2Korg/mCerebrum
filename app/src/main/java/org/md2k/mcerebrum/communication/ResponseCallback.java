@@ -1,4 +1,4 @@
-package org.md2k.mcerebrum;
+package org.md2k.mcerebrum.communication;
 /*
  * Copyright (c) 2016, The University of Memphis, MD2K Center
  * - Syed Monowar Hossain <monowar.hossain@gmail.com>
@@ -26,24 +26,6 @@ package org.md2k.mcerebrum;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.md2k.mcerebrum.commons.storage.Storage;
-import org.md2k.mcerebrum.commons.storage.StorageType;
-
-public class Constants {
-    public static final String CONFIG_DEFAULT_GITHUB="MD2Korg/mCerebrum-Configuration";
-    public static final String CONFIG_DEFAULT_FILENAME="https://dl.dropboxusercontent.com/s/7dqfhcmeg9h9fep/default2.zip";
-    public static final String CONFIG_MPERF_FILENAME="https://dl.dropboxusercontent.com/s/al2q9mle0161e4d/mperf.zip";
-
-    public static String CONFIG_MCEREBRUM_CONFIGFILE(){
-        return Storage.getRootDirectory(MyApplication.getContext(), StorageType.SDCARD_INTERNAL)+"/mCerebrum/org.md2k.mcerebrum/config.json";
-    }
-    public static String CONFIG_MCEREBRUM_ROOT_DIRH(){
-        return Storage.getRootDirectory(MyApplication.getContext(), StorageType.SDCARD_INTERNAL)+"/mCerebrum/";
-    }
-    public static String CONFIG_MCEREBRUM_DIR(){
-        return Storage.getRootDirectory(MyApplication.getContext(), StorageType.SDCARD_INTERNAL)+"/mCerebrum/org.md2k.mcerebrum/";
-    }
-    public static String CONFIG_ROOT_DIR(){
-        return Storage.getRootDirectory(MyApplication.getContext(), StorageType.SDCARD_INTERNAL)+"/";
-    }
+public interface ResponseCallback {
+    public void onResponse(boolean isConnected);
 }

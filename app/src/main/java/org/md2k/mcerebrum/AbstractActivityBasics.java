@@ -26,7 +26,7 @@ import rx.schedulers.Schedulers;
 public abstract class AbstractActivityBasics extends AppCompatActivity {
     static final String TAG=AbstractActivityBasics.class.getSimpleName();
     public UserInfo userInfo;
-    StudyInfo studyInfo;
+    public StudyInfo studyInfo;
     public ApplicationManager applicationManager;
     public ConfigManager configManager;
     Subscription subscription;
@@ -122,6 +122,7 @@ public abstract class AbstractActivityBasics extends AppCompatActivity {
             materialDialog.dismiss();
         if(subscription!=null && !subscription.isUnsubscribed())
             subscription.unsubscribe();
+        applicationManager.clear();
         super.onDestroy();
     }
 

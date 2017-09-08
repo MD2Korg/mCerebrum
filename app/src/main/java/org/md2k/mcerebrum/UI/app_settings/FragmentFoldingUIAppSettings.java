@@ -19,6 +19,7 @@ import org.md2k.mcerebrum.R;
 import org.md2k.mcerebrum.app.Application;
 import org.md2k.mcerebrum.app.ApplicationManager;
 import org.md2k.mcerebrum.core.access.Access;
+import org.md2k.mcerebrum.core.access.IMCerebrumService;
 import org.md2k.mcerebrum.core.access.Info;
 
 import java.util.ArrayList;
@@ -31,29 +32,41 @@ public class FragmentFoldingUIAppSettings extends Fragment {
     ApplicationManager applicationManager;
     FoldingCellListAdapterAppSettings adapter;
     ArrayList<Application> appInfos;
+    private IMCerebrumService mService;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         // Defines the xml file for the fragment
         return inflater.inflate(R.layout.fragment_folding_ui_app_settings, parent, false);
     }
-    Handler handler;
+    Handler handler=new Handler();
     Runnable runnable=new Runnable() {
         @Override
         public void run() {
+            Log.d("abc","run");
             Application[] applications=applicationManager.getApplications();
+            adapter.notifyDataSetChanged();
             for(int i=0;i<applications.length;i++){
                 if (!applications[i].isInstalled()) continue;
-                if (applications[i].getType().toUpperCase().equals("MCEREBRUM")) continue;
-                getInfo(applications[i], REQUEST_INFO + i);
+                if(!applications[i].isMCerebrumSupported()) continue;
+                applications[i].updateStatus();
+//                if (applications[i].getType().toUpperCase().equals("MCEREBRUM")) continue;
+//                getInfo(applications[i], REQUEST_INFO + i);
             }
-            handler.postDelayed(this, 2000);
+            handler.postDelayed(this, 1000);
         }
     };
+    @Override
+    public void onStart(){
+
+        super.onStart();
+        Log.d("abc","onStart");
+        handler.removeCallbacks(runnable);
+        handler.post(runnable);
+    }
 
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
-        handler=new Handler();
         ListView theListView = (ListView) view.findViewById(R.id.listview_folding_ui);
         applicationManager = ((ActivityMain) getActivity()).applicationManager;
         final Application[] applications = applicationManager.getApplications();
@@ -64,30 +77,41 @@ public class FragmentFoldingUIAppSettings extends Fragment {
             if (applications[i].getType().toUpperCase().equals("MCEREBRUM")) continue;
             appInfos.add(applications[i]);
         }
-        handler.post(runnable);
         adapter = new FoldingCellListAdapterAppSettings(getActivity(), appInfos, new ResponseCallBack() {
             @Override
             public void onResponse(int position, int operation) {
                 if (operation == CONFIGURE) {
+                    appInfos.get(position).configure();
+/*
                     Intent intent = new Intent();
                     intent.putExtra("REQUEST", Access.REQUEST_CONFIGURE);
                     intent.setComponent(new ComponentName(appInfos.get(position).getPackageName(), appInfos.get(position).getPackageName() + ".ActivityMCerebrumAccess"));
                     startActivity(intent);
+*/
 
 //                    items.get(position).uninstall(getActivity(), 1000);
                 } else if (operation == REPORT) {
+                    appInfos.get(position).report();
+/*
                     Intent intent = new Intent();
                     intent.putExtra("REQUEST", Access.REQUEST_REPORT);
                     intent.setComponent(new ComponentName(appInfos.get(position).getPackageName(), appInfos.get(position).getPackageName() + ".ActivityMCerebrumAccess"));
                     startActivity(intent);
+*/
                 } else if (operation == RUN) {
+                    if(appInfos.get(position).isRunning())
+                        appInfos.get(position).stopService();
+                    else
+                        appInfos.get(position).startBackground();
+/*
                     Intent intent = new Intent();
                     if (appInfos.get(position).isRunning())
-                        intent.putExtra("REQUEST", Access.REQUEST_STOP);
+                        intent.putExtra("REQUEST", Access.REQUEST_STOPBACKGROUND);
                     else
-                        intent.putExtra("REQUEST", Access.REQUEST_START);
+                        intent.putExtra("REQUEST", Access.REQUEST_STARTBACKGROUND);
                     intent.setComponent(new ComponentName(appInfos.get(position).getPackageName(), appInfos.get(position).getPackageName() + ".ActivityMCerebrumAccess"));
                     startActivity(intent);
+*/
                 }
             }
         });
@@ -105,6 +129,7 @@ public class FragmentFoldingUIAppSettings extends Fragment {
         });
     }
 
+/*
     void getInfo(Application application, int requestCode) {
         try {
             Intent intent = new Intent();
@@ -114,6 +139,7 @@ public class FragmentFoldingUIAppSettings extends Fragment {
         } catch (Exception ignored) {
 
         }
+*/
 
 /*
         RxActivityResult.on(this).startIntent(intent)
@@ -142,13 +168,15 @@ public class FragmentFoldingUIAppSettings extends Fragment {
 
                     }
                 });
+    }
+
 */
-    }
     @Override
-    public void onDestroyView(){
+    public void onStop(){
         handler.removeCallbacks(runnable);
-        super.onDestroyView();
+        super.onStop();
     }
+/*
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -156,13 +184,13 @@ public class FragmentFoldingUIAppSettings extends Fragment {
             if (requestCode >= 2000 && requestCode <= 3000) {
                 requestCode = requestCode - 2000;
                 Info info = data.getParcelableExtra(Access.RESPONSE);
-                Log.d("abc", "abc");
+                Log.d("abc", "requestCode="+requestCode);
                 applicationManager.getApplications()[requestCode].updateStatus(info);
-                adapter.notifyDataSetChanged();
             }
         } catch (Exception ignored) {
 
         }
     }
+*/
 
 }

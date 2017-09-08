@@ -26,8 +26,6 @@ import org.md2k.mcerebrum.app.Application;
 import org.md2k.mcerebrum.app.ApplicationManager;
 import org.md2k.mcerebrum.internet.download.DownloadInfo;
 
-import java.util.ArrayList;
-
 import es.dmoral.toasty.Toasty;
 import rx.Observer;
 import rx.Subscription;
@@ -207,7 +205,7 @@ public class FragmentFoldingUIAppInstall extends Fragment {
         textViewInstalled.setBootstrapText(bootstrapTextI);
         textViewUpdate.setBootstrapText(bootstrapTextU);
         textViewNotInstalled.setBootstrapText(bootstrapTextD);
-        if(applicationManager.isStatusOk()) {
+        if(applicationManager.isInstalledRequired()) {
             bootstrapTextS = new BootstrapText.Builder(getContext()).addText("Status: ").addFontAwesomeIcon("fa_check").build();
             textViewStatus.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
             textViewStatus.setBootstrapText(bootstrapTextS);

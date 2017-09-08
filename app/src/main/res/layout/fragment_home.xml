@@ -66,8 +66,9 @@
             <com.beardedhen.androidbootstrap.AwesomeTextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/awesome_textview_summary"
                 android:paddingTop="10dp"
-                app:bootstrapBrand="warning"
+                app:bootstrapBrand="success"
                 app:bootstrapText="Look, I'm in a large well" />
 
         </LinearLayout>
@@ -113,6 +114,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         app:bootstrapBrand="success"
+                        android:id="@+id/awesome_textview_install_status"
                         app:roundedCorners="true"
                         app:showOutline="true"
                         app:bootstrapText="Status:    {fa_check_circle}"
@@ -128,6 +130,7 @@
                 <com.beardedhen.androidbootstrap.AwesomeTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:id="@+id/awesome_textview_install"
                     android:paddingTop="10dp"
                     app:bootstrapBrand="warning"
                     app:bootstrapText="Look, I'm in a large well" />
@@ -175,6 +178,7 @@
                         app:bootstrapBrand="success"
                         app:roundedCorners="true"
                         app:showOutline="true"
+                        android:id="@+id/awesome_textview_setup_status"
                         app:bootstrapText="Status:    {fa_check_circle}"
                         android:padding="10dp"
                         android:gravity="right"/>
@@ -188,6 +192,7 @@
                 <com.beardedhen.androidbootstrap.AwesomeTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:id="@+id/awesome_textview_setup"
                     android:paddingTop="10dp"
                     app:bootstrapBrand="warning"
                     app:bootstrapText="Look, I'm in a large well" />
@@ -212,6 +217,7 @@
             android:layout_height="match_parent"
             android:paddingTop="10dp"
             android:layout_margin="30dp"
+            android:id="@+id/button_bootstrap_start"
             app:bootstrapBrand="success"
             app:bootstrapSize="lg"
             app:bootstrapText="{fa_play}  Start Study"

@@ -141,8 +141,12 @@ public class FoldingCellListAdapterAppSettings extends ArrayAdapter<Application>
         }
         if(application.isRunning()) {
             viewHolder.status.setBootstrapBrand(DefaultBootstrapBrand.WARNING);
-            CharSequence time=convertTimeStampToDateTime(application.getRunningTime());
-            viewHolder.status.setBootstrapText(new Builder(getContext()).addText(time).build());
+            long time=application.getRunningTime()/1000;
+            long sec=time%60;time/=60;
+            long min=time%60;time/=60;
+            long hour=time;
+            String timeStr=String.format("%02d:%02d:%02d",hour, min, sec);
+            viewHolder.status.setBootstrapText(new Builder(getContext()).addText(timeStr).build());
         }else if(application.isConfigurable() && application.isConfigured()){
             viewHolder.status.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
             viewHolder.status.setText("configured");
@@ -167,17 +171,6 @@ public class FoldingCellListAdapterAppSettings extends ArrayAdapter<Application>
 */
 
         return cell;
-    }
-    public static String convertTimeStampToDateTime(long timestamp){
-        try {
-            Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(timestamp);
-            SimpleDateFormat sdf = new SimpleDateFormat("HH:mm:ss", Locale.getDefault());
-            Date currenTimeZone = calendar.getTime();
-            return sdf.format(currenTimeZone);
-        } catch (Exception e) {
-            return "";
-        }
     }
 
     void set(BootstrapButton b1, BootstrapButton b2, boolean e, BootstrapBrand b, boolean o, View.OnClickListener l){

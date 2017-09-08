@@ -37,6 +37,7 @@ public class ApplicationManager {
     private Application[] applications;
 
     public void set(CApp[] cApps){
+        clear();
         ArrayList<Application> applicationArrayList=new ArrayList<>();
         for (CApp cApp : cApps) {
             Application application = new Application(cApp);
@@ -71,13 +72,16 @@ public class ApplicationManager {
         }
         return result;
     }
-    public boolean isStatusOk(){
+    public boolean isInstalledRequired(){
         for(Application application: applications)
             if(application.isRequired() && !application.isInstalled()) return false;
         return true;
     }
 
+
     public void clear() {
+        for(int i=0;applications!=null && i<applications.length;i++)
+            applications[i].stopService();
     }
 
     public void updateInfo() {
@@ -85,4 +89,5 @@ public class ApplicationManager {
             application.updateInfo();
         }
     }
+
 }

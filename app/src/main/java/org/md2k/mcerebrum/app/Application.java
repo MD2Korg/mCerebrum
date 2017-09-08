@@ -40,8 +40,11 @@ import android.net.Uri;
 import com.blankj.utilcode.util.AppUtils;
 
 import org.md2k.mcerebrum.Constants;
+import org.md2k.mcerebrum.MyApplication;
 import org.md2k.mcerebrum.commons.storage.Storage;
 import org.md2k.mcerebrum.commons.storage.StorageType;
+import org.md2k.mcerebrum.communication.ResponseCallback;
+import org.md2k.mcerebrum.communication.ServiceCommunication;
 import org.md2k.mcerebrum.configuration.CApp;
 import org.md2k.mcerebrum.core.access.Info;
 import org.md2k.mcerebrum.internet.download.DownloadFile;
@@ -76,7 +79,8 @@ public class Application {
     private boolean installed;
     private boolean isConfigurable;
     private String status;
-
+    private ServiceCommunication serviceCommunication;
+    private boolean mCerebrumSupported;
     private static final int REQUEST_CODE = 2000;
     private boolean configured;
     private boolean runInBackground;
@@ -99,10 +103,18 @@ public class Application {
         updateOption = capp.getUpdate();
         status = capp.getStatus();
         installed = AppUtils.isInstallApp(packageName);
+        mCerebrumSupported =false;
         if (installed) {
             currentVersionName = AppUtils.getAppVersionName(packageName);
             currentVersionCode = AppUtils.getAppVersionCode(packageName);
+            startService();
         }
+        configured=true;
+        runInBackground=false;
+        runningTime=-1;
+        report=false;
+        running=false;
+
     }
 
     public void install(Activity activity){
@@ -259,20 +271,30 @@ public class Application {
     }
 
     public void updateInfo() {
-        installed = AppUtils.isInstallApp(packageName);
-        if (installed) {
-            currentVersionName = AppUtils.getAppVersionName(packageName);
-            currentVersionCode = AppUtils.getAppVersionCode(packageName);
+        boolean res=AppUtils.isInstallApp(packageName);
+        if(installed!=res) {
+            installed =res;
+            if (installed) {
+                currentVersionName = AppUtils.getAppVersionName(packageName);
+                currentVersionCode = AppUtils.getAppVersionCode(packageName);
+                startService();
+            }else
+                stopService();
         }
     }
 
-    public void updateStatus(Info info) {
-        isConfigurable = info.isConfigurable();
-        runningTime = info.getRunningTime();
-        runInBackground = info.isRunInBackground();
-        configured = info.isConfigured();
-        report=info.hasReport();
-        running = info.isRunning();
+    public void updateStatus() {
+        try {
+            Info info = serviceCommunication.getInfo();
+            isConfigurable = info.isConfigurable();
+            runningTime = info.getRunningTime();
+            runInBackground = info.isRunInBackground();
+            configured = info.isConfigured();
+            report = info.hasReport();
+            running = info.isRunning();
+        }catch (Exception e){
+
+        }
     }
 
     public String getId() {
@@ -341,5 +363,48 @@ public class Application {
 
     public boolean isRunning() {
         return running;
+    }
+    public void startService(){
+        try {
+            if(serviceCommunication==null) {
+                serviceCommunication = new ServiceCommunication();
+                serviceCommunication.start(MyApplication.getContext(), packageName, new ResponseCallback() {
+                    @Override
+                    public void onResponse(boolean isConnected) {
+                        mCerebrumSupported =isConnected;
+                        if(isConnected)
+                            updateStatus();
+                    }
+                });
+            }
+        }catch (Exception e){
+            serviceCommunication=null;
+        }
+    }
+    public void stopService() {
+        try {
+            serviceCommunication.exit();
+
+        }catch (Exception e){
+            serviceCommunication=null;
+        }
+        mCerebrumSupported =false;
+    }
+    public void configure(){
+        if(mCerebrumSupported)
+            serviceCommunication.configure();
+    }
+    public void report(){
+        if(mCerebrumSupported)
+            serviceCommunication.report();
+    }
+
+    public void startBackground() {
+        if(mCerebrumSupported)
+            serviceCommunication.startBackground();
+    }
+
+    public boolean isMCerebrumSupported() {
+        return mCerebrumSupported;
     }
 }
