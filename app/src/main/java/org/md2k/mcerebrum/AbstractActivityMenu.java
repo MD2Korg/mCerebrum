@@ -31,16 +31,6 @@ public abstract class AbstractActivityMenu extends AbstractActivityBasics {
     private Drawer result = null;
     int selectedMenu=AbstractMenu.MENU_HOME;
     long backPressedLastTime=-1;
-    Toolbar toolbar;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(R.string.app_name);
-    }
 
     @Override
     public void updateUI() {
@@ -67,18 +57,6 @@ public abstract class AbstractActivityMenu extends AbstractActivityBasics {
                 .build();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        //handle the click on the back arrow click
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return true;
-
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
 
     @Override
     public void onBackPressed() {
@@ -94,7 +72,7 @@ public abstract class AbstractActivityMenu extends AbstractActivityBasics {
                     super.onBackPressed();
                 else{
                     backPressedLastTime=currentTime;
-                    Toasty.warning(this, "Press BACK button again to QUIT", Toast.LENGTH_SHORT).show();
+//                    Toasty.warning(this, "Press BACK button again to QUIT", Toast.LENGTH_SHORT).show();
                 }
             }
         }

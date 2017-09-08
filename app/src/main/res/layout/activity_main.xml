@@ -8,6 +8,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
+    android:fitsSystemWindows="true"
     tools:context="org.md2k.mcerebrum.ActivityMain">
     <RelativeLayout
         android:id="@+id/transparentOverlay"

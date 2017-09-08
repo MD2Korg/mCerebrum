@@ -150,7 +150,7 @@ public class FragmentHome extends Fragment {
     }
 
     BootstrapText getSummary() {
-        return new BootstrapText.Builder(getContext()).addText("\tStudy Title:   " + studyInfo.getTitle() + "\t\t\t\tUser id:   " + userInfo.getTitle())
+        return new BootstrapText.Builder(getContext()).addText("Study Title: " + studyInfo.getTitle() + "      User id:  " + userInfo.getTitle())
                 .build();
     }
 

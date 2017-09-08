@@ -3,6 +3,8 @@ package org.md2k.mcerebrum;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -31,7 +33,7 @@ public abstract class AbstractActivityBasics extends AppCompatActivity {
     public ConfigManager configManager;
     Subscription subscription;
     MaterialDialog materialDialog;
-    boolean isFirstTime;
+    Toolbar toolbar;
 
     abstract void updateUI();
 
@@ -43,7 +45,11 @@ public abstract class AbstractActivityBasics extends AppCompatActivity {
         studyInfo=new StudyInfo();
         userInfo=new UserInfo();
         applicationManager=new ApplicationManager();
-        isFirstTime=true;
+        setContentView(R.layout.activity_main);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle(R.string.app_name);
+
         Permission.requestPermission(this, new PermissionCallback() {
             @Override
             public void OnResponse(boolean isGranted) {
@@ -52,27 +58,20 @@ public abstract class AbstractActivityBasics extends AppCompatActivity {
                     System.exit(0);
                     finish();
                 }else{
-                    readConfig();
+                    prepareConfig();
                 }
             }
         });
     }
-    @Override
-    public void onResume(){
-        if(!configManager.isConfigured()) {
-            prepareConfig();
-        }else if(isFirstTime){
-            isFirstTime=false;
-            updateUI();
-        }
-        super.onResume();
-    }
+
     public boolean readConfig(){
         configManager.read();
         if(configManager.isConfigured()){
             userInfo.set();
             studyInfo.set(configManager.getConfig());
             applicationManager.set(configManager.getConfig().getApplications());
+            if(studyInfo.getType().toUpperCase().equals(StudyInfo.FREEBIE))
+                userInfo.setTitle("Default");
             return true;
         }else{
             userInfo.clear();
@@ -84,7 +83,8 @@ public abstract class AbstractActivityBasics extends AppCompatActivity {
     public void prepareConfig(){
         if(!readConfig()){
             downloadConfigDefault();
-        }
+        }else
+            updateUI();
     }
     void downloadConfigDefault(){
         materialDialog = Dialog.progress(this, "Loading configuration file...").show();
@@ -95,6 +95,7 @@ public abstract class AbstractActivityBasics extends AppCompatActivity {
                     @Override
                     public void onCompleted() {
                         materialDialog.dismiss();
+                        readConfig();
                         updateUI();
                     }
                     @Override
@@ -124,6 +125,18 @@ public abstract class AbstractActivityBasics extends AppCompatActivity {
             subscription.unsubscribe();
         applicationManager.clear();
         super.onDestroy();
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        //handle the click on the back arrow click
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return true;
+
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 }
