@@ -19,6 +19,8 @@ import org.md2k.mcerebrum.app.ApplicationManager;
 import org.md2k.mcerebrum.data.StudyInfo;
 import org.md2k.mcerebrum.data.UserInfo;
 
+import java.util.ArrayList;
+
 import es.dmoral.toasty.Toasty;
 
 public class FragmentHome extends Fragment {
@@ -133,16 +135,14 @@ public class FragmentHome extends Fragment {
 
     String getInstall() {
         String notInstalledAppList = null;
-        int notInstalledApp = 0;
-        for (int i = 0; i < applicationManager.getApplications().length; i++) {
+        ArrayList<Application> apps = applicationManager.getRequiredAppNotInstalled();
+        if(apps.size()==0) return null;
+        for (int i = 0; i < apps.size(); i++) {
             if (applicationManager.getApplications()[i].isRequired()) {
-                if (!applicationManager.getApplications()[i].isInstalled()) {
-                    notInstalledApp++;
-                    if (notInstalledApp == 1)
-                        notInstalledAppList = applicationManager.getApplications()[i].getTitle();
+                    if (i == 0)
+                        notInstalledAppList = apps.get(i).getTitle();
                     else
-                        notInstalledAppList += ", " + applicationManager.getApplications()[i].getTitle();
-                }
+                        notInstalledAppList += ", " + apps.get(i).getTitle();
             }
         }
         return notInstalledAppList;

@@ -51,6 +51,8 @@ public abstract class AbstractMenu {
     public static final int MENU_LEAVE = 5;
     public static final int MENU_APP_ADD_REMOVE = 6;
     public static final int MENU_APP_SETTINGS = 7;
+    public static final int MENU_STUDY_START = 8;
+
     //    public static final int OP_REPORT = 7;
 //    public static final int OP_PLOT = 8;
 //    public static final int OP_EXPORT_DATA = 9;
