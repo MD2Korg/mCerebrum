@@ -1,4 +1,4 @@
-package org.md2k.mcerebrum.communication;
+package org.md2k.mcerebrum.app;
 /*
  * Copyright (c) 2016, The University of Memphis, MD2K Center
  * - Syed Monowar Hossain <monowar.hossain@gmail.com>
@@ -34,7 +34,6 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 
-import org.md2k.mcerebrum.app.Application;
 import org.md2k.mcerebrum.core.access.IMCerebrumService;
 import org.md2k.mcerebrum.core.access.Info;
 

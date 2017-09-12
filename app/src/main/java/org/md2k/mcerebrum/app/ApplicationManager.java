@@ -26,123 +26,152 @@ package org.md2k.mcerebrum.app;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import android.content.Context;
-
 import org.md2k.mcerebrum.configuration.CApp;
-import org.md2k.mcerebrum.data.MySharedPreference;
 
 import java.util.ArrayList;
 
 public class ApplicationManager {
-    private Application[] applications;
+    private AppInfo[] appInfos;
+    private AppMC[] appMCs;
     public static final String TYPE_STUDY="STUDY";
     public static final String TYPE_MCEREBRUM="MCEREBRUM";
     public static final String TYPE_DATA_KIT="DATAKIT";
 
     public void set(CApp[] cApps){
-        clear();
-        ArrayList<Application> applicationArrayList=new ArrayList<>();
+        ArrayList<AppInfo> appInfos=new ArrayList<>();
         for (CApp cApp : cApps) {
-            Application application = new Application(cApp);
-            if (application.isNotInUse()) continue;
-            applicationArrayList.add(application);
+            AppInfo a=new AppInfo(cApp);
+            if (a.isNotInUse()) continue;
+            appInfos.add(a);
         }
-        applications=new Application[applicationArrayList.size()];
-        for(int i=0;i<applicationArrayList.size();i++){
-            applications[i]=applicationArrayList.get(i);
+        this.appInfos =new AppInfo[appInfos.size()];
+        this.appMCs =new AppMC[appInfos.size()];
+        for(int i=0;i<appInfos.size();i++){
+            this.appInfos[i]=appInfos.get(i);
+            this.appMCs[i]=new AppMC(appInfos.get(i));
         }
     }
 
-    public Application[] getApplications() {
-        return applications;
+    public AppMC[] getAppMCs() {
+        return appMCs;
     }
-    public Application getApplication(String packageName){
-        for (Application application : applications)
-            if (application.getPackageName().equals(packageName))
-                return application;
+    public AppInfo getAppInfo(String packageName){
+        for (AppInfo appInfo : appInfos)
+            if (appInfo.getPackageName().equals(packageName))
+                return appInfo;
         return null;
     }
 
     public int[] getInstallStatus(){
         int result[]=new int[3];
         result[0]=0;result[1]=0;result[2]=0;
-        if(applications==null) return result;
-        for (Application application : applications) {
-            if (!application.isInstalled())
+        if(appInfos ==null) return result;
+        for (AppInfo appInfo : appInfos) {
+            if (!appInfo.isInstalled())
                 result[2]++;
-            else if (application.isUpdateAvailable())
+            else if (appInfo.isUpdateAvailable())
                 result[1]++;
             else result[0]++;
         }
         return result;
     }
     public boolean isRequiredAppInstalled(){
-        if(applications==null) return false;
-        for(Application application: applications)
-            if(application.isRequired() && !application.isInstalled()) return false;
+        if(appInfos ==null) return false;
+        for(AppInfo appInfo : appInfos)
+            if(appInfo.isRequired() && !appInfo.isInstalled()) return false;
         return true;
     }
 
-    public ArrayList<Application> getRequiredAppNotInstalled() {
-        ArrayList<Application> apps = new ArrayList<>();
-        if(applications==null) return apps;
-        for (Application application : applications) {
-            if (application.isRequired() && !application.isInstalled()) {
-                apps.add(application);
+    public ArrayList<AppInfo> getRequiredAppNotInstalled() {
+        ArrayList<AppInfo> appInfos = new ArrayList<>();
+        if(this.appInfos ==null) return appInfos;
+        for (AppInfo appInfo : this.appInfos) {
+            if (appInfo.isRequired() && !appInfo.isInstalled()) {
+                appInfos.add(appInfo);
             }
         }
-        return apps;
+        return appInfos;
     }
-    public ArrayList<Application> getAppConfigured() {
-        ArrayList<Application> apps = new ArrayList<>();
-        if(applications==null) return apps;
-        for (Application application : applications) {
-            if (application.isInstalled() && application.isConfigurable() && application.isConfigured()) {
-                apps.add(application);
+    public ArrayList<AppInfo> getAppConfigured() {
+        ArrayList<AppInfo> appInfos = new ArrayList<>();
+        if(appInfos ==null) return appInfos;
+        for (AppInfo appInfo : this.appInfos) {
+            if (appInfo.isInstalled() && appInfo.isMCerebrumSupported() && appInfo.getInfo()!=null && appInfo.getInfo().isConfigurable() && appInfo.getInfo().isConfigured()) {
+                appInfos.add(appInfo);
             }
         }
-        return apps;
+        return appInfos;
     }
-    public ArrayList<Application> getAppNotConfigured() {
-        ArrayList<Application> apps = new ArrayList<>();
-        if(applications==null) return apps;
-        for (Application application : applications) {
-            if (application.isInstalled() && application.isConfigurable() && !application.isConfigured()) {
-                apps.add(application);
+    public ArrayList<AppInfo> getAppNotConfigured() {
+        ArrayList<AppInfo> a = new ArrayList<>();
+        if(appInfos ==null) return a;
+        for (AppInfo appInfo : appInfos) {
+            if (appInfo.isInstalled() && appInfo.isMCerebrumSupported() && appInfo.getInfo()!=null && appInfo.getInfo().isConfigurable() && !appInfo.getInfo().isConfigured()) {
+                a.add(appInfo);
             }
         }
-        return apps;
+        return a;
     }
 
-    public void clear() {
-        if(applications==null) return;
-        for (Application application : applications) application.stopService();
+    public void stop() {
+        if(appMCs ==null) return;
+        for (AppMC appMC : appMCs) appMC.stopService();
     }
 
-    public void updateInfo() {
-        if(applications==null) return;
-        for (Application application : applications) {
-            application.updateInfo();
+    public void getInfo() {
+        if(appMCs ==null) return;
+        for (AppMC appMC : appMCs) {
+            appMC.setInfo();
         }
     }
-    public Application getStudy(){
+    public AppInfo getStudy(){
         return get(TYPE_STUDY);
     }
-    public Application getMCerebrum(){
+    public AppInfo getMCerebrum(){
         return get(TYPE_MCEREBRUM);
     }
 
-    public Application getDataKit(){
+    public AppInfo getDataKit(){
         return get(TYPE_DATA_KIT);
     }
-    public Application get(String type){
-        if(applications==null) return null;
-        for (Application application : applications) {
-            if (application.getType() == null) continue;
-            if (type.equals(application.getType().toUpperCase()))
-                return application;
+    private AppInfo get(String type){
+        if(appInfos ==null) return null;
+        for (AppInfo appInfo : appInfos) {
+            if (appInfo.getType() == null) continue;
+            if (type.equals(appInfo.getType().toUpperCase()))
+                return appInfo;
         }
         return null;
 
+    }
+
+    public AppInfo[] getAppInfos() {
+        return appInfos;
+    }
+
+    public void reset(String packageName) {
+        for(int i=0;i<appInfos.length;i++)
+            if(appInfos[i].getPackageName().equals(packageName)){
+                boolean lastResult=appInfos[i].isInstalled();
+                appInfos[i].setInstalled();
+                if(appInfos[i].isInstalled()!=lastResult)
+                    if(appInfos[i].isInstalled())
+                        appMCs[i].startService();
+                else appMCs[i].stopService();
+            }
+    }
+
+    public void setInfo() {
+        for (int i=0;i<appInfos.length;i++) {
+            if (!appInfos[i].isInstalled()) continue;
+            if (!appInfos[i].isMCerebrumSupported()) continue;
+            appMCs[i].setInfo();
+        }
+    }
+
+    public void configure(String packageName) {
+        for(int i=0;i<appInfos.length;i++)
+            if(appInfos[i].getPackageName().equals(packageName))
+                appMCs[i].configure();
     }
 }

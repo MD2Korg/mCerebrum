@@ -16,7 +16,7 @@ import org.md2k.mcerebrum.Constants;
 import org.md2k.mcerebrum.R;
 import org.md2k.mcerebrum.commons.dialog.Dialog;
 import org.md2k.mcerebrum.configuration.ConfigManager;
-import org.md2k.mcerebrum.data.UserInfo;
+import org.md2k.mcerebrum.user.UserInfo;
 import org.md2k.mcerebrum.internet.download.DownloadInfo;
 
 import es.dmoral.toasty.Toasty;

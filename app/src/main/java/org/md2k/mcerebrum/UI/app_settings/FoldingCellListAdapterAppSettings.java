@@ -1,6 +1,7 @@
 package org.md2k.mcerebrum.UI.app_settings;
 
-import android.app.Activity;
+import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +16,8 @@ import com.beardedhen.androidbootstrap.api.defaults.DefaultBootstrapBrand;
 import com.ramotion.foldingcell.FoldingCell;
 
 import org.md2k.mcerebrum.R;
-import org.md2k.mcerebrum.app.Application;
+import org.md2k.mcerebrum.app.AppInfo;
+import org.md2k.mcerebrum.app.AppMC;
 
 import java.util.HashSet;
 import java.util.List;
@@ -24,24 +26,22 @@ import java.util.List;
  * Simple example of ListAdapter for using with Folding Cell
  * Adapter holds indexes of unfolded elements for correct work with default reusable views behavior
  */
-public class FoldingCellListAdapterAppSettings extends ArrayAdapter<Application> {
+public class FoldingCellListAdapterAppSettings extends ArrayAdapter<AppInfo> {
 
     private HashSet<Integer> unfoldedIndexes = new HashSet<>();
     private View.OnClickListener defaultRequestBtnClickListener;
     private ResponseCallBack responseCallBack;
-    Activity activity;
 
 
-    public FoldingCellListAdapterAppSettings(Activity activity, List<Application> applications, ResponseCallBack responseCallBack) {
-        super(activity, 0, applications);
-        this.activity = activity;
+    public FoldingCellListAdapterAppSettings(Context context, List<AppInfo> apps, ResponseCallBack responseCallBack) {
+        super(context, 0, apps);
         this.responseCallBack = responseCallBack;
     }
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         // get item for selected view
-        final Application application = getItem(position);
+        final AppInfo appInfo = getItem(position);
         // if cell is exists - reuse it, if not - create the new one from resource
         FoldingCell cell = (FoldingCell) convertView;
         ViewHolder viewHolder;
@@ -78,16 +78,16 @@ public class FoldingCellListAdapterAppSettings extends ArrayAdapter<Application>
             viewHolder = (ViewHolder) cell.getTag();
         }
         // bind data from selected element to view through view holder
-        viewHolder.title.setText(application.getTitle());
-        viewHolder.summary.setText(application.getSummary());
-        viewHolder.content_title.setText(application.getTitle());
-        viewHolder.content_summary.setText(application.getSummary());
-        viewHolder.description.setText(application.getDescription());
-        String versionName = application.getCurrentVersionName();
+        viewHolder.title.setText(appInfo.getTitle());
+        viewHolder.summary.setText(appInfo.getSummary());
+        viewHolder.content_title.setText(appInfo.getTitle());
+        viewHolder.content_summary.setText(appInfo.getSummary());
+        viewHolder.description.setText(appInfo.getDescription());
+        String versionName = appInfo.getCurrentVersionName();
         if (versionName == null) versionName = "N/A";
         viewHolder.version.setText(versionName);
-        viewHolder.icon_short.setImageDrawable(application.getIcon(getContext()));
-        viewHolder.icon_long.setImageDrawable(application.getIcon(getContext()));
+        viewHolder.icon_short.setImageDrawable(appInfo.getIcon(getContext()));
+        viewHolder.icon_long.setImageDrawable(appInfo.getIcon(getContext()));
 
         View.OnClickListener onClickListenerRun = new View.OnClickListener() {
             @Override
@@ -102,9 +102,9 @@ public class FoldingCellListAdapterAppSettings extends ArrayAdapter<Application>
             }
         };
 
-        if(!application.isConfigurable())
+        if(!appInfo.isMCerebrumSupported() || appInfo.getInfo()==null || !appInfo.getInfo().isConfigurable())
             set(viewHolder.buttonSettingsLong, viewHolder.buttonSettingsShort, false, DefaultBootstrapBrand.SECONDARY, true, onClickListenerSettings);
-        else if(application.isConfigured())
+        else if(appInfo.getInfo().isConfigured())
             set(viewHolder.buttonSettingsLong, viewHolder.buttonSettingsShort, true, DefaultBootstrapBrand.SUCCESS, true, onClickListenerSettings);
         else
             set(viewHolder.buttonSettingsLong, viewHolder.buttonSettingsShort, true, DefaultBootstrapBrand.SUCCESS, false, onClickListenerSettings);
@@ -112,10 +112,11 @@ public class FoldingCellListAdapterAppSettings extends ArrayAdapter<Application>
         set(viewHolder.buttonLaunchLong, viewHolder.buttonLaunchShort, true, DefaultBootstrapBrand.SUCCESS, true, onClickListenerRun);
         viewHolder.buttonLaunchLong.setFontAwesomeIcon("fa_play");
         viewHolder.buttonLaunchShort.setFontAwesomeIcon("fa_play");
-        if(application.isConfigurable() && application.isConfigured()){
+        Log.d("abc",appInfo.getTitle());
+        if(appInfo.isMCerebrumSupported() && appInfo.getInfo()!=null && appInfo.getInfo().isConfigurable() && appInfo.getInfo().isConfigured() && appInfo.getInfo().isEqualDefault()){
             viewHolder.status.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
             viewHolder.status.setText("configured");
-        }else if(application.isConfigurable()){
+        }else if(appInfo.isMCerebrumSupported() && appInfo.getInfo()!=null && appInfo.getInfo().isConfigurable()){
             viewHolder.status.setBootstrapBrand(DefaultBootstrapBrand.DANGER);
             viewHolder.status.setText("not configured");
         }else{
@@ -127,8 +128,8 @@ public class FoldingCellListAdapterAppSettings extends ArrayAdapter<Application>
         //     viewHolder.pledgePrice.setText(item.getPledgePrice());
         // set custom btn handler for list item from that item
 
-  /*      if (app.getRequestBtnClickListener() != null) {
-            viewHolder.contentRequestBtn.setOnClickListener(app.getRequestBtnClickListener());
+  /*      if (appInfo.getRequestBtnClickListener() != null) {
+            viewHolder.contentRequestBtn.setOnClickListener(appInfo.getRequestBtnClickListener());
         } else {
             // (optionally) add "default" handler if no handler found in item
             viewHolder.contentRequestBtn.setOnClickListener(defaultRequestBtnClickListener);

@@ -2,139 +2,157 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="org.md2k.mcerebrum.ActivityMain"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorbackground">
+    android:background="@color/colorbackground"
+    tools:context="org.md2k.mcerebrum.ActivityMain">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:layout_margin="10dp">
-
-
-<!--summary -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.25"
-        android:background="@color/backGroundDark"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:weightSum="1"
+        android:layout_margin="10dp"
         android:orientation="vertical">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/backGroundDark"
-            android:weightSum="1"
-            android:layout_weight="0.25"
-            android:orientation="horizontal">
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.5">
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Summary"
-                    android:padding="10dp"
-                    android:textAppearance="@style/CodeFont" />
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="0.5">
-                <com.beardedhen.androidbootstrap.AwesomeTextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:bootstrapBrand="success"
-                    app:roundedCorners="true"
-                    app:showOutline="true"
-                    app:bootstrapText="Status:    {fa_check_circle}"
-                    android:padding="10dp"
-                    android:gravity="right"/>
-            </LinearLayout>
-
-        </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="0.75">
-            <com.beardedhen.androidbootstrap.AwesomeTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/awesome_textview_summary"
-                android:paddingTop="10dp"
-                android:layout_marginLeft="5dp"
-                app:bootstrapBrand="success"
-                app:bootstrapText="Look, I'm in a large well" />
-
-        </LinearLayout>
 
 
-    </LinearLayout>
-
-
-        <!--App install -->
+        <!--summary -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.25"
-            android:background="@color/backGroundDark"
-            android:layout_marginTop="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:weightSum="1"
-            android:id="@+id/layout_app_install"
-            android:orientation="vertical">
+            android:layout_marginTop="10dp"
+            android:layout_weight="0.25"
+            android:background="@color/backGroundDark"
+            android:orientation="vertical"
+            android:weightSum="1">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/backGroundDark"
-                android:weightSum="1"
                 android:layout_weight="0.25"
-                android:orientation="horizontal">
+                android:background="@color/backGroundDark"
+                android:orientation="horizontal"
+                android:weightSum="1">
+
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="0.5">
+
                     <TextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Application Install"
                         android:padding="10dp"
+                        android:text="Summary"
                         android:textAppearance="@style/CodeFont" />
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="0.5">
+
                     <com.beardedhen.androidbootstrap.AwesomeTextView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:bootstrapBrand="success"
-                        android:id="@+id/awesome_textview_install_status"
-                        app:roundedCorners="true"
-                        app:showOutline="true"
-                        app:bootstrapText="Status:    {fa_check_circle}"
+                        android:gravity="right"
                         android:padding="10dp"
-                        android:gravity="right"/>
+                        app:bootstrapBrand="success"
+                        app:bootstrapText="Status:    {fa_check_circle}"
+                        app:roundedCorners="true"
+                        app:showOutline="true" />
                 </LinearLayout>
 
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.75">
+
                 <com.beardedhen.androidbootstrap.AwesomeTextView
+                    android:id="@+id/awesome_textview_summary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/awesome_textview_install"
+                    android:layout_marginLeft="5dp"
                     android:paddingTop="10dp"
+                    app:bootstrapBrand="success"
+                    app:bootstrapText="Look, I'm in a large well" />
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+
+        <!--App install -->
+        <LinearLayout
+            android:id="@+id/app_install1"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_weight="0.25"
+            android:background="@color/backGroundDark"
+            android:orientation="vertical"
+            android:weightSum="1">
+
+            <LinearLayout
+                android:id="@+id/app_install2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.25"
+                android:background="@color/backGroundDark"
+                android:orientation="horizontal"
+                android:weightSum="1">
+
+                <LinearLayout
+                    android:id="@+id/app_install3"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="0.5">
+
+                    <TextView
+                        android:id="@+id/app_install4"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:text="Application Install"
+                        android:textAppearance="@style/CodeFont" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:id="@+id/app_install5"
+                    android:layout_weight="0.5">
+
+                    <com.beardedhen.androidbootstrap.AwesomeTextView
+                        android:id="@+id/awesome_textview_install_status"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="right"
+                        android:padding="10dp"
+                        app:bootstrapBrand="success"
+                        app:bootstrapText="Status:    {fa_check_circle}"
+                        app:roundedCorners="true"
+                        app:showOutline="true" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.75">
+
+                <com.beardedhen.androidbootstrap.AwesomeTextView
+                    android:id="@+id/awesome_textview_install"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
+                    android:paddingTop="10dp"
                     app:bootstrapBrand="warning"
                     app:bootstrapText="Look, I'm in a large well" />
 
@@ -144,61 +162,73 @@
         </LinearLayout>
         <!--App setup -->
         <LinearLayout
-            android:id="@+id/layout_app_setup"
+            android:id="@+id/app_setup1"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="0.25"
-            android:background="@color/backGroundDark"
-            android:layout_marginTop="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:weightSum="1"
-            android:orientation="vertical">
+            android:layout_marginTop="10dp"
+            android:layout_weight="0.25"
+            android:background="@color/backGroundDark"
+            android:orientation="vertical"
+            android:weightSum="1">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/backGroundDark"
-                android:weightSum="1"
+                android:id="@+id/app_setup2"
                 android:layout_weight="0.25"
-                android:orientation="horizontal">
+                android:background="@color/backGroundDark"
+                android:orientation="horizontal"
+                android:weightSum="1">
+
                 <LinearLayout
                     android:layout_width="0dp"
+                    android:id="@+id/app_setup3"
                     android:layout_height="match_parent"
                     android:layout_weight="0.5">
+
                     <TextView
                         android:layout_width="match_parent"
+                        android:id="@+id/app_setup4"
                         android:layout_height="wrap_content"
-                        android:text="Application Setup"
                         android:padding="10dp"
+                        android:text="Application Setup"
                         android:textAppearance="@style/CodeFont" />
                 </LinearLayout>
+
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
+                    android:id="@+id/app_setup5"
                     android:layout_weight="0.5">
+
                     <com.beardedhen.androidbootstrap.AwesomeTextView
+                        android:id="@+id/awesome_textview_setup_status"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:bootstrapBrand="success"
-                        app:roundedCorners="true"
-                        app:showOutline="true"
-                        android:id="@+id/awesome_textview_setup_status"
-                        app:bootstrapText="Status:    {fa_check_circle}"
+                        android:gravity="right"
                         android:padding="10dp"
-                        android:gravity="right"/>
+                        app:bootstrapBrand="success"
+                        app:bootstrapText="Status:    {fa_check_circle}"
+                        app:roundedCorners="true"
+                        app:showOutline="true" />
                 </LinearLayout>
 
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:id="@+id/app_setup6"
                 android:layout_weight="0.75">
+
                 <com.beardedhen.androidbootstrap.AwesomeTextView
+                    android:id="@+id/awesome_textview_setup"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/awesome_textview_setup"
-                    android:paddingTop="10dp"
                     android:layout_marginLeft="10dp"
+                    android:paddingTop="10dp"
                     app:bootstrapBrand="warning"
                     app:bootstrapText="Look, I'm in a large well" />
 
@@ -208,27 +238,27 @@
         </LinearLayout>
 
         <!--Start button -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.25"
-        android:background="@color/backGroundDark"
-        android:layout_marginTop="10dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp">
-
-        <com.beardedhen.androidbootstrap.BootstrapButton
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingTop="10dp"
-            android:layout_margin="30dp"
-            android:id="@+id/button_bootstrap_start"
-            app:bootstrapBrand="success"
-            app:bootstrapSize="lg"
-            app:bootstrapText="{fa_play}  Start Study"
-            app:roundedCorners="true" />
+            android:layout_height="0dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_weight="0.25"
+            android:background="@color/backGroundDark">
+
+            <com.beardedhen.androidbootstrap.BootstrapButton
+                android:id="@+id/button_bootstrap_start"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="30dp"
+                android:paddingTop="10dp"
+                app:bootstrapBrand="success"
+                app:bootstrapSize="lg"
+                app:bootstrapText="{fa_play}  Start Study"
+                app:roundedCorners="true" />
+        </LinearLayout>
     </LinearLayout>
-</LinearLayout>
 
 
 </LinearLayout>

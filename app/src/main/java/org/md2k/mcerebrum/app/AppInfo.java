@@ -35,29 +35,18 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.blankj.utilcode.util.AppUtils;
 
 import org.md2k.mcerebrum.Constants;
-import org.md2k.mcerebrum.MyApplication;
-import org.md2k.mcerebrum.commons.storage.Storage;
-import org.md2k.mcerebrum.commons.storage.StorageType;
-import org.md2k.mcerebrum.communication.ResponseCallback;
-import org.md2k.mcerebrum.communication.ServiceCommunication;
 import org.md2k.mcerebrum.configuration.CApp;
 import org.md2k.mcerebrum.core.access.Info;
-import org.md2k.mcerebrum.internet.download.DownloadFile;
-import org.md2k.mcerebrum.internet.download.DownloadInfo;
-import org.md2k.mcerebrum.internet.github.model.ReleaseInfo;
-import org.md2k.mcerebrum.internet.github.service.Github;
 
 import java.io.IOException;
 
-import rx.Observable;
-import rx.functions.Func1;
-
-public class Application {
+public class AppInfo implements Parcelable{
     private static final String STATUS_REQUIRED="REQUIRED";
     private static final String STATUS_OPTIONAL="OPTIONAL";
     private static final String STATUS_NOT_IN_USE="NOT_IN_USE";
@@ -77,18 +66,11 @@ public class Application {
     private String currentVersionName;
     private int currentVersionCode;
     private boolean installed;
-    private boolean isConfigurable;
     private String status;
-    private ServiceCommunication serviceCommunication;
     private boolean mCerebrumSupported;
-    private static final int REQUEST_CODE = 2000;
-    private boolean configured;
-    private boolean runInBackground;
-    private long runningTime;
-    private boolean report;
-    private boolean running;
+    private Info info;
 
-    Application(CApp capp) {
+    AppInfo(CApp capp) {
         id = capp.getId();
         type = capp.getType();
         title = capp.getTitle();
@@ -102,99 +84,56 @@ public class Application {
         expectedVersion = capp.getVersion();
         updateOption = capp.getUpdate();
         status = capp.getStatus();
+        setInstalled();
+        setmCerebrum(null);
+    }
+
+    protected AppInfo(Parcel in) {
+        id = in.readString();
+        type = in.readString();
+        title = in.readString();
+        summary = in.readString();
+        description = in.readString();
+        packageName = in.readString();
+        icon = in.readString();
+        downloadFromGithub = in.readString();
+        downloadFromPlayStore = in.readString();
+        downloadFromURL = in.readString();
+        expectedVersion = in.readString();
+        updateOption = in.readString();
+        updateVersionName = in.readString();
+        currentVersionName = in.readString();
+        currentVersionCode = in.readInt();
+        installed = in.readByte() != 0;
+        status = in.readString();
+        mCerebrumSupported = in.readByte() != 0;
+        info = in.readParcelable(Info.class.getClassLoader());
+    }
+
+    public static final Creator<AppInfo> CREATOR = new Creator<AppInfo>() {
+        @Override
+        public AppInfo createFromParcel(Parcel in) {
+            return new AppInfo(in);
+        }
+
+        @Override
+        public AppInfo[] newArray(int size) {
+            return new AppInfo[size];
+        }
+    };
+
+    void setInstalled(){
         installed = AppUtils.isInstallApp(packageName);
-        mCerebrumSupported =false;
         if (installed) {
             currentVersionName = AppUtils.getAppVersionName(packageName);
             currentVersionCode = AppUtils.getAppVersionCode(packageName);
-            startService();
-        }
-        configured=true;
-        runInBackground=false;
-        runningTime=-1;
-        report=false;
-        running=false;
-
-    }
-
-    public void install(Activity activity){
-        if(downloadFromPlayStore!=null){
-            Intent goToMarket = new Intent(Intent.ACTION_VIEW)
-                    .setData(Uri.parse(downloadFromPlayStore));
-            goToMarket.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            activity.startActivityForResult(goToMarket, REQUEST_CODE);
-        }else{
-            final String fileDir = Storage.getRootDirectory(activity, StorageType.SDCARD_INTERNAL) + "/mCerebrum/temp";
-            final String fileName = "temp.apk";
-            AppUtils.installApp(activity, fileDir+"/"+fileName, "org.md2k.mcerebrum.provider", REQUEST_CODE);
         }
     }
-
-    public Observable<DownloadInfo> download(final Activity activity) {
-        final String fileDir = Storage.getRootDirectory(activity, StorageType.SDCARD_INTERNAL) + "/mCerebrum/temp";
-        final String fileName = "temp.apk";
-
-        Observable<DownloadInfo> observable;
-        if (downloadFromURL != null)
-            observable = new DownloadFile().download(downloadFromURL, fileDir, fileName);
-        else {
-            if (getExpectedVersion() == null)
-                observable = downloadLatest(fileDir, fileName);
-            else {
-                observable = getVersions().flatMap(new Func1<ReleaseInfo[], Observable<DownloadInfo>>() {
-                    @Override
-                    public Observable<DownloadInfo> call(ReleaseInfo[] releaseInfos) {
-                        for (ReleaseInfo releaseInfo : releaseInfos) {
-                            if (releaseInfo.getName().equals(getExpectedVersion())) {
-                                for (int j = 0; j < releaseInfo.getAssets().length; j++)
-                                    if (releaseInfo.getAssets()[j].getName().endsWith(".apk"))
-                                        return new DownloadFile().download(releaseInfo.getAssets()[j].getBrowser_download_url(), fileDir, fileName);
-                            }
-                        }
-                        return Observable.error(new Throwable("File not found in the server"));
-                    }
-                });
-            }
-        }
-        return observable;
+    void setmCerebrum(Info info){
+        this.info = info;
     }
 
-    private Observable<DownloadInfo> downloadLatest(final String filePath, final String fileName) {
-        return getLatestVersion().map(new Func1<ReleaseInfo, String>() {
-            @Override
-            public String call(ReleaseInfo releaseInfo) {
-                for (int i = 0; i < releaseInfo.getAssets().length; i++) {
-                    if (releaseInfo.getAssets()[i].getBrowser_download_url().endsWith(".apk"))
-                        return releaseInfo.getAssets()[i].getBrowser_download_url();
-                }
-                return null;
-            }
-        }).flatMap(new Func1<String, Observable<DownloadInfo>>() {
-            @Override
-            public Observable<DownloadInfo> call(String s) {
-                if (s == null) return null;
-                return new DownloadFile().download(s, filePath, fileName);
-            }
-        });
-    }
 
-    private Observable<ReleaseInfo[]> getVersions() {
-        String[] parts = downloadFromGithub.split("/");
-        if (parts.length != 2) return Observable.error(new Throwable("Invalid download link in configuration file"));
-        Github github = new Github();
-        return github.getReleases(parts[0], parts[1]);
-    }
-
-    private Observable<ReleaseInfo> getLatestVersion() {
-        String[] parts = downloadFromGithub.split("/");
-        if (parts.length != 2) return null;
-        Github github = new Github();
-        return github.getReleaseLatest(parts[0], parts[1]);
-    }
-
-    public void uninstall(Activity activity, int requestCode) {
-        AppUtils.uninstallApp(activity, packageName, requestCode);
-    }
 
     int getCurrentVersionCode() {
         return currentVersionCode;
@@ -244,8 +183,6 @@ public class Application {
 
         }
     }
-
-
     public String getDownloadFromGithub() {
         return downloadFromGithub;
     }
@@ -258,7 +195,7 @@ public class Application {
         return downloadFromURL;
     }
 
-    private String getExpectedVersion() {
+    String getExpectedVersion() {
         return expectedVersion;
     }
 
@@ -270,6 +207,7 @@ public class Application {
         return installed;
     }
 
+/*
     public void updateInfo() {
         boolean res=AppUtils.isInstallApp(packageName);
         if(installed!=res) {
@@ -282,7 +220,9 @@ public class Application {
                 stopService();
         }
     }
+*/
 
+/*
     public void updateStatus() {
         try {
             Info info = serviceCommunication.getInfo();
@@ -296,6 +236,7 @@ public class Application {
 
         }
     }
+*/
 
     public String getId() {
         return id;
@@ -317,25 +258,6 @@ public class Application {
         return updateVersionName;
     }
 
-    public boolean isConfigurable() {
-        return isConfigurable;
-    }
-
-    public static int getRequestCode() {
-        return REQUEST_CODE;
-    }
-
-    public boolean isConfigured() {
-        return configured;
-    }
-
-    public boolean isRunInBackground() {
-        return runInBackground;
-    }
-
-    public long getRunningTime() {
-        return runningTime;
-    }
     public boolean isRequired(){
         if(status==null) return false;
         if(STATUS_REQUIRED.equals(status.toUpperCase())) return true;
@@ -356,52 +278,8 @@ public class Application {
         else if(isNotInUse()) return "Not in use";
         else return "Optional";
     }
-
-    public boolean hasReport() {
-        return report;
-    }
-
-    public boolean isRunning() {
-        return running;
-    }
-    public void startService(){
-        try {
-            if(serviceCommunication==null) {
-                serviceCommunication = new ServiceCommunication();
-                serviceCommunication.start(MyApplication.getContext(), packageName, new ResponseCallback() {
-                    @Override
-                    public void onResponse(boolean isConnected) {
-                        mCerebrumSupported =isConnected;
-                        if(isConnected)
-                            updateStatus();
-                    }
-                });
-            }
-        }catch (Exception e){
-            serviceCommunication=null;
-        }
-    }
-    public void stopService() {
-        try {
-            serviceCommunication.exit();
-
-        }catch (Exception e){
-            serviceCommunication=null;
-        }
-        mCerebrumSupported =false;
-    }
-    public void configure(){
-        if(mCerebrumSupported)
-            serviceCommunication.configure();
-    }
-    public void report(){
-        if(mCerebrumSupported)
-            serviceCommunication.report();
-    }
-
-    public void startBackground() {
-        if(mCerebrumSupported)
-            serviceCommunication.startBackground();
+    public void setmCerebrumSupported(boolean result){
+        mCerebrumSupported=result;
     }
 
     public boolean isMCerebrumSupported() {
@@ -411,5 +289,37 @@ public class Application {
     public void launch(Activity activity) {
         Intent intent = activity.getPackageManager().getLaunchIntentForPackage(packageName);
         activity.startActivity( intent );
+    }
+
+    public Info getInfo() {
+        return info;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(type);
+        dest.writeString(title);
+        dest.writeString(summary);
+        dest.writeString(description);
+        dest.writeString(packageName);
+        dest.writeString(icon);
+        dest.writeString(downloadFromGithub);
+        dest.writeString(downloadFromPlayStore);
+        dest.writeString(downloadFromURL);
+        dest.writeString(expectedVersion);
+        dest.writeString(updateOption);
+        dest.writeString(updateVersionName);
+        dest.writeString(currentVersionName);
+        dest.writeInt(currentVersionCode);
+        dest.writeByte((byte) (installed ? 1 : 0));
+        dest.writeString(status);
+        dest.writeByte((byte) (mCerebrumSupported ? 1 : 0));
+        dest.writeParcelable(info, flags);
     }
 }

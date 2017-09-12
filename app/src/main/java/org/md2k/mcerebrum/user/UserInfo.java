@@ -1,4 +1,4 @@
-package org.md2k.mcerebrum.data;
+package org.md2k.mcerebrum.user;
 /*
  * Copyright (c) 2016, The University of Memphis, MD2K Center
  * - Syed Monowar Hossain <monowar.hossain@gmail.com>
@@ -26,30 +26,77 @@ package org.md2k.mcerebrum.data;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-public class UserInfo {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import org.md2k.mcerebrum.data.MySharedPreference;
+
+public class UserInfo implements Parcelable{
+    private String title;
+    private boolean loggedIn;
+    private String loginHash;
+
     private static final String TITLE=UserInfo.class.getSimpleName()+"_TITLE";
     private static final String LOGGED_IN=UserInfo.class.getSimpleName()+"_LOGGED_IN";
 
-    public void set(){
+    public UserInfo(){
+        set();
+    }
 
+    protected UserInfo(Parcel in) {
+        title = in.readString();
+        loggedIn = in.readByte() != 0;
+        loginHash = in.readString();
+    }
+
+    public static final Creator<UserInfo> CREATOR = new Creator<UserInfo>() {
+        @Override
+        public UserInfo createFromParcel(Parcel in) {
+            return new UserInfo(in);
+        }
+
+        @Override
+        public UserInfo[] newArray(int size) {
+            return new UserInfo[size];
+        }
+    };
+
+    public void set(){
+        title=new MySharedPreference().getString(TITLE, "<not_defined>");
+        loggedIn=new MySharedPreference().getBoolean(LOGGED_IN, false);
     }
     public void clear(){
         MySharedPreference mySharedPreference=new MySharedPreference();
         mySharedPreference.clear(TITLE);
         mySharedPreference.clear(LOGGED_IN);
+        set();
     }
 
     public void setTitle( String value) {
         if(value==null) value="<not defined>";
+        title=value;
         new MySharedPreference().set(TITLE, value);
     }
     public void setLoggedIn(boolean value) {
+        loggedIn=value;
         new MySharedPreference().set(LOGGED_IN, value);
     }
     public String getTitle(){
-        return new MySharedPreference().getString(TITLE, "<not_defined>");
+        return title;
     }
     public boolean isLoggedIn(){
-        return new MySharedPreference().getBoolean(LOGGED_IN, false);
+        return loggedIn;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(title);
+        dest.writeByte((byte) (loggedIn ? 1 : 0));
+        dest.writeString(loginHash);
     }
 }

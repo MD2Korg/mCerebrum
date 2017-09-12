@@ -15,8 +15,8 @@ import org.md2k.mcerebrum.commons.dialog.Dialog;
 import org.md2k.mcerebrum.configuration.ConfigManager;
 import org.md2k.mcerebrum.commons.permission.Permission;
 import org.md2k.mcerebrum.commons.permission.PermissionCallback;
-import org.md2k.mcerebrum.data.StudyInfo;
-import org.md2k.mcerebrum.data.UserInfo;
+import org.md2k.mcerebrum.study.StudyInfo;
+import org.md2k.mcerebrum.user.UserInfo;
 import org.md2k.mcerebrum.internet.download.DownloadInfo;
 
 import es.dmoral.toasty.Toasty;
@@ -65,18 +65,18 @@ public abstract class AbstractActivityBasics extends AppCompatActivity {
     }
 
     public boolean readConfig(){
-        configManager.read();
-        if(configManager.isConfigured()){
-            userInfo.set();
-            studyInfo.set(configManager.getConfig());
-            applicationManager.set(configManager.getConfig().getApplications());
-            if(studyInfo.getType().toUpperCase().equals(StudyInfo.FREEBIE))
-                userInfo.setTitle("Default");
-            return true;
+        if(configManager.read() && configManager.isConfigured()) {
+                userInfo.set();
+                studyInfo.set(configManager.getConfig());
+                applicationManager.set(configManager.getConfig().getApplications());
+                if (studyInfo.getType().toUpperCase().equals(StudyInfo.FREEBIE))
+                    userInfo.setTitle("Default");
+                return true;
         }else{
+            configManager.clear();
             userInfo.clear();
             studyInfo.clear();
-            applicationManager.clear();
+            applicationManager.stop();
             return false;
         }
     }
@@ -123,7 +123,7 @@ public abstract class AbstractActivityBasics extends AppCompatActivity {
             materialDialog.dismiss();
         if(subscription!=null && !subscription.isUnsubscribed())
             subscription.unsubscribe();
-        applicationManager.clear();
+        applicationManager.stop();
         super.onDestroy();
     }
     @Override

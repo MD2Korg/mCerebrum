@@ -1,4 +1,4 @@
-package org.md2k.mcerebrum.communication;
+package org.md2k.mcerebrum.app;
 /*
  * Copyright (c) 2016, The University of Memphis, MD2K Center
  * - Syed Monowar Hossain <monowar.hossain@gmail.com>

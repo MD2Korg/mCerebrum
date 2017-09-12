@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.beardedhen.androidbootstrap.AwesomeTextView;
 import com.beardedhen.androidbootstrap.BootstrapButton;
@@ -15,14 +14,12 @@ import com.beardedhen.androidbootstrap.api.defaults.DefaultBootstrapBrand;
 
 import org.md2k.mcerebrum.ActivityMain;
 import org.md2k.mcerebrum.R;
-import org.md2k.mcerebrum.app.Application;
+import org.md2k.mcerebrum.app.AppInfo;
 import org.md2k.mcerebrum.app.ApplicationManager;
-import org.md2k.mcerebrum.data.StudyInfo;
-import org.md2k.mcerebrum.data.UserInfo;
+import org.md2k.mcerebrum.study.StudyInfo;
+import org.md2k.mcerebrum.user.UserInfo;
 
 import java.util.ArrayList;
-
-import es.dmoral.toasty.Toasty;
 
 import static org.md2k.mcerebrum.menu.AbstractMenu.MENU_APP_ADD_REMOVE;
 import static org.md2k.mcerebrum.menu.AbstractMenu.MENU_APP_SETTINGS;
@@ -38,9 +35,19 @@ public class FragmentHome extends Fragment {
     BootstrapButton bootstrapButtonStart;
     AwesomeTextView awesomeTextViewInstallStatus;
     AwesomeTextView awesomeTextViewSetupStatus;
-    LinearLayout linearLayoutAppInstall;
-    LinearLayout linearLayoutAppSetup;
+    View.OnClickListener onClickListernerInstall=new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            ((ActivityMain)getActivity()).responseCallBack.onResponse(null, MENU_APP_ADD_REMOVE);
+        }
+    };
 
+    View.OnClickListener onClickListernerSetup=new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            ((ActivityMain)getActivity()).responseCallBack.onResponse(null, MENU_APP_SETTINGS);
+        }
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
@@ -53,20 +60,22 @@ public class FragmentHome extends Fragment {
         applicationManager = ((ActivityMain) getActivity()).applicationManager;
         studyInfo = ((ActivityMain) getActivity()).studyInfo;
         userInfo = ((ActivityMain) getActivity()).userInfo;
-        linearLayoutAppInstall = (LinearLayout) view.findViewById(R.id.layout_app_install);
-        linearLayoutAppInstall.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((ActivityMain)getActivity()).responseCallBack.onResponse(null, MENU_APP_ADD_REMOVE);
-            }
-        });
-        linearLayoutAppSetup = (LinearLayout) view.findViewById(R.id.layout_app_setup);
-        linearLayoutAppSetup.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ((ActivityMain)getActivity()).responseCallBack.onResponse(null, MENU_APP_SETTINGS);
-            }
-        });
+        view.findViewById(R.id.app_install1).setOnClickListener(onClickListernerInstall);
+        view.findViewById(R.id.app_install2).setOnClickListener(onClickListernerInstall);
+        view.findViewById(R.id.app_install3).setOnClickListener(onClickListernerInstall);
+        view.findViewById(R.id.app_install4).setOnClickListener(onClickListernerInstall);
+        view.findViewById(R.id.app_install5).setOnClickListener(onClickListernerInstall);
+        view.findViewById(R.id.awesome_textview_install_status).setOnClickListener(onClickListernerInstall);
+        view.findViewById(R.id.awesome_textview_install).setOnClickListener(onClickListernerInstall);
+
+        view.findViewById(R.id.app_setup1).setOnClickListener(onClickListernerSetup);
+        view.findViewById(R.id.app_setup2).setOnClickListener(onClickListernerSetup);
+        view.findViewById(R.id.app_setup3).setOnClickListener(onClickListernerSetup);
+        view.findViewById(R.id.app_setup4).setOnClickListener(onClickListernerSetup);
+        view.findViewById(R.id.app_setup5).setOnClickListener(onClickListernerSetup);
+        view.findViewById(R.id.awesome_textview_setup_status).setOnClickListener(onClickListernerSetup);
+        view.findViewById(R.id.app_setup6).setOnClickListener(onClickListernerSetup);
+        view.findViewById(R.id.awesome_textview_setup).setOnClickListener(onClickListernerSetup);
 
         awesomeTextViewSummary = (AwesomeTextView) view.findViewById(R.id.awesome_textview_summary);
         awesomeTextViewInstall = (AwesomeTextView) view.findViewById(R.id.awesome_textview_install);
@@ -77,9 +86,7 @@ public class FragmentHome extends Fragment {
         bootstrapButtonStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Application application = applicationManager.getStudy();
-                if(application!=null) application.launch(getActivity());
-                else Toasty.error(getContext(),"Study App not found", Toast.LENGTH_SHORT).show();
+                ((ActivityMain)getActivity()).startStudy();
             }
         });
     }
@@ -87,10 +94,10 @@ public class FragmentHome extends Fragment {
     public void onResume(){
         super.onResume();
         updateSummary();
-        boolean resInstall = updateInstall();
-        boolean resUpdate = updateSetup();
+        updateInstall();
+        updateSetup();
 
-        if (!resInstall || !resUpdate) {
+        if (!isCoreInstalled()) {
             bootstrapButtonStart.setEnabled(false);
             bootstrapButtonStart.setBootstrapBrand(DefaultBootstrapBrand.SECONDARY);
             bootstrapButtonStart.setShowOutline(true);
@@ -101,12 +108,22 @@ public class FragmentHome extends Fragment {
         }
     }
 
+    private boolean isCoreInstalled() {
+        if(!applicationManager.getDataKit().isInstalled()){
+            return false;
+        }
+        if(applicationManager.getStudy()!=null && !applicationManager.getStudy().isInstalled()){
+            return false;
+        }
+        return true;
+    }
+
     void updateSummary() {
         awesomeTextViewSummary.setBootstrapText(getSummary());
     }
 
-    boolean updateInstall() {
-        String notInstalledApp = getInstall();
+    void updateInstall() {
+        String notInstalledApp = getRequiredAppNotInstalled();
         BootstrapText bt;
         if (notInstalledApp == null) {
             bt = new BootstrapText.Builder(getContext()).addText("Applications are installed")
@@ -115,7 +132,7 @@ public class FragmentHome extends Fragment {
             awesomeTextViewInstallStatus.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
             awesomeTextViewInstallStatus.setBootstrapText(getStatusText(true));
             awesomeTextViewInstall.setBootstrapText(bt);
-            return true;
+            return;
         } else {
             bt = new BootstrapText.Builder(getContext()).addText("Please install: " + notInstalledApp)
                     .build();
@@ -123,12 +140,12 @@ public class FragmentHome extends Fragment {
             awesomeTextViewInstallStatus.setBootstrapBrand(DefaultBootstrapBrand.DANGER);
             awesomeTextViewInstallStatus.setBootstrapText(getStatusText(false));
             awesomeTextViewInstall.setBootstrapText(bt);
-            return false;
+            return;
         }
     }
 
     boolean updateSetup() {
-        String notConfiguredApp = getSetup();
+        String notConfiguredApp = getRequiredAppNotSetup();
         BootstrapText bt;
         if (notConfiguredApp == null) {
             bt = new BootstrapText.Builder(getContext()).addText("Applications are configured.")
@@ -154,38 +171,72 @@ public class FragmentHome extends Fragment {
                 .build();
     }
 
-    String getInstall() {
-        String notInstalledAppList = null;
-        ArrayList<Application> apps = applicationManager.getRequiredAppNotInstalled();
-        if(apps.size()==0) return null;
-        for (int i = 0; i < apps.size(); i++) {
-            if (applicationManager.getApplications()[i].isRequired()) {
+    String getRequiredAppNotInstalled() {
+        String notInstalledAppList="";
+/*
+        boolean flag=true;
+        if(!applicationManager.getDataKit().isInstalled()){
+            notInstalledAppList=applicationManager.getDataKit().getTitle();
+            flag=false;
+        }
+        if(applicationManager.getStudy()!=null && !applicationManager.getStudy().isInstalled()){
+            if(!flag) notInstalledAppList+=", "+applicationManager.getStudy().getTitle();
+            else notInstalledAppList=applicationManager.getStudy().getTitle();
+        }
+        if(flag) return null;
+        return notInstalledAppList;
+*/
+
+
+            ArrayList<AppInfo> appInfos = applicationManager.getRequiredAppNotInstalled();
+        if(appInfos.size()==0) return null;
+        for (int i = 0; i < appInfos.size(); i++) {
+            if (applicationManager.getAppInfos()[i].isRequired()) {
                     if (i == 0)
-                        notInstalledAppList = apps.get(i).getTitle();
+                        notInstalledAppList = appInfos.get(i).getTitle();
                     else
-                        notInstalledAppList += ", " + apps.get(i).getTitle();
+                        notInstalledAppList += ", " + appInfos.get(i).getTitle();
             }
         }
         return notInstalledAppList;
+
     }
 
-    String getSetup() {
+    String getRequiredAppNotSetup() {
+        String notInstalledAppList="";
+/*
+        boolean flag=true;
+        if(!applicationManager.getDataKit().isInstalled() || applicationManager.getDataKit().getInfo()==null || !applicationManager.getDataKit().getInfo().isConfigured()){
+            notInstalledAppList=applicationManager.getDataKit().getTitle();
+            flag=false;
+        }
+        if(applicationManager.getStudy()!=null && (!applicationManager.getStudy().isInstalled() || applicationManager.getStudy().getInfo()==null || !applicationManager.getStudy().getInfo().isConfigured())){
+            if(!flag) notInstalledAppList+=", "+applicationManager.getStudy().getTitle();
+            else notInstalledAppList=applicationManager.getStudy().getTitle();
+        }
+        if(flag) return null;
+        return notInstalledAppList;
+*/
+
         String notConfiguredAppList = null;
         int notConfiguredCount = 0;
-        for (int i = 0; i < applicationManager.getApplications().length; i++) {
-            if (applicationManager.getApplications()[i].isRequired()) {
-                if (!applicationManager.getApplications()[i].isInstalled()) {
+        for (int i = 0; i < applicationManager.getAppInfos().length; i++) {
+            if (applicationManager.getAppInfos()[i].isRequired()) {
+                if (!applicationManager.getAppInfos()[i].isInstalled()) {
                     notConfiguredCount++;
                     if (notConfiguredCount == 1)
-                        notConfiguredAppList = applicationManager.getApplications()[i].getTitle();
+                        notConfiguredAppList = applicationManager.getAppInfos()[i].getTitle();
                     else
-                        notConfiguredAppList += ", " + applicationManager.getApplications()[i].getTitle();
-                } else if (applicationManager.getApplications()[i].isConfigurable() && !applicationManager.getApplications()[i].isConfigured()) {
+                        notConfiguredAppList += ", " + applicationManager.getAppInfos()[i].getTitle();
+                } else if (applicationManager.getAppInfos()[i].isMCerebrumSupported()
+                        && applicationManager.getAppInfos()[i].getInfo()!=null
+                        && applicationManager.getAppInfos()[i].getInfo().isConfigurable()
+                        && !applicationManager.getAppInfos()[i].getInfo().isEqualDefault()) {
                     notConfiguredCount++;
                     if (notConfiguredCount == 1)
-                        notConfiguredAppList = applicationManager.getApplications()[i].getTitle();
+                        notConfiguredAppList = applicationManager.getAppInfos()[i].getTitle();
                     else
-                        notConfiguredAppList += ", " + applicationManager.getApplications()[i].getTitle();
+                        notConfiguredAppList += ", " + applicationManager.getAppInfos()[i].getTitle();
                 }
             }
         }

@@ -38,7 +38,7 @@ public class Error {
     public static final Error CONFIG_NOT_FOUND = new Error(1,"Configuration file not found");
     public static final Error CONFIG_FORMAT_ERROR = new Error(1,"Configuration file format error");
     public static final Error DATAKIT_NOT_INSTAlLED = new Error(2,"DataKit not installed");
-    public static final Error APPLICATION_NOT_INSTALLED = new Error(3,"Application not installed");
-    public static final Error APPLICATION_UPDATE_AVAILABLE = new Error(4,"Application update available");
-    public static final Error APPLICATION_NOT_CONFIGURED = new Error(4,"Application not configured");
+    public static final Error APPLICATION_NOT_INSTALLED = new Error(3,"AppInfo not installed");
+    public static final Error APPLICATION_UPDATE_AVAILABLE = new Error(4,"AppInfo update available");
+    public static final Error APPLICATION_NOT_CONFIGURED = new Error(4,"AppInfo not configured");
 }

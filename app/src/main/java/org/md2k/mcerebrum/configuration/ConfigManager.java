@@ -64,12 +64,16 @@ public class ConfigManager {
     public boolean read() {
         try {
             config = Storage.readJson(Constants.CONFIG_MCEREBRUM_CONFIGFILE(), Config.class);
-            if (config == null) return false;
+            if (config == null){
+                clear();
+                return false;
+            }
             else {
                 save();
                 return true;
             }
         } catch (FileNotFoundException e) {
+            clear();
             return false;
         }
     }
@@ -128,7 +132,7 @@ public class ConfigManager {
                         Config config = read(mCerebrumFilePath);
                         StudyInfo studyInfo=new StudyInfo();
                         studyInfo.save(context, config);
-                        ApplicationManager.save(context, config.getApplications());
+                        ApplicationManager.save(context, config.getAppMCs());
                         save(context, downloadUrl, configName, downloadFrom, updatedAt);
                         if(studyInfo.getType(context)!=null && studyInfo.getType(context).equals(StudyInfo.FREEBIE)) {
                             UserInfo.setTitle("Freebie");

@@ -3,7 +3,6 @@ package org.md2k.mcerebrum;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.mikepenz.materialdrawer.AccountHeader;
@@ -18,11 +17,13 @@ import org.md2k.mcerebrum.UI.app_settings.FragmentFoldingUIAppSettings;
 import org.md2k.mcerebrum.UI.home.FragmentHome;
 import org.md2k.mcerebrum.UI.joinstudy.FragmentJoinStudy;
 import org.md2k.mcerebrum.UI.login.ActivityLogin;
-import org.md2k.mcerebrum.app.Application;
+import org.md2k.mcerebrum.app.AppInfo;
 import org.md2k.mcerebrum.commons.dialog.Dialog;
 import org.md2k.mcerebrum.commons.dialog.DialogCallback;
 import org.md2k.mcerebrum.menu.AbstractMenu;
 import org.md2k.mcerebrum.menu.ResponseCallBack;
+import org.md2k.mcerebrum.study.StudyInfo;
+import org.md2k.mcerebrum.user.UserInfo;
 
 import es.dmoral.toasty.Toasty;
 
@@ -134,9 +135,7 @@ public abstract class AbstractActivityMenu extends AbstractActivityBasics {
                     break;
                 case AbstractMenu.MENU_STUDY_START:
                     if(applicationManager.isRequiredAppInstalled()){
-                        Application application = applicationManager.getStudy();
-                        if(application!=null)
-                            application.launch(AbstractActivityMenu.this);
+                        startStudy();
                     }
                     break;
 
@@ -163,6 +162,18 @@ public abstract class AbstractActivityMenu extends AbstractActivityBasics {
         if (materialDialog != null && materialDialog.isShowing())
             materialDialog.dismiss();
         super.onDestroy();
+    }
+    public void startStudy(){
+        AppInfo appInfo = applicationManager.getStudy();
+        if(appInfo !=null) {
+            Intent intent = getPackageManager().getLaunchIntentForPackage(appInfo.getPackageName());
+            intent.putExtra(UserInfo.class.getName(), userInfo);
+            intent.putExtra(StudyInfo.class.getName(), studyInfo);
+            intent.putExtra(AppInfo.class.getName(),(applicationManager.getAppInfos()));
+            startActivity(intent);
+        }
+        else Toasty.error(this,"Study AppInfo not found", Toast.LENGTH_SHORT).show();
+
     }
 }
 

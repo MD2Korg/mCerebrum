@@ -6,7 +6,6 @@ import android.content.Intent;
 
 import org.md2k.mcerebrum.app.ApplicationManager;
 import org.md2k.mcerebrum.configuration.ConfigManager;
-import org.md2k.mcerebrum.data.StudyInfo;
 
 /**
  * Copyright (c) 2015, The University of Memphis, MD2K Center
@@ -44,7 +43,7 @@ public class BootReceiver extends BroadcastReceiver
 //        StudyInfo studyInfo=new StudyInfo(configManager.getConfig());
 //        if(!studyInfo.isStartAtBoot()) return;
 //        if(!studyInfo.isStarted()) return;
-//            applicationManager=new ApplicationManager(configManager.getConfig().getApplications());
+//            applicationManager=new ApplicationManager(configManager.getConfig().getAppMCs());
 //            applicationManager.
             // TODO: start app
 //        Intent myIntent = new Intent(context, ActivityStartScreen.class);

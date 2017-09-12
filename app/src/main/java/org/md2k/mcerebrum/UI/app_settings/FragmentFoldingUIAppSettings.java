@@ -1,10 +1,7 @@
 package org.md2k.mcerebrum.UI.app_settings;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,9 +15,9 @@ import com.ramotion.foldingcell.FoldingCell;
 
 import org.md2k.mcerebrum.ActivityMain;
 import org.md2k.mcerebrum.R;
-import org.md2k.mcerebrum.app.Application;
+import org.md2k.mcerebrum.app.AppInfo;
+import org.md2k.mcerebrum.app.AppMC;
 import org.md2k.mcerebrum.app.ApplicationManager;
-import org.md2k.mcerebrum.core.access.IMCerebrumService;
 
 import java.util.ArrayList;
 
@@ -29,7 +26,7 @@ public class FragmentFoldingUIAppSettings extends Fragment {
     public static final int LAUNCH = 1;
     ApplicationManager applicationManager;
     FoldingCellListAdapterAppSettings adapter;
-    ArrayList<Application> appInfos;
+    ArrayList<AppInfo> appInfos;
     AwesomeTextView textViewConfigured;
     AwesomeTextView textViewNotConfigured;
     AwesomeTextView textViewStatus;
@@ -44,12 +41,7 @@ public class FragmentFoldingUIAppSettings extends Fragment {
     public void onResume() {
 
         super.onResume();
-        Application[] applications = applicationManager.getApplications();
-        for (int i = 0; i < applications.length; i++) {
-            if (!applications[i].isInstalled()) continue;
-            if (!applications[i].isMCerebrumSupported()) continue;
-            applications[i].updateStatus();
-        }
+        applicationManager.setInfo();
         adapter.notifyDataSetChanged();
 
     }
@@ -61,20 +53,20 @@ public class FragmentFoldingUIAppSettings extends Fragment {
         textViewConfigured = (AwesomeTextView) view.findViewById(R.id.textview_configured);
         textViewNotConfigured = (AwesomeTextView) view.findViewById(R.id.textview_not_configured);
         textViewStatus = (AwesomeTextView) view.findViewById(R.id.textview_status);
-        final Application[] applications = applicationManager.getApplications();
+        final AppInfo[] apps = applicationManager.getAppInfos();
         // prepare elements to display
         appInfos = new ArrayList<>();
-        for (int i = 0; i < applications.length; i++) {
-            if (!applications[i].isInstalled()) continue;
-            if (applications[i].getType().toUpperCase().equals("MCEREBRUM")) continue;
-            appInfos.add(applications[i]);
+        for (int i = 0; i < apps.length; i++) {
+            if (!apps[i].isInstalled()) continue;
+            if (apps[i].getType().toUpperCase().equals("MCEREBRUM")) continue;
+            appInfos.add(apps[i]);
         }
         updateTextViewStatus();
         adapter = new FoldingCellListAdapterAppSettings(getActivity(), appInfos, new ResponseCallBack() {
             @Override
             public void onResponse(int position, int operation) {
                 if (operation == CONFIGURE) {
-                    appInfos.get(position).configure();
+                    applicationManager.configure(appInfos.get(position).getPackageName());
 /*
                     Intent intent = new Intent();
                     intent.putExtra("REQUEST", Access.REQUEST_CONFIGURE);
@@ -126,7 +118,7 @@ public class FragmentFoldingUIAppSettings extends Fragment {
     }
 
 /*
-    void getInfo(Application application, int requestCode) {
+    void getInfo(AppInfo application, int requestCode) {
         try {
             Intent intent = new Intent();
             intent.putExtra("REQUEST", Access.REQUEST_INFO);
@@ -176,7 +168,7 @@ public class FragmentFoldingUIAppSettings extends Fragment {
                 requestCode = requestCode - 2000;
                 Info info = data.getParcelableExtra(Access.RESPONSE);
                 Log.d("abc", "requestCode="+requestCode);
-                applicationManager.getApplications()[requestCode].updateStatus(info);
+                applicationManager.getAppMCs()[requestCode].getInfo(info);
             }
         } catch (Exception ignored) {
 

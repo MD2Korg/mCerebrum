@@ -30,7 +30,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.view.View;
 
-import com.mikepenz.fontawesome_typeface_library.FontAwesome;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.holder.BadgeStyle;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
@@ -40,8 +39,8 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
 import org.md2k.mcerebrum.R;
-import org.md2k.mcerebrum.data.StudyInfo;
-import org.md2k.mcerebrum.data.UserInfo;
+import org.md2k.mcerebrum.study.StudyInfo;
+import org.md2k.mcerebrum.user.UserInfo;
 
 public abstract class AbstractMenu {
     public static final int MENU_HOME=0;

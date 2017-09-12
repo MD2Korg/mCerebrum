@@ -9,14 +9,13 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.beardedhen.androidbootstrap.AwesomeTextView;
 import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.beardedhen.androidbootstrap.api.attributes.BootstrapBrand;
 import com.beardedhen.androidbootstrap.api.defaults.DefaultBootstrapBrand;
 import com.ramotion.foldingcell.FoldingCell;
 
 import org.md2k.mcerebrum.R;
-import org.md2k.mcerebrum.app.Application;
+import org.md2k.mcerebrum.app.AppInfo;
 
 import java.util.HashSet;
 
@@ -24,14 +23,14 @@ import java.util.HashSet;
  * Simple example of ListAdapter for using with Folding Cell
  * Adapter holds indexes of unfolded elements for correct work with default reusable views behavior
  */
-class FoldingCellListAdapterAppInstall extends ArrayAdapter<Application> {
+class FoldingCellListAdapterAppInstall extends ArrayAdapter<AppInfo> {
 
     private HashSet<Integer> unfoldedIndexes = new HashSet<>();
     private View.OnClickListener defaultRequestBtnClickListener;
     private ResponseCallBack responseCallBack;
 
 
-    FoldingCellListAdapterAppInstall(Activity activity, Application[] objects, ResponseCallBack responseCallBack) {
+    FoldingCellListAdapterAppInstall(Activity activity, AppInfo[] objects, ResponseCallBack responseCallBack) {
         super(activity, 0, objects);
         this.responseCallBack=responseCallBack;
     }
@@ -40,7 +39,7 @@ class FoldingCellListAdapterAppInstall extends ArrayAdapter<Application> {
     @Override
     public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
         // get item for selected view
-        final Application app = getItem(position);
+        final AppInfo appInfo = getItem(position);
         // if cell is exists - reuse it, if not - create the new one from resource
         FoldingCell cell = (FoldingCell) convertView;
         ViewHolder viewHolder;
@@ -79,18 +78,18 @@ class FoldingCellListAdapterAppInstall extends ArrayAdapter<Application> {
             viewHolder = (ViewHolder) cell.getTag();
         }
         // bind data from selected element to view through view holder
-        if(app.isRequired())
-            viewHolder.title.setText(app.getTitle()+" ("+app.getStatus()+")");
+        if(appInfo.isRequired())
+            viewHolder.title.setText(appInfo.getTitle()+" ("+ appInfo.getStatus()+")");
         else
-            viewHolder.title.setText(app.getTitle());
-        viewHolder.summary.setText(app.getSummary());
-        viewHolder.content_title.setText(app.getTitle());
-        viewHolder.content_summary.setText(app.getSummary());
-        viewHolder.description.setText(app.getDescription());
-        String versionName=app.getCurrentVersionName();if(versionName==null) versionName="N/A";
+            viewHolder.title.setText(appInfo.getTitle());
+        viewHolder.summary.setText(appInfo.getSummary());
+        viewHolder.content_title.setText(appInfo.getTitle());
+        viewHolder.content_summary.setText(appInfo.getSummary());
+        viewHolder.description.setText(appInfo.getDescription());
+        String versionName= appInfo.getCurrentVersionName();if(versionName==null) versionName="N/A";
         viewHolder.version.setText(versionName);
-        viewHolder.icon_short.setImageDrawable(app.getIcon(getContext()));
-        viewHolder.icon_long.setImageDrawable(app.getIcon(getContext()));
+        viewHolder.icon_short.setImageDrawable(appInfo.getIcon(getContext()));
+        viewHolder.icon_long.setImageDrawable(appInfo.getIcon(getContext()));
 
         View.OnClickListener onClickListenerUninstall=new View.OnClickListener() {
             @Override
@@ -111,12 +110,12 @@ class FoldingCellListAdapterAppInstall extends ArrayAdapter<Application> {
                 responseCallBack.onResponse(position, FragmentFoldingUIAppInstall.UPDATE);
             }
         };
-        if(app.getType().toUpperCase().equals("MCEREBRUM")){
+        if(appInfo.getType().toUpperCase().equals("MCEREBRUM")){
             set(viewHolder.buttonInstallLong, viewHolder.buttonInstallShort, false, DefaultBootstrapBrand.SECONDARY, true, onClickListenerInstall);
             set(viewHolder.buttonUpdateLong, viewHolder.buttonUpdateShort, false, DefaultBootstrapBrand.SECONDARY, true, onClickListenerUpdate);
             set(viewHolder.buttonUninstallLong, viewHolder.buttonUninstallShort, false, DefaultBootstrapBrand.SECONDARY, true, onClickListenerUninstall);
         }
-        else if(app.isInstalled()) {
+        else if(appInfo.isInstalled()) {
             set(viewHolder.buttonInstallLong, viewHolder.buttonInstallShort, false, DefaultBootstrapBrand.SECONDARY, true, onClickListenerInstall);
             set(viewHolder.buttonUpdateLong, viewHolder.buttonUpdateShort, false, DefaultBootstrapBrand.SECONDARY, true, onClickListenerUpdate);
             set(viewHolder.buttonUninstallLong, viewHolder.buttonUninstallShort, true, DefaultBootstrapBrand.DANGER, true, onClickListenerUninstall);
@@ -132,8 +131,8 @@ class FoldingCellListAdapterAppInstall extends ArrayAdapter<Application> {
    //     viewHolder.pledgePrice.setText(item.getPledgePrice());
         // set custom btn handler for list item from that item
 
-  /*      if (app.getRequestBtnClickListener() != null) {
-            viewHolder.contentRequestBtn.setOnClickListener(app.getRequestBtnClickListener());
+  /*      if (appInfo.getRequestBtnClickListener() != null) {
+            viewHolder.contentRequestBtn.setOnClickListener(appInfo.getRequestBtnClickListener());
         } else {
             // (optionally) add "default" handler if no handler found in item
             viewHolder.contentRequestBtn.setOnClickListener(defaultRequestBtnClickListener);

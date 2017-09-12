@@ -1,4 +1,4 @@
-package org.md2k.mcerebrum.data;
+package org.md2k.mcerebrum.study;
 /*
  * Copyright (c) 2016, The University of Memphis, MD2K Center
  * - Syed Monowar Hossain <monowar.hossain@gmail.com>
@@ -32,13 +32,16 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import org.md2k.mcerebrum.Constants;
 import org.md2k.mcerebrum.configuration.Config;
+import org.md2k.mcerebrum.data.MySharedPreference;
 
 import java.io.IOException;
 
-public class StudyInfo {
+public class StudyInfo implements Parcelable{
     private String id;
     private String type;
     private String title;
@@ -48,11 +51,38 @@ public class StudyInfo {
     private String coverImage;
     private String version;
     private boolean startAtBoot;
+    private boolean started;
     private static final String STARTED=StudyInfo.class.getSimpleName()+"_STARTED";
 
     public static final String FREEBIE="FREEBIE";
     public static final String SERVER="SERVER";
     public static final String CONFIGURED="CONFIGURED";
+    public StudyInfo(){}
+    protected StudyInfo(Parcel in) {
+        id = in.readString();
+        type = in.readString();
+        title = in.readString();
+        summary = in.readString();
+        description = in.readString();
+        icon = in.readString();
+        coverImage = in.readString();
+        version = in.readString();
+        startAtBoot = in.readByte() != 0;
+        started = in.readByte() != 0;
+    }
+
+    public static final Creator<StudyInfo> CREATOR = new Creator<StudyInfo>() {
+        @Override
+        public StudyInfo createFromParcel(Parcel in) {
+            return new StudyInfo(in);
+        }
+
+        @Override
+        public StudyInfo[] newArray(int size) {
+            return new StudyInfo[size];
+        }
+    };
+
 
     public void set(Config config){
         id=config.getId();
@@ -64,6 +94,8 @@ public class StudyInfo {
         coverImage=config.getCover_image();
         version=config.getVersion();
         startAtBoot=config.isStart_at_boot();
+        started= new MySharedPreference().getBoolean(STARTED, false);
+
     }
 
     public String getId() {
@@ -103,9 +135,10 @@ public class StudyInfo {
     }
 
     public boolean isStarted(){
-        return new MySharedPreference().getBoolean(STARTED, false);
+        return started;
     }
     public void setStarted(boolean value){
+        started=value;
         new MySharedPreference().set(STARTED, value);
     }
     public Drawable getIcon(Context context) {
@@ -144,5 +177,24 @@ public class StudyInfo {
 
     public void clear() {
         setStarted(false);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeString(type);
+        dest.writeString(title);
+        dest.writeString(summary);
+        dest.writeString(description);
+        dest.writeString(icon);
+        dest.writeString(coverImage);
+        dest.writeString(version);
+        dest.writeByte((byte) (startAtBoot ? 1 : 0));
+        dest.writeByte((byte) (started ? 1 : 0));
     }
 }

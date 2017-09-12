@@ -22,7 +22,8 @@ import com.ramotion.foldingcell.FoldingCell;
 
 import org.md2k.mcerebrum.ActivityMain;
 import org.md2k.mcerebrum.R;
-import org.md2k.mcerebrum.app.Application;
+import org.md2k.mcerebrum.app.AppInfo;
+import org.md2k.mcerebrum.app.AppInstall;
 import org.md2k.mcerebrum.app.ApplicationManager;
 import org.md2k.mcerebrum.internet.download.DownloadInfo;
 
@@ -101,17 +102,17 @@ public class FragmentFoldingUIAppInstall extends Fragment {
             }
         });
 */
-        adapter = new FoldingCellListAdapterAppInstall(getActivity(), applicationManager.getApplications(), new ResponseCallBack() {
+        adapter = new FoldingCellListAdapterAppInstall(getActivity(), applicationManager.getAppInfos(), new ResponseCallBack() {
             @Override
             public void onResponse(int position, int operation) {
-                Application application=applicationManager.getApplications()[position];
+                AppInfo appInfo =applicationManager.getAppInfos()[position];
                 if (operation == UNINSTALL) {
-                    application.uninstall(getActivity(), 1000);
+                    new AppInstall(appInfo).uninstall(getActivity(), 1000);
                 } else if (operation == INSTALL) {
-                    if(application.getDownloadFromGithub()!=null || application.getDownloadFromURL()!=null){
-                        downloadAndInstall(application);
+                    if(appInfo.getDownloadFromGithub()!=null || appInfo.getDownloadFromURL()!=null){
+                        downloadAndInstall(appInfo);
                     }
-                    else application.install(getActivity());
+                    else new AppInstall(appInfo).install(getActivity());
                 }
 
             }
@@ -134,31 +135,31 @@ public class FragmentFoldingUIAppInstall extends Fragment {
         if(installAllIndex==-1){
             return;
         }
-        while(installAllIndex<applicationManager.getApplications().length && applicationManager.getApplications()[installAllIndex].isInstalled())
+        while(installAllIndex<applicationManager.getAppInfos().length && applicationManager.getAppInfos()[installAllIndex].isInstalled())
             installAllIndex++;
-        if(installAllIndex>=applicationManager.getApplications().length) {
+        if(installAllIndex>=applicationManager.getAppInfos().length) {
             installAllIndex = -1;
             return;
         }
-        if(applicationManager.getApplications()[installAllIndex].getDownloadFromGithub()!=null || applicationManager.getApplications()[installAllIndex].getDownloadFromURL()!=null){
-            downloadAndInstall(applicationManager.getApplications()[installAllIndex]);
+        if(applicationManager.getAppInfos()[installAllIndex].getDownloadFromGithub()!=null || applicationManager.getAppInfos()[installAllIndex].getDownloadFromURL()!=null){
+            downloadAndInstall(applicationManager.getAppInfos()[installAllIndex]);
         }
-        else applicationManager.getApplications()[installAllIndex].install(getActivity());
+        else new AppInstall(applicationManager.getAppInfos()[installAllIndex]).install(getActivity());
     }
 
-    void downloadAndInstall(final Application application) {
+    void downloadAndInstall(final AppInfo appInfo) {
         materialDialog = new MaterialDialog.Builder(getActivity())
-                .content("Downloading "+application.getTitle()+" app...")
+                .content("Downloading "+ appInfo.getTitle()+" ...")
                 .progress(false, 100, true)
                 .show();
-        subscription = application.download(getActivity())
+        subscription = new AppInstall(appInfo).download(getActivity())
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<DownloadInfo>() {
                     @Override
                     public void onCompleted() {
                         materialDialog.dismiss();
-                        application.install(getActivity());
+                        new AppInstall(appInfo).install(getActivity());
 //                        Intent returnIntent = new Intent();
 //                        returnIntent.putExtra("type", TYPE_GENERAL);
 //                        setResult(Activity.RESULT_OK, returnIntent);
@@ -196,7 +197,14 @@ public class FragmentFoldingUIAppInstall extends Fragment {
 //                case Intent.ACTION_PACKAGE_CHANGED:
 //                case Intent.ACTION_PACKAGE_REPLACED:
                 case Intent.ACTION_PACKAGE_REMOVED:
-                    applicationManager.updateInfo();
+                    String[] temp=intent.getData().toString().split(":");
+                    String packageName;
+                    if(temp.length==1)
+                        packageName=temp[0];
+                    else if(temp.length==2)
+                        packageName=temp[1];
+                    else packageName="";
+                    applicationManager.reset(packageName);
                     adapter.notifyDataSetChanged();
                     updateTextViewStatus();
                     isUpdateUI=true;
