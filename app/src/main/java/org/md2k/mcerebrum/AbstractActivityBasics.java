@@ -43,7 +43,7 @@ public abstract class AbstractActivityBasics extends AppCompatActivity {
         Utils.init(this);
         configManager=new ConfigManager();
         studyInfo=new StudyInfo();
-        userInfo=new UserInfo();
+        userInfo =new UserInfo();
         applicationManager=new ApplicationManager();
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);

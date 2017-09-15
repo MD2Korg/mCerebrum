@@ -153,6 +153,7 @@ public class ApplicationManager {
         for(int i=0;i<appInfos.length;i++)
             if(appInfos[i].getPackageName().equals(packageName)){
                 boolean lastResult=appInfos[i].isInstalled();
+                appInfos[i].setInitialized(false);
                 appInfos[i].setInstalled();
                 if(appInfos[i].isInstalled()!=lastResult)
                     if(appInfos[i].isInstalled())
@@ -174,4 +175,10 @@ public class ApplicationManager {
             if(appInfos[i].getPackageName().equals(packageName))
                 appMCs[i].configure();
     }
+    public void clear(String packageName) {
+        for(int i=0;i<appInfos.length;i++)
+            if(appInfos[i].getPackageName().equals(packageName))
+                appMCs[i].clear();
+    }
+
 }

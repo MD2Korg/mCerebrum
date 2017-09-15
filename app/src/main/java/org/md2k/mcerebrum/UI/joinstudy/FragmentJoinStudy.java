@@ -97,7 +97,7 @@ public class FragmentJoinStudy extends Fragment {
     public void downloadConfig(String downloadURL, final String userName) {
         final ActivityMain activityMain=(ActivityMain)getActivity();
         ConfigManager configManager=activityMain.configManager;
-        final UserInfo userInfo=activityMain.userInfo;
+        final UserInfo userInfo =activityMain.userInfo;
         materialDialog = Dialog.progress(getActivity(), "Downloading configuration file...").show();
         subscription = configManager.downloadAndExtract(getContext(), downloadURL)
                 .subscribeOn(Schedulers.newThread())

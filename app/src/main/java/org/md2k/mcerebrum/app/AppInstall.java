@@ -29,6 +29,7 @@ package org.md2k.mcerebrum.app;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.v4.content.FileProvider;
 
 import com.blankj.utilcode.util.AppUtils;
 
@@ -38,6 +39,8 @@ import org.md2k.mcerebrum.internet.download.DownloadFile;
 import org.md2k.mcerebrum.internet.download.DownloadInfo;
 import org.md2k.mcerebrum.internet.github.model.ReleaseInfo;
 import org.md2k.mcerebrum.internet.github.service.Github;
+
+import java.io.File;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -58,6 +61,7 @@ public class AppInstall {
         }else{
             final String fileDir = Storage.getRootDirectory(activity, StorageType.SDCARD_INTERNAL) + "/mCerebrum/temp";
             final String fileName = "temp.apk";
+
             AppUtils.installApp(activity, fileDir+"/"+fileName, "org.md2k.mcerebrum.provider", REQUEST_CODE);
         }
     }

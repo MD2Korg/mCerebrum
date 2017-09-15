@@ -24,6 +24,7 @@ import java.util.ArrayList;
 public class FragmentFoldingUIAppSettings extends Fragment {
     public static final int CONFIGURE = 0;
     public static final int LAUNCH = 1;
+    public static final int CLEAR = 2;
     ApplicationManager applicationManager;
     FoldingCellListAdapterAppSettings adapter;
     ArrayList<AppInfo> appInfos;
@@ -67,39 +68,10 @@ public class FragmentFoldingUIAppSettings extends Fragment {
             public void onResponse(int position, int operation) {
                 if (operation == CONFIGURE) {
                     applicationManager.configure(appInfos.get(position).getPackageName());
-/*
-                    Intent intent = new Intent();
-                    intent.putExtra("REQUEST", Access.REQUEST_CONFIGURE);
-                    intent.setComponent(new ComponentName(appInfos.get(position).getPackageName(), appInfos.get(position).getPackageName() + ".ActivityMCerebrumAccess"));
-                    startActivity(intent);
-*/
-
-//                    items.get(position).uninstall(getActivity(), 1000);
-                } /*else if (operation == REPORT) {
-                    appInfos.get(position).report();
-*//*
-                    Intent intent = new Intent();
-                    intent.putExtra("REQUEST", Access.REQUEST_REPORT);
-                    intent.setComponent(new ComponentName(appInfos.get(position).getPackageName(), appInfos.get(position).getPackageName() + ".ActivityMCerebrumAccess"));
-                    startActivity(intent);
-*//*
-                }*/ else if (operation == LAUNCH) {
+                }else if (operation == LAUNCH) {
                     appInfos.get(position).launch(getActivity());
-                    /*
-                    if(appInfos.get(position).isRunning())
-                        appInfos.get(position).stopService();
-                    else
-                        appInfos.get(position).startBackground();
-*/
-/*
-                    Intent intent = new Intent();
-                    if (appInfos.get(position).isRunning())
-                        intent.putExtra("REQUEST", Access.REQUEST_STOPBACKGROUND);
-                    else
-                        intent.putExtra("REQUEST", Access.REQUEST_STARTBACKGROUND);
-                    intent.setComponent(new ComponentName(appInfos.get(position).getPackageName(), appInfos.get(position).getPackageName() + ".ActivityMCerebrumAccess"));
-                    startActivity(intent);
-*/
+                } else if(operation == CLEAR){
+                    applicationManager.clear(appInfos.get(position).getPackageName());
                 }
             }
         });

@@ -40,6 +40,7 @@ public class BootReceiver extends BroadcastReceiver
         ConfigManager configManager=new ConfigManager();
         ApplicationManager applicationManager;
         if(configManager.isConfigured()) {
+
 //        StudyInfo studyInfo=new StudyInfo(configManager.getConfig());
 //        if(!studyInfo.isStartAtBoot()) return;
 //        if(!studyInfo.isStarted()) return;

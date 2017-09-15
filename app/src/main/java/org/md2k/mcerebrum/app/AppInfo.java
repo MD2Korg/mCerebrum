@@ -43,13 +43,17 @@ import com.blankj.utilcode.util.AppUtils;
 import org.md2k.mcerebrum.Constants;
 import org.md2k.mcerebrum.configuration.CApp;
 import org.md2k.mcerebrum.core.access.Info;
+import org.md2k.mcerebrum.data.MySharedPreference;
+import org.md2k.mcerebrum.study.StudyInfo;
 
 import java.io.IOException;
 
-public class AppInfo implements Parcelable{
+public class AppInfo{
     private static final String STATUS_REQUIRED="REQUIRED";
     private static final String STATUS_OPTIONAL="OPTIONAL";
     private static final String STATUS_NOT_IN_USE="NOT_IN_USE";
+    private static final String INITIALIZED=AppInfo.class.getSimpleName()+"_INITIALIZED";
+
     private String id;
     private String type;
     private String title;
@@ -69,6 +73,7 @@ public class AppInfo implements Parcelable{
     private String status;
     private boolean mCerebrumSupported;
     private Info info;
+    private boolean initialized;
 
     AppInfo(CApp capp) {
         id = capp.getId();
@@ -86,41 +91,8 @@ public class AppInfo implements Parcelable{
         status = capp.getStatus();
         setInstalled();
         setmCerebrum(null);
+        initialized= new MySharedPreference().getBoolean(INITIALIZED, false);
     }
-
-    protected AppInfo(Parcel in) {
-        id = in.readString();
-        type = in.readString();
-        title = in.readString();
-        summary = in.readString();
-        description = in.readString();
-        packageName = in.readString();
-        icon = in.readString();
-        downloadFromGithub = in.readString();
-        downloadFromPlayStore = in.readString();
-        downloadFromURL = in.readString();
-        expectedVersion = in.readString();
-        updateOption = in.readString();
-        updateVersionName = in.readString();
-        currentVersionName = in.readString();
-        currentVersionCode = in.readInt();
-        installed = in.readByte() != 0;
-        status = in.readString();
-        mCerebrumSupported = in.readByte() != 0;
-        info = in.readParcelable(Info.class.getClassLoader());
-    }
-
-    public static final Creator<AppInfo> CREATOR = new Creator<AppInfo>() {
-        @Override
-        public AppInfo createFromParcel(Parcel in) {
-            return new AppInfo(in);
-        }
-
-        @Override
-        public AppInfo[] newArray(int size) {
-            return new AppInfo[size];
-        }
-    };
 
     void setInstalled(){
         installed = AppUtils.isInstallApp(packageName);
@@ -133,7 +105,9 @@ public class AppInfo implements Parcelable{
         this.info = info;
     }
 
-
+    boolean isInitialized() {
+        return initialized;
+    }
 
     int getCurrentVersionCode() {
         return currentVersionCode;
@@ -295,31 +269,8 @@ public class AppInfo implements Parcelable{
         return info;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
-        dest.writeString(type);
-        dest.writeString(title);
-        dest.writeString(summary);
-        dest.writeString(description);
-        dest.writeString(packageName);
-        dest.writeString(icon);
-        dest.writeString(downloadFromGithub);
-        dest.writeString(downloadFromPlayStore);
-        dest.writeString(downloadFromURL);
-        dest.writeString(expectedVersion);
-        dest.writeString(updateOption);
-        dest.writeString(updateVersionName);
-        dest.writeString(currentVersionName);
-        dest.writeInt(currentVersionCode);
-        dest.writeByte((byte) (installed ? 1 : 0));
-        dest.writeString(status);
-        dest.writeByte((byte) (mCerebrumSupported ? 1 : 0));
-        dest.writeParcelable(info, flags);
+    void setInitialized(boolean initialized) {
+        this.initialized = initialized;
+        new MySharedPreference().set(INITIALIZED, initialized);
     }
 }

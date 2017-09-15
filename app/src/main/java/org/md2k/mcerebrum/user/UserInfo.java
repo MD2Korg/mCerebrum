@@ -31,7 +31,7 @@ import android.os.Parcelable;
 
 import org.md2k.mcerebrum.data.MySharedPreference;
 
-public class UserInfo implements Parcelable{
+public class UserInfo{
     private String title;
     private boolean loggedIn;
     private String loginHash;
@@ -42,24 +42,6 @@ public class UserInfo implements Parcelable{
     public UserInfo(){
         set();
     }
-
-    protected UserInfo(Parcel in) {
-        title = in.readString();
-        loggedIn = in.readByte() != 0;
-        loginHash = in.readString();
-    }
-
-    public static final Creator<UserInfo> CREATOR = new Creator<UserInfo>() {
-        @Override
-        public UserInfo createFromParcel(Parcel in) {
-            return new UserInfo(in);
-        }
-
-        @Override
-        public UserInfo[] newArray(int size) {
-            return new UserInfo[size];
-        }
-    };
 
     public void set(){
         title=new MySharedPreference().getString(TITLE, "<not_defined>");
@@ -88,15 +70,4 @@ public class UserInfo implements Parcelable{
         return loggedIn;
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(title);
-        dest.writeByte((byte) (loggedIn ? 1 : 0));
-        dest.writeString(loginHash);
-    }
 }

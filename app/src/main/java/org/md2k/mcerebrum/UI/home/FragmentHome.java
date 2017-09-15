@@ -5,7 +5,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 
 import com.beardedhen.androidbootstrap.AwesomeTextView;
 import com.beardedhen.androidbootstrap.BootstrapButton;
@@ -27,7 +26,7 @@ import static org.md2k.mcerebrum.menu.AbstractMenu.MENU_APP_SETTINGS;
 public class FragmentHome extends Fragment {
     ApplicationManager applicationManager;
     StudyInfo studyInfo;
-    UserInfo userInfo;
+    UserInfo UserInfo;
 
     AwesomeTextView awesomeTextViewSummary;
     AwesomeTextView awesomeTextViewInstall;
@@ -59,7 +58,7 @@ public class FragmentHome extends Fragment {
     public void onViewCreated(final View view, Bundle savedInstanceState) {
         applicationManager = ((ActivityMain) getActivity()).applicationManager;
         studyInfo = ((ActivityMain) getActivity()).studyInfo;
-        userInfo = ((ActivityMain) getActivity()).userInfo;
+        UserInfo = ((ActivityMain) getActivity()).userInfo;
         view.findViewById(R.id.app_install1).setOnClickListener(onClickListernerInstall);
         view.findViewById(R.id.app_install2).setOnClickListener(onClickListernerInstall);
         view.findViewById(R.id.app_install3).setOnClickListener(onClickListernerInstall);
@@ -167,7 +166,7 @@ public class FragmentHome extends Fragment {
     }
 
     BootstrapText getSummary() {
-        return new BootstrapText.Builder(getContext()).addText("Study Title: " + studyInfo.getTitle() + "      User id:  " + userInfo.getTitle())
+        return new BootstrapText.Builder(getContext()).addText("Study Title: " + studyInfo.getTitle() + "      User id:  " + UserInfo.getTitle())
                 .build();
     }
 

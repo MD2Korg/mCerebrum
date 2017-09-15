@@ -113,10 +113,18 @@
             <com.beardedhen.androidbootstrap.BootstrapButton
                 android:id="@+id/button_settings_short"
                 style="@style/wrapping_button"
-                android:layout_weight=".45"
+                android:layout_weight=".3"
                 android:enabled="false"
                 app:fontAwesomeIcon="fa_cog"
                 app:bootstrapBrand="warning"
+                app:roundedCorners="true"
+                app:showOutline="true" />
+            <com.beardedhen.androidbootstrap.BootstrapButton
+                android:id="@+id/button_clear_short"
+                style="@style/wrapping_button"
+                android:layout_weight=".3"
+                app:bootstrapBrand="danger"
+                app:fontAwesomeIcon="fa_minus_circle"
                 app:roundedCorners="true"
                 app:showOutline="true" />
 
@@ -125,7 +133,7 @@
             <com.beardedhen.androidbootstrap.BootstrapButton
                 android:id="@+id/button_launch_short"
                 style="@style/wrapping_button"
-                android:layout_weight=".45"
+                android:layout_weight=".3"
                 app:fontAwesomeIcon="fa_play"
                 app:bootstrapBrand="warning"
                 app:roundedCorners="true"

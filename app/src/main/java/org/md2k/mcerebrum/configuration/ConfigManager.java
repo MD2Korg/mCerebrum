@@ -135,12 +135,12 @@ public class ConfigManager {
                         ApplicationManager.save(context, config.getAppMCs());
                         save(context, downloadUrl, configName, downloadFrom, updatedAt);
                         if(studyInfo.getType(context)!=null && studyInfo.getType(context).equals(StudyInfo.FREEBIE)) {
-                            UserInfo.setTitle("Freebie");
-                            UserInfo.setLoggedIn(false);
+                            UserInfoManager.setTitle("Freebie");
+                            UserInfoManager.setLoggedIn(false);
                         }
                         else if(studyInfo.getType(context)!=null && studyInfo.getType(context).equals(StudyInfo.CONFIGURED)) {
-                            UserInfo.setTitle(studyInfo.getTitle(context));
-                            UserInfo.setLoggedIn(false);
+                            UserInfoManager.setTitle(studyInfo.getTitle(context));
+                            UserInfoManager.setLoggedIn(false);
                         }
                         return Observable.just(downloadInfo);
                     } catch (Exception e) {

@@ -36,6 +36,8 @@ public class AppMC {
     private static final int START_BACKGROUND = 5;
     private static final int STOP_BACKGROUND = 6;
     private static final int INFO = 2;
+    private static final int INIT =7 ;
+    private static final int CLEAR = 8;
     private AppInfo appInfo;
     private ServiceCommunication serviceCommunication;
 
@@ -93,13 +95,24 @@ public class AppMC {
             case INFO:
                 Info info = serviceCommunication.getInfo();
                 appInfo.setmCerebrum(info);
+                if(!appInfo.isInitialized())
+                    doOp(INIT);
                 break;
-
+            case INIT:
+                serviceCommunication.initialize();
+                appInfo.setInitialized(true);
+                break;
+            case CLEAR:
+                serviceCommunication.clear();
+                break;
         }
     }
 
-    public void configure() {
+    void configure() {
         doOp(CONFIGURE);
+    }
+    public void clear(){
+        doOp(CLEAR);
     }
 
     public void report() {
@@ -114,7 +127,7 @@ public class AppMC {
         doOp(STOP_BACKGROUND);
     }
 
-    public void setInfo() {
+    void setInfo() {
         doOp(INFO);
     }
 

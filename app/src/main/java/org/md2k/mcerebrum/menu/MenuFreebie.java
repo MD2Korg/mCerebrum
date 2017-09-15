@@ -37,9 +37,9 @@ import org.md2k.mcerebrum.study.StudyInfo;
 import org.md2k.mcerebrum.user.UserInfo;
 
 class MenuFreebie extends AbstractMenu {
-     IProfile[] getHeaderContentType(final Context context, UserInfo userInfo, StudyInfo studyInfo, final ResponseCallBack responseCallBack){
+     IProfile[] getHeaderContentType(final Context context, UserInfo UserInfo, StudyInfo studyInfo, final ResponseCallBack responseCallBack){
         IProfile[] iProfiles=new IProfile[1];
-        iProfiles[0]=new ProfileDrawerItem().withName(userInfo.getTitle()).withIcon(studyInfo.getIcon(context));
+        iProfiles[0]=new ProfileDrawerItem().withName(UserInfo.getTitle()).withIcon(studyInfo.getIcon(context));
 /*
         iProfiles[1]=new ProfileSettingDrawerItem().withName("Join Study").withIcon(FontAwesome.Icon.faw_link).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
             @Override

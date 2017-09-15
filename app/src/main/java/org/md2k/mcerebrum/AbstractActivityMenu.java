@@ -22,8 +22,7 @@ import org.md2k.mcerebrum.commons.dialog.Dialog;
 import org.md2k.mcerebrum.commons.dialog.DialogCallback;
 import org.md2k.mcerebrum.menu.AbstractMenu;
 import org.md2k.mcerebrum.menu.ResponseCallBack;
-import org.md2k.mcerebrum.study.StudyInfo;
-import org.md2k.mcerebrum.user.UserInfo;
+import org.md2k.md2k.system.user.UserInfo;
 
 import es.dmoral.toasty.Toasty;
 
@@ -167,10 +166,11 @@ public abstract class AbstractActivityMenu extends AbstractActivityBasics {
         AppInfo appInfo = applicationManager.getStudy();
         if(appInfo !=null) {
             Intent intent = getPackageManager().getLaunchIntentForPackage(appInfo.getPackageName());
-            intent.putExtra(UserInfo.class.getName(), userInfo);
-            intent.putExtra(StudyInfo.class.getName(), studyInfo);
-            intent.putExtra(AppInfo.class.getName(),(applicationManager.getAppInfos()));
+            intent.putExtra(UserInfo.class.getSimpleName(), userInfo);
+//            intent.putExtra(StudyInfo.class.getSimpleName(), studyInfo);
+//            intent.putExtra(AppInfo.class.getSimpleName(),(applicationManager.getAppInfos()));
             startActivity(intent);
+            finish();
         }
         else Toasty.error(this,"Study AppInfo not found", Toast.LENGTH_SHORT).show();
 

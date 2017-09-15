@@ -69,6 +69,7 @@ dependencies {
     //MD2K commons
     compile project(':commons')
     compile project(':core')
+    compile project(':system')
 
     //Folding UI
     compile 'com.ramotion.foldingcell:folding-cell:1.2.1'

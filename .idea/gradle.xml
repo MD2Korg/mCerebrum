@@ -10,6 +10,7 @@
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/../mCerebrum-Library/commons" />
             <option value="$PROJECT_DIR$/../mCerebrum-Library/core" />
+            <option value="$PROJECT_DIR$/../mCerebrum-Library/system" />
             <option value="$PROJECT_DIR$/app" />
           </set>
         </option>

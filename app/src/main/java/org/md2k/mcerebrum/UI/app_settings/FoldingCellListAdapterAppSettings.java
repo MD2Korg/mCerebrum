@@ -61,9 +61,11 @@ public class FoldingCellListAdapterAppSettings extends ArrayAdapter<AppInfo> {
             viewHolder.updateVersion = (TextView) cell.findViewById(R.id.textview_update_date);
 
             viewHolder.buttonSettingsLong = (BootstrapButton) cell.findViewById(R.id.button_settings_long);
-            viewHolder.buttonLaunchLong = (BootstrapButton) cell.findViewById(R.id.button_launch_long);
             viewHolder.buttonSettingsShort = (BootstrapButton) cell.findViewById(R.id.button_settings_short);
+            viewHolder.buttonLaunchLong = (BootstrapButton) cell.findViewById(R.id.button_launch_long);
             viewHolder.buttonLaunchShort = (BootstrapButton) cell.findViewById(R.id.button_launch_short);
+            viewHolder.buttonClearLong = (BootstrapButton) cell.findViewById(R.id.button_clear_long);
+            viewHolder.buttonClearShort = (BootstrapButton) cell.findViewById(R.id.button_clear_short);
             viewHolder.status = (AwesomeTextView) cell.findViewById(R.id.textview_status);
 
 
@@ -101,6 +103,12 @@ public class FoldingCellListAdapterAppSettings extends ArrayAdapter<AppInfo> {
                 responseCallBack.onResponse(position, FragmentFoldingUIAppSettings.CONFIGURE);
             }
         };
+        View.OnClickListener onClickListenerClear = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                responseCallBack.onResponse(position, FragmentFoldingUIAppSettings.CLEAR);
+            }
+        };
 
         if(!appInfo.isMCerebrumSupported() || appInfo.getInfo()==null || !appInfo.getInfo().isConfigurable())
             set(viewHolder.buttonSettingsLong, viewHolder.buttonSettingsShort, false, DefaultBootstrapBrand.SECONDARY, true, onClickListenerSettings);
@@ -109,10 +117,13 @@ public class FoldingCellListAdapterAppSettings extends ArrayAdapter<AppInfo> {
         else
             set(viewHolder.buttonSettingsLong, viewHolder.buttonSettingsShort, true, DefaultBootstrapBrand.SUCCESS, false, onClickListenerSettings);
 
+        if(!appInfo.isMCerebrumSupported() || appInfo.getInfo()==null || !appInfo.getInfo().hasClear())
+            set(viewHolder.buttonClearLong, viewHolder.buttonClearShort, false, DefaultBootstrapBrand.SECONDARY, true, onClickListenerClear);
+        else
+            set(viewHolder.buttonClearLong, viewHolder.buttonClearShort, true, DefaultBootstrapBrand.DANGER, true, onClickListenerClear);
+
         set(viewHolder.buttonLaunchLong, viewHolder.buttonLaunchShort, true, DefaultBootstrapBrand.SUCCESS, true, onClickListenerRun);
-        viewHolder.buttonLaunchLong.setFontAwesomeIcon("fa_play");
-        viewHolder.buttonLaunchShort.setFontAwesomeIcon("fa_play");
-        Log.d("abc",appInfo.getTitle());
+
         if(appInfo.isMCerebrumSupported() && appInfo.getInfo()!=null && appInfo.getInfo().isConfigurable() && appInfo.getInfo().isConfigured() && appInfo.getInfo().isEqualDefault()){
             viewHolder.status.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
             viewHolder.status.setText("configured");
@@ -124,22 +135,10 @@ public class FoldingCellListAdapterAppSettings extends ArrayAdapter<AppInfo> {
         }
         viewHolder.updateVersion.setText("N/A");
 
-        //   viewHolder.requestsCount.setText(String.valueOf(item.getRequestsCount()));
-        //     viewHolder.pledgePrice.setText(item.getPledgePrice());
-        // set custom btn handler for list item from that item
-
-  /*      if (appInfo.getRequestBtnClickListener() != null) {
-            viewHolder.contentRequestBtn.setOnClickListener(appInfo.getRequestBtnClickListener());
-        } else {
-            // (optionally) add "default" handler if no handler found in item
-            viewHolder.contentRequestBtn.setOnClickListener(defaultRequestBtnClickListener);
-        }
-*/
-
         return cell;
     }
 
-    void set(BootstrapButton b1, BootstrapButton b2, boolean e, BootstrapBrand b, boolean o, View.OnClickListener l){
+    private void set(BootstrapButton b1, BootstrapButton b2, boolean e, BootstrapBrand b, boolean o, View.OnClickListener l){
         b1.setEnabled(e);
         b1.setBootstrapBrand(b);
         b1.setShowOutline(o);
@@ -187,8 +186,10 @@ public class FoldingCellListAdapterAppSettings extends ArrayAdapter<AppInfo> {
         TextView version;
         TextView updateVersion;
         BootstrapButton buttonSettingsLong;
-        BootstrapButton buttonLaunchLong;
         BootstrapButton buttonSettingsShort;
+        BootstrapButton buttonLaunchLong;
         BootstrapButton buttonLaunchShort;
+        BootstrapButton buttonClearLong;
+        BootstrapButton buttonClearShort;
     }
 }
