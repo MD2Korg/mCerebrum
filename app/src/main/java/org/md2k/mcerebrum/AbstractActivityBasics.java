@@ -15,9 +15,11 @@ import org.md2k.mcerebrum.commons.dialog.Dialog;
 import org.md2k.mcerebrum.configuration.ConfigManager;
 import org.md2k.mcerebrum.commons.permission.Permission;
 import org.md2k.mcerebrum.commons.permission.PermissionCallback;
-import org.md2k.mcerebrum.study.StudyInfo;
-import org.md2k.mcerebrum.user.UserInfo;
 import org.md2k.mcerebrum.internet.download.DownloadInfo;
+import org.md2k.mcerebrum.study.StudyInfoController;
+import org.md2k.mcerebrum.user.UserInfoController;
+import org.md2k.md2k.system.study.StudyInfo;
+import org.md2k.md2k.system.user.UserInfo;
 
 import es.dmoral.toasty.Toasty;
 import rx.Observer;
@@ -27,8 +29,8 @@ import rx.schedulers.Schedulers;
 
 public abstract class AbstractActivityBasics extends AppCompatActivity {
     static final String TAG=AbstractActivityBasics.class.getSimpleName();
-    public UserInfo userInfo;
-    public StudyInfo studyInfo;
+    public UserInfoController userInfoController;
+    public StudyInfoController studyInfoController;
     public ApplicationManager applicationManager;
     public ConfigManager configManager;
     Subscription subscription;
@@ -42,8 +44,8 @@ public abstract class AbstractActivityBasics extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Utils.init(this);
         configManager=new ConfigManager();
-        studyInfo=new StudyInfo();
-        userInfo =new UserInfo();
+        studyInfoController=new StudyInfoController();
+        userInfoController =new UserInfoController();
         applicationManager=new ApplicationManager();
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -66,16 +68,16 @@ public abstract class AbstractActivityBasics extends AppCompatActivity {
 
     public boolean readConfig(){
         if(configManager.read() && configManager.isConfigured()) {
-                userInfo.set();
-                studyInfo.set(configManager.getConfig());
+                userInfoController.set();
+                studyInfoController.set(configManager.getConfig());
                 applicationManager.set(configManager.getConfig().getApplications());
-                if (studyInfo.getType().toUpperCase().equals(StudyInfo.FREEBIE))
-                    userInfo.setTitle("Default");
+                if (studyInfoController.getType().equalsIgnoreCase(StudyInfo.FREEBIE))
+                    userInfoController.setTitle("Default");
                 return true;
         }else{
             configManager.clear();
-            userInfo.clear();
-            studyInfo.clear();
+            userInfoController.clear();
+            studyInfoController.clear();
             applicationManager.stop();
             return false;
         }

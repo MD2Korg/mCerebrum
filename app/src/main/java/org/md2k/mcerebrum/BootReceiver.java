@@ -6,6 +6,9 @@ import android.content.Intent;
 
 import org.md2k.mcerebrum.app.ApplicationManager;
 import org.md2k.mcerebrum.configuration.ConfigManager;
+import org.md2k.mcerebrum.study.StudyInfoController;
+import org.md2k.mcerebrum.user.UserInfoController;
+import org.md2k.md2k.system.study.StudyInfo;
 
 /**
  * Copyright (c) 2015, The University of Memphis, MD2K Center
@@ -35,21 +38,47 @@ import org.md2k.mcerebrum.configuration.ConfigManager;
  */
 public class BootReceiver extends BroadcastReceiver
 {
+    ConfigManager configManager;
+    UserInfoController userInfoController;
+    StudyInfoController studyInfoController;
+    ApplicationManager applicationManager;
     @Override
     public void onReceive(Context context, Intent intent) {
-        ConfigManager configManager=new ConfigManager();
-        ApplicationManager applicationManager;
-        if(configManager.isConfigured()) {
+        configManager=new ConfigManager();
+        userInfoController=new UserInfoController();
+        studyInfoController = new StudyInfoController();
+        applicationManager = new ApplicationManager();
+        if(readConfig() && studyInfoController.isStarted() && studyInfoController.isStartAtBoot()){
+/*
+//TODO: check
+                AppInfoE appInfo = applicationManager.getStudy();
+            if(appInfo !=null) {
+                Intent intent = getPackageManager().getLaunchIntentForPackage(appInfo.getPackageName());
+//            intent.putExtra(UserInfo.class.getSimpleName(), userInfo);
+//            intent.putExtra(StudyInfo.class.getSimpleName(), studyInfo);
+            ..intent.putExtra("AppInfo",(applicationManager.getAppInfo()));
+                startActivity(intent);
+                finish();
+            }
+*/
 
-//        StudyInfo studyInfo=new StudyInfo(configManager.getConfig());
-//        if(!studyInfo.isStartAtBoot()) return;
-//        if(!studyInfo.isStarted()) return;
-//            applicationManager=new ApplicationManager(configManager.getConfig().getAppMCs());
-//            applicationManager.
-            // TODO: start app
-//        Intent myIntent = new Intent(context, ActivityStartScreen.class);
-//        myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-//        context.startActivity(myIntent);
         }
     }
+    public boolean readConfig(){
+        if(configManager.read() && configManager.isConfigured()) {
+            userInfoController.set();
+            studyInfoController.set(configManager.getConfig());
+            applicationManager.set(configManager.getConfig().getApplications());
+            if (studyInfoController.getType().toUpperCase().equals(StudyInfo.FREEBIE))
+                userInfoController.setTitle("Default");
+            return true;
+        }else{
+            configManager.clear();
+            userInfoController.clear();
+            studyInfoController.clear();
+            applicationManager.stop();
+            return false;
+        }
+    }
+
 }

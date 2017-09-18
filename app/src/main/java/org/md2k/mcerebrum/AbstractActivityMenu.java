@@ -13,47 +13,45 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 
 import org.md2k.mcerebrum.UI.app_install_uninstall.FragmentFoldingUIAppInstall;
-import org.md2k.mcerebrum.UI.app_settings.FragmentFoldingUIAppSettings;
+import org.md2k.mcerebrum.UI.app_settings.FragmentAppSettings;
 import org.md2k.mcerebrum.UI.home.FragmentHome;
 import org.md2k.mcerebrum.UI.joinstudy.FragmentJoinStudy;
 import org.md2k.mcerebrum.UI.login.ActivityLogin;
-import org.md2k.mcerebrum.app.AppInfo;
 import org.md2k.mcerebrum.commons.dialog.Dialog;
 import org.md2k.mcerebrum.commons.dialog.DialogCallback;
 import org.md2k.mcerebrum.menu.AbstractMenu;
 import org.md2k.mcerebrum.menu.ResponseCallBack;
-import org.md2k.md2k.system.user.UserInfo;
 
 import es.dmoral.toasty.Toasty;
 
 public abstract class AbstractActivityMenu extends AbstractActivityBasics {
     private static final int REQUESTCODE_LOGIN = 1234;
     private Drawer result = null;
-    int selectedMenu=AbstractMenu.MENU_HOME;
-    long backPressedLastTime=-1;
+    int selectedMenu = AbstractMenu.MENU_HOME;
+    long backPressedLastTime = -1;
 
     @Override
     public void updateUI() {
-            createDrawer();
-            result.resetDrawerContent();
-            result.getHeader().refreshDrawableState();
-            result.setSelection(AbstractMenu.MENU_HOME);
+        createDrawer();
+        result.resetDrawerContent();
+        result.getHeader().refreshDrawableState();
+        result.setSelection(AbstractMenu.MENU_HOME);
     }
 
     void createDrawer() {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
-                .withHeaderBackground(studyInfo.getCoverImage(this))
+                .withHeaderBackground(studyInfoController.getCoverImage(this))
                 .withCompactStyle(true)
-                .addProfiles(AbstractMenu.getHeaderContent(this, userInfo, studyInfo, responseCallBack))
+                .addProfiles(AbstractMenu.getHeaderContent(this, userInfoController, studyInfoController, responseCallBack))
                 .build();
 
         result = new DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(toolbar)
                 .withAccountHeader(headerResult) //set the AccountHeader we created earlier for the header
-                .addDrawerItems(AbstractMenu.getMenuContent(this, studyInfo, responseCallBack))
+                .addDrawerItems(AbstractMenu.getMenuContent(this, studyInfoController, responseCallBack))
                 .build();
     }
 
@@ -64,14 +62,14 @@ public abstract class AbstractActivityMenu extends AbstractActivityBasics {
         if (result != null && result.isDrawerOpen()) {
             result.closeDrawer();
         } else {
-            if(selectedMenu!=AbstractMenu.MENU_HOME){
+            if (selectedMenu != AbstractMenu.MENU_HOME) {
                 responseCallBack.onResponse(null, AbstractMenu.MENU_HOME);
-            }else{
-                long currentTime=System.currentTimeMillis();
-                if(currentTime-backPressedLastTime<2000)
+            } else {
+                long currentTime = System.currentTimeMillis();
+                if (currentTime - backPressedLastTime < 2000)
                     super.onBackPressed();
-                else{
-                    backPressedLastTime=currentTime;
+                else {
+                    backPressedLastTime = currentTime;
 //                    Toasty.warning(this, "Press BACK button again to QUIT", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -92,29 +90,29 @@ public abstract class AbstractActivityMenu extends AbstractActivityBasics {
     public ResponseCallBack responseCallBack = new ResponseCallBack() {
         @Override
         public void onResponse(IDrawerItem drawerItem, int responseId) {
-            selectedMenu=responseId;
-            if(drawerItem!=null)
-                toolbar.setTitle(studyInfo.getTitle()+": "+((Nameable) drawerItem).getName().getText(AbstractActivityMenu.this));
-            else toolbar.setTitle(studyInfo.getTitle());
+            selectedMenu = responseId;
+            if (drawerItem != null)
+                toolbar.setTitle(studyInfoController.getTitle() + ": " + ((Nameable) drawerItem).getName().getText(AbstractActivityMenu.this));
+            else toolbar.setTitle(studyInfoController.getTitle());
             switch (responseId) {
                 case AbstractMenu.MENU_HOME:
-                    toolbar.setTitle(studyInfo.getTitle());
+                    toolbar.setTitle(studyInfoController.getTitle());
                     getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new FragmentHome()).commitAllowingStateLoss();
                     break;
                 case AbstractMenu.MENU_APP_ADD_REMOVE:
                     getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new FragmentFoldingUIAppInstall()).commitAllowingStateLoss();
                     break;
                 case AbstractMenu.MENU_APP_SETTINGS:
-                    getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new FragmentFoldingUIAppSettings()).commitAllowingStateLoss();
+                    getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new FragmentAppSettings()).commitAllowingStateLoss();
                     break;
                 case AbstractMenu.MENU_JOIN:
                     getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new FragmentJoinStudy()).commitAllowingStateLoss();
                     break;
                 case AbstractMenu.MENU_LEAVE:
-                    materialDialog= Dialog.simple(AbstractActivityMenu.this, "Leave Study", "Do you want to leave the study?", "Yes", "Cancel", new DialogCallback() {
+                    materialDialog = Dialog.simple(AbstractActivityMenu.this, "Leave Study", "Do you want to leave the study?", "Yes", "Cancel", new DialogCallback() {
                         @Override
                         public void onSelected(String value) {
-                            if(value.equals("Yes")){
+                            if (value.equals("Yes")) {
                                 configManager.clear();
                                 prepareConfig();
                             }
@@ -128,27 +126,26 @@ public abstract class AbstractActivityMenu extends AbstractActivityBasics {
                     break;
                 case AbstractMenu.MENU_LOGOUT:
 //                ((UserServer) user).setLoggedIn(this,false);
-                    userInfo.setLoggedIn(false);
+                    userInfoController.setLoggedIn(false);
                     Toasty.success(AbstractActivityMenu.this, "Logged out", Toast.LENGTH_SHORT, true).show();
                     updateUI();
                     break;
                 case AbstractMenu.MENU_STUDY_START:
-                    if(applicationManager.isRequiredAppInstalled()){
-                        startStudy();
-                    }
+                    startStudy();
                     break;
 
                 default:
             }
         }
     };
+
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==REQUESTCODE_LOGIN){
-            if(resultCode==RESULT_OK){
-                String userName=data.getStringExtra("username");
-                userInfo.setTitle(userName);
-                userInfo.setLoggedIn(true);
+        if (requestCode == REQUESTCODE_LOGIN) {
+            if (resultCode == RESULT_OK) {
+                String userName = data.getStringExtra("username");
+                userInfoController.setTitle(userName);
+                userInfoController.setLoggedIn(true);
                 updateUI();
             }
         }
@@ -162,17 +159,28 @@ public abstract class AbstractActivityMenu extends AbstractActivityBasics {
             materialDialog.dismiss();
         super.onDestroy();
     }
-    public void startStudy(){
-        AppInfo appInfo = applicationManager.getStudy();
+
+    public void startStudy() {
+        applicationManager.startStudy(studyInfoController.getStudyInfo(), userInfoController.getUserInfo());
+        finish();
+/*
+        ArrayList<AppInfoController> a = applicationManager.getAppByType(AppInfo.TYPE_STUDY);
+        if(a.size()>0){
+            String p = a.get(0).getAppBasicInfoController().getPackageName();
+            Intent intent = getPackageManager().getLaunchIntentForPackage(p);
+            intent.putExtra
+        }
+        AppInfoE appInfo = applicationManager.getStudy();
         if(appInfo !=null) {
             Intent intent = getPackageManager().getLaunchIntentForPackage(appInfo.getPackageName());
-            intent.putExtra(UserInfo.class.getSimpleName(), userInfo);
+//            intent.putExtra(UserInfo.class.getSimpleName(), userInfo);
 //            intent.putExtra(StudyInfo.class.getSimpleName(), studyInfo);
-//            intent.putExtra(AppInfo.class.getSimpleName(),(applicationManager.getAppInfos()));
+            ..intent.putExtra("AppInfo",(applicationManager.getAppInfo()));
             startActivity(intent);
             finish();
         }
-        else Toasty.error(this,"Study AppInfo not found", Toast.LENGTH_SHORT).show();
+        else Toasty.error(this,"Study App not found", Toast.LENGTH_SHORT).show();
+*/
 
     }
 }

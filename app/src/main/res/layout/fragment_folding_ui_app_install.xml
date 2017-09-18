@@ -159,7 +159,7 @@
                         app:roundedCorners="true"
                         android:gravity="center"
                         app:bootstrapBrand="warning"
-                        app:bootstrapText="{fa_refresh} Check Update"
+                        app:bootstrapText="{fa_refresh} Check Updates"
                         app:fontAwesomeIcon="fa_refresh"/>
                 </LinearLayout>
 

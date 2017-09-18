@@ -38,100 +38,58 @@ import android.os.Parcelable;
 import org.md2k.mcerebrum.Constants;
 import org.md2k.mcerebrum.configuration.Config;
 import org.md2k.mcerebrum.data.MySharedPreference;
+import org.md2k.md2k.system.study.StudyInfo;
 
 import java.io.IOException;
 
-public class StudyInfo implements Parcelable{
-    private String id;
-    private String type;
-    private String title;
-    private String summary;
-    private String description;
-    private String icon;
-    private String coverImage;
-    private String version;
-    private boolean startAtBoot;
+public class StudyInfoController{
+    private StudyInfo studyInfo;
     private boolean started;
-    private static final String STARTED=StudyInfo.class.getSimpleName()+"_STARTED";
+    private static final String STARTED=StudyInfoController.class.getSimpleName()+"_STARTED";
 
-    public static final String FREEBIE="FREEBIE";
-    public static final String SERVER="SERVER";
-    public static final String CONFIGURED="CONFIGURED";
-    public StudyInfo(){}
-    protected StudyInfo(Parcel in) {
-        id = in.readString();
-        type = in.readString();
-        title = in.readString();
-        summary = in.readString();
-        description = in.readString();
-        icon = in.readString();
-        coverImage = in.readString();
-        version = in.readString();
-        startAtBoot = in.readByte() != 0;
-        started = in.readByte() != 0;
+    public StudyInfoController(){
+        studyInfo=new StudyInfo();
     }
 
-    public static final Creator<StudyInfo> CREATOR = new Creator<StudyInfo>() {
-        @Override
-        public StudyInfo createFromParcel(Parcel in) {
-            return new StudyInfo(in);
-        }
-
-        @Override
-        public StudyInfo[] newArray(int size) {
-            return new StudyInfo[size];
-        }
-    };
-
-
     public void set(Config config){
-        id=config.getId();
-        type=config.getType().toUpperCase();
-        title=config.getTitle();
-        summary=config.getSummary();
-        description=config.getDescription();
-        icon=config.getIcon();
-        coverImage=config.getCover_image();
-        version=config.getVersion();
-        startAtBoot=config.isStart_at_boot();
+        studyInfo.setId(config.getId());
+        studyInfo.setType(config.getType().toUpperCase());
+        studyInfo.setTitle(config.getTitle());
+        studyInfo.setSummary(config.getSummary());
+        studyInfo.setDescription(config.getDescription());
+        studyInfo.setIcon(config.getIcon());
+        studyInfo.setCoverImage(config.getCover_image());
+        studyInfo.setVersion(config.getVersion());
+        studyInfo.setStartAtBoot(config.isStart_at_boot());
         started= new MySharedPreference().getBoolean(STARTED, false);
-
     }
 
     public String getId() {
-        return id;
+        return studyInfo.getId();
     }
 
     public String getType() {
-        return type;
+        return studyInfo.getType();
     }
 
     public String getTitle() {
-        return title;
+        return studyInfo.getTitle();
     }
 
     public String getSummary() {
-        return summary;
+        return studyInfo.getSummary();
     }
 
     public String getDescription() {
-        return description;
-    }
-
-    public String getIcon() {
-        return icon;
-    }
-
-    public String getCoverImage() {
-        return coverImage;
+        return studyInfo.getDescription();
     }
 
     public String getVersion() {
-        return version;
+        return studyInfo.getVersion();
     }
 
     public boolean isStartAtBoot() {
-        return startAtBoot;
+        return studyInfo.isStartAtBoot();
     }
 
     public boolean isStarted(){
@@ -142,7 +100,7 @@ public class StudyInfo implements Parcelable{
         new MySharedPreference().set(STARTED, value);
     }
     public Drawable getIcon(Context context) {
-        String filePath = Constants.CONFIG_MCEREBRUM_DIR()+icon;
+        String filePath = Constants.CONFIG_MCEREBRUM_DIR()+studyInfo.getIcon();
         try {
             Bitmap bitmap = BitmapFactory.decodeFile(filePath);
             if(bitmap!=null)
@@ -159,7 +117,7 @@ public class StudyInfo implements Parcelable{
     }
 
     public Drawable getCoverImage(Context context) {
-        String filePath = Constants.CONFIG_MCEREBRUM_DIR()+coverImage;
+        String filePath = Constants.CONFIG_MCEREBRUM_DIR()+studyInfo.getCoverImage();
         try {
             Bitmap bitmap = BitmapFactory.decodeFile(filePath);
             if(bitmap!=null)
@@ -179,22 +137,7 @@ public class StudyInfo implements Parcelable{
         setStarted(false);
     }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(id);
-        dest.writeString(type);
-        dest.writeString(title);
-        dest.writeString(summary);
-        dest.writeString(description);
-        dest.writeString(icon);
-        dest.writeString(coverImage);
-        dest.writeString(version);
-        dest.writeByte((byte) (startAtBoot ? 1 : 0));
-        dest.writeByte((byte) (started ? 1 : 0));
+    public StudyInfo getStudyInfo() {
+        return studyInfo;
     }
 }

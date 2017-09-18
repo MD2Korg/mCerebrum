@@ -30,12 +30,13 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 
 import org.md2k.mcerebrum.core.access.IMCerebrumService;
-import org.md2k.mcerebrum.core.access.Info;
+import org.md2k.mcerebrum.core.access.MCerebrumStatus;
 
 import static android.content.Context.BIND_AUTO_CREATE;
 
@@ -72,58 +73,58 @@ public class ServiceCommunication {
             Log.d("abc","Service disconnected.\n");
         }
     };
-    public Info getInfo(){
+    public MCerebrumStatus getmCerebrumStatus(){
         try {
-            return mService.GetInfo();
+            return mService.GetmCerebrumStatus();
         } catch (RemoteException e) {
             return null;
         }
     }
-    public void startBackground(){
+    public void startBackground(Bundle bundle){
         try {
-            mService.StartBackground();
+            mService.StartBackground(bundle);
         } catch (Exception ignored) {
         }
     }
-    public void stopBackground(){
+    public void stopBackground(Bundle bundle){
         try {
-            mService.StopBackground();
+            mService.StopBackground(bundle);
         } catch (Exception ignored) {
         }
     }
-    public void clear(){
+    public void clear(Bundle bundle){
         try {
-            mService.Clear();
+            mService.Clear(bundle);
         }catch (Exception ignored) {
         }
     }
-    public void report(){
+    public void report(Bundle bundle){
         try {
-            mService.Report();
+            mService.Report(bundle);
         }catch (Exception ignored) {
         }
     }
-    public void initialize(){
+    public void initialize(Bundle bundle){
         try {
-            mService.Initialize();
+            mService.Initialize(bundle);
         }catch (Exception ignored) {
         }
     }
-    public void launch(){
+    public void launch(Bundle bundle){
         try {
-            mService.Launch();
+            mService.Launch(bundle);
         }catch (Exception ignored) {
         }
     }
-    public void exit(){
+    public void exit(Bundle bundle){
         try {
-            mService.Exit();
+            mService.Exit(bundle);
         }catch (Exception ignored) {
         }
     }
-    public void configure(){
+    public void configure(Bundle bundle){
         try {
-            mService.Configure();
+            mService.Configure(bundle);
         }catch (Exception ignored) {
         }
     }

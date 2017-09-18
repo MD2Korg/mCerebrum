@@ -33,11 +33,9 @@ public class CApp {
     private String summary;
     private String description;
     private String package_name;
-    private String download_from_github;
-    private String download_from_playstore;
-    private String download_from_url;
+    private String download_link;
     private String update;
-    private String status;
+    private String use_as;
     private String version;
     private String icon;
 
@@ -61,18 +59,6 @@ public class CApp {
         return icon;
     }
 
-    public String getDownload_from_github() {
-        return download_from_github;
-    }
-
-    public String getDownload_from_playstore() {
-        return download_from_playstore;
-    }
-
-    public String getDownload_from_url() {
-        return download_from_url;
-    }
-
     public String getVersion() {
         return version;
     }
@@ -89,7 +75,11 @@ public class CApp {
         return update;
     }
 
-    public String getStatus() {
-        return status;
+    public String getUse_as() {
+        return use_as;
+    }
+
+    public String getDownload_link() {
+        return download_link;
     }
 }

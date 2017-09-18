@@ -15,7 +15,8 @@ import com.beardedhen.androidbootstrap.api.defaults.DefaultBootstrapBrand;
 import com.ramotion.foldingcell.FoldingCell;
 
 import org.md2k.mcerebrum.R;
-import org.md2k.mcerebrum.app.AppInfo;
+import org.md2k.mcerebrum.app.AppInfoController;
+import org.md2k.md2k.system.app.AppBasicInfo;
 
 import java.util.HashSet;
 
@@ -23,14 +24,14 @@ import java.util.HashSet;
  * Simple example of ListAdapter for using with Folding Cell
  * Adapter holds indexes of unfolded elements for correct work with default reusable views behavior
  */
-class FoldingCellListAdapterAppInstall extends ArrayAdapter<AppInfo> {
+class FoldingCellListAdapterAppInstall extends ArrayAdapter<AppInfoController> {
 
     private HashSet<Integer> unfoldedIndexes = new HashSet<>();
     private View.OnClickListener defaultRequestBtnClickListener;
     private ResponseCallBack responseCallBack;
 
 
-    FoldingCellListAdapterAppInstall(Activity activity, AppInfo[] objects, ResponseCallBack responseCallBack) {
+    FoldingCellListAdapterAppInstall(Activity activity, AppInfoController[] objects, ResponseCallBack responseCallBack) {
         super(activity, 0, objects);
         this.responseCallBack=responseCallBack;
     }
@@ -39,7 +40,7 @@ class FoldingCellListAdapterAppInstall extends ArrayAdapter<AppInfo> {
     @Override
     public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
         // get item for selected view
-        final AppInfo appInfo = getItem(position);
+        final AppInfoController appInfoController = getItem(position);
         // if cell is exists - reuse it, if not - create the new one from resource
         FoldingCell cell = (FoldingCell) convertView;
         ViewHolder viewHolder;
@@ -78,18 +79,18 @@ class FoldingCellListAdapterAppInstall extends ArrayAdapter<AppInfo> {
             viewHolder = (ViewHolder) cell.getTag();
         }
         // bind data from selected element to view through view holder
-        if(appInfo.isRequired())
-            viewHolder.title.setText(appInfo.getTitle()+" ("+ appInfo.getStatus()+")");
+        if(appInfoController.getAppBasicInfoController().isUseAs(AppBasicInfo.USE_AS_REQUIRED))
+            viewHolder.title.setText(appInfoController.getAppBasicInfoController().getTitle()+" (Required)");
         else
-            viewHolder.title.setText(appInfo.getTitle());
-        viewHolder.summary.setText(appInfo.getSummary());
-        viewHolder.content_title.setText(appInfo.getTitle());
-        viewHolder.content_summary.setText(appInfo.getSummary());
-        viewHolder.description.setText(appInfo.getDescription());
-        String versionName= appInfo.getCurrentVersionName();if(versionName==null) versionName="N/A";
+            viewHolder.title.setText(appInfoController.getAppBasicInfoController().getTitle());
+        viewHolder.summary.setText(appInfoController.getAppBasicInfoController().getSummary());
+        viewHolder.content_title.setText(appInfoController.getAppBasicInfoController().getTitle());
+        viewHolder.content_summary.setText(appInfoController.getAppBasicInfoController().getSummary());
+        viewHolder.description.setText(appInfoController.getAppBasicInfoController().getDescription());
+        String versionName= appInfoController.getInstallInfoController().getCurrentVersionName();if(versionName==null) versionName="N/A";
         viewHolder.version.setText(versionName);
-        viewHolder.icon_short.setImageDrawable(appInfo.getIcon(getContext()));
-        viewHolder.icon_long.setImageDrawable(appInfo.getIcon(getContext()));
+        viewHolder.icon_short.setImageDrawable(appInfoController.getAppBasicInfoController().getIcon(getContext()));
+        viewHolder.icon_long.setImageDrawable(appInfoController.getAppBasicInfoController().getIcon(getContext()));
 
         View.OnClickListener onClickListenerUninstall=new View.OnClickListener() {
             @Override
@@ -110,12 +111,12 @@ class FoldingCellListAdapterAppInstall extends ArrayAdapter<AppInfo> {
                 responseCallBack.onResponse(position, FragmentFoldingUIAppInstall.UPDATE);
             }
         };
-        if(appInfo.getType().toUpperCase().equals("MCEREBRUM")){
+        if(appInfoController.getAppBasicInfoController().getType().equalsIgnoreCase("MCEREBRUM")){
             set(viewHolder.buttonInstallLong, viewHolder.buttonInstallShort, false, DefaultBootstrapBrand.SECONDARY, true, onClickListenerInstall);
             set(viewHolder.buttonUpdateLong, viewHolder.buttonUpdateShort, false, DefaultBootstrapBrand.SECONDARY, true, onClickListenerUpdate);
             set(viewHolder.buttonUninstallLong, viewHolder.buttonUninstallShort, false, DefaultBootstrapBrand.SECONDARY, true, onClickListenerUninstall);
         }
-        else if(appInfo.isInstalled()) {
+        else if(appInfoController.getInstallInfoController().isInstalled()) {
             set(viewHolder.buttonInstallLong, viewHolder.buttonInstallShort, false, DefaultBootstrapBrand.SECONDARY, true, onClickListenerInstall);
             set(viewHolder.buttonUpdateLong, viewHolder.buttonUpdateShort, false, DefaultBootstrapBrand.SECONDARY, true, onClickListenerUpdate);
             set(viewHolder.buttonUninstallLong, viewHolder.buttonUninstallShort, true, DefaultBootstrapBrand.DANGER, true, onClickListenerUninstall);

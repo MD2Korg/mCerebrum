@@ -13,10 +13,11 @@ import com.beardedhen.androidbootstrap.api.defaults.DefaultBootstrapBrand;
 
 import org.md2k.mcerebrum.ActivityMain;
 import org.md2k.mcerebrum.R;
-import org.md2k.mcerebrum.app.AppInfo;
+import org.md2k.mcerebrum.app.AppInfoController;
 import org.md2k.mcerebrum.app.ApplicationManager;
-import org.md2k.mcerebrum.study.StudyInfo;
-import org.md2k.mcerebrum.user.UserInfo;
+import org.md2k.mcerebrum.study.StudyInfoController;
+import org.md2k.mcerebrum.user.UserInfoController;
+import org.md2k.md2k.system.app.AppBasicInfo;
 
 import java.util.ArrayList;
 
@@ -25,8 +26,8 @@ import static org.md2k.mcerebrum.menu.AbstractMenu.MENU_APP_SETTINGS;
 
 public class FragmentHome extends Fragment {
     ApplicationManager applicationManager;
-    StudyInfo studyInfo;
-    UserInfo UserInfo;
+    StudyInfoController studyInfoController;
+    UserInfoController UserInfoController;
 
     AwesomeTextView awesomeTextViewSummary;
     AwesomeTextView awesomeTextViewInstall;
@@ -34,17 +35,17 @@ public class FragmentHome extends Fragment {
     BootstrapButton bootstrapButtonStart;
     AwesomeTextView awesomeTextViewInstallStatus;
     AwesomeTextView awesomeTextViewSetupStatus;
-    View.OnClickListener onClickListernerInstall=new View.OnClickListener() {
+    View.OnClickListener onClickListernerInstall = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            ((ActivityMain)getActivity()).responseCallBack.onResponse(null, MENU_APP_ADD_REMOVE);
+            ((ActivityMain) getActivity()).responseCallBack.onResponse(null, MENU_APP_ADD_REMOVE);
         }
     };
 
-    View.OnClickListener onClickListernerSetup=new View.OnClickListener() {
+    View.OnClickListener onClickListernerSetup = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            ((ActivityMain)getActivity()).responseCallBack.onResponse(null, MENU_APP_SETTINGS);
+            ((ActivityMain) getActivity()).responseCallBack.onResponse(null, MENU_APP_SETTINGS);
         }
     };
 
@@ -57,8 +58,8 @@ public class FragmentHome extends Fragment {
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
         applicationManager = ((ActivityMain) getActivity()).applicationManager;
-        studyInfo = ((ActivityMain) getActivity()).studyInfo;
-        UserInfo = ((ActivityMain) getActivity()).userInfo;
+        studyInfoController = ((ActivityMain) getActivity()).studyInfoController;
+        UserInfoController = ((ActivityMain) getActivity()).userInfoController;
         view.findViewById(R.id.app_install1).setOnClickListener(onClickListernerInstall);
         view.findViewById(R.id.app_install2).setOnClickListener(onClickListernerInstall);
         view.findViewById(R.id.app_install3).setOnClickListener(onClickListernerInstall);
@@ -85,18 +86,19 @@ public class FragmentHome extends Fragment {
         bootstrapButtonStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((ActivityMain)getActivity()).startStudy();
+                ((ActivityMain) getActivity()).startStudy();
             }
         });
     }
+
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         updateSummary();
         updateInstall();
         updateSetup();
 
-        if (!isCoreInstalled()) {
+        if (!applicationManager.isCoreInstalled()) {
             bootstrapButtonStart.setEnabled(false);
             bootstrapButtonStart.setBootstrapBrand(DefaultBootstrapBrand.SECONDARY);
             bootstrapButtonStart.setShowOutline(true);
@@ -105,16 +107,6 @@ public class FragmentHome extends Fragment {
             bootstrapButtonStart.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
             bootstrapButtonStart.setShowOutline(false);
         }
-    }
-
-    private boolean isCoreInstalled() {
-        if(!applicationManager.getDataKit().isInstalled()){
-            return false;
-        }
-        if(applicationManager.getStudy()!=null && !applicationManager.getStudy().isInstalled()){
-            return false;
-        }
-        return true;
     }
 
     void updateSummary() {
@@ -166,59 +158,39 @@ public class FragmentHome extends Fragment {
     }
 
     BootstrapText getSummary() {
-        return new BootstrapText.Builder(getContext()).addText("Study Title: " + studyInfo.getTitle() + "      User id:  " + UserInfo.getTitle())
+        return new BootstrapText.Builder(getContext()).addText("Study Title: " + studyInfoController.getTitle() + "      User id:  " + UserInfoController.getTitle())
                 .build();
     }
 
     String getRequiredAppNotInstalled() {
-        String notInstalledAppList="";
-/*
-        boolean flag=true;
-        if(!applicationManager.getDataKit().isInstalled()){
-            notInstalledAppList=applicationManager.getDataKit().getTitle();
-            flag=false;
-        }
-        if(applicationManager.getStudy()!=null && !applicationManager.getStudy().isInstalled()){
-            if(!flag) notInstalledAppList+=", "+applicationManager.getStudy().getTitle();
-            else notInstalledAppList=applicationManager.getStudy().getTitle();
-        }
-        if(flag) return null;
-        return notInstalledAppList;
-*/
-
-
-            ArrayList<AppInfo> appInfos = applicationManager.getRequiredAppNotInstalled();
-        if(appInfos.size()==0) return null;
+        String notInstalledAppList = "";
+        ArrayList<AppInfoController> appInfos = applicationManager.getRequiredAppNotInstalled();
+        if (appInfos.size() == 0) return null;
         for (int i = 0; i < appInfos.size(); i++) {
-            if (applicationManager.getAppInfos()[i].isRequired()) {
-                    if (i == 0)
-                        notInstalledAppList = appInfos.get(i).getTitle();
-                    else
-                        notInstalledAppList += ", " + appInfos.get(i).getTitle();
-            }
+            if (i == 0)
+                notInstalledAppList = appInfos.get(i).getAppBasicInfoController().getTitle();
+            else
+                notInstalledAppList += ", " + appInfos.get(i).getAppBasicInfoController().getTitle();
         }
         return notInstalledAppList;
-
     }
 
     String getRequiredAppNotSetup() {
-        String notInstalledAppList="";
-/*
-        boolean flag=true;
-        if(!applicationManager.getDataKit().isInstalled() || applicationManager.getDataKit().getInfo()==null || !applicationManager.getDataKit().getInfo().isConfigured()){
-            notInstalledAppList=applicationManager.getDataKit().getTitle();
-            flag=false;
+        String notInstalledAppList = "";
+        ArrayList<AppInfoController> appInfos = applicationManager.getRequiredAppNotConfigured();
+        if (appInfos.size() == 0) return null;
+        for (int i = 0; i < appInfos.size(); i++) {
+            if (i == 0)
+                notInstalledAppList = appInfos.get(i).getAppBasicInfoController().getTitle();
+            else
+                notInstalledAppList += ", " + appInfos.get(i).getAppBasicInfoController().getTitle();
         }
-        if(applicationManager.getStudy()!=null && (!applicationManager.getStudy().isInstalled() || applicationManager.getStudy().getInfo()==null || !applicationManager.getStudy().getInfo().isConfigured())){
-            if(!flag) notInstalledAppList+=", "+applicationManager.getStudy().getTitle();
-            else notInstalledAppList=applicationManager.getStudy().getTitle();
-        }
-        if(flag) return null;
         return notInstalledAppList;
-*/
-
-        String notConfiguredAppList = null;
+    }
+/*
+        String notConfiguredAppList = "";
         int notConfiguredCount = 0;
+        ArrayList<AppInfoController> appInfos = new ArrayList<>();
         for (int i = 0; i < applicationManager.getAppInfos().length; i++) {
             if (applicationManager.getAppInfos()[i].isRequired()) {
                 if (!applicationManager.getAppInfos()[i].isInstalled()) {
@@ -228,7 +200,7 @@ public class FragmentHome extends Fragment {
                     else
                         notConfiguredAppList += ", " + applicationManager.getAppInfos()[i].getTitle();
                 } else if (applicationManager.getAppInfos()[i].isMCerebrumSupported()
-                        && applicationManager.getAppInfos()[i].getInfo()!=null
+                        && applicationManager.getAppInfos()[i].getInfo() != null
                         && applicationManager.getAppInfos()[i].getInfo().isConfigurable()
                         && !applicationManager.getAppInfos()[i].getInfo().isEqualDefault()) {
                     notConfiguredCount++;
@@ -241,6 +213,7 @@ public class FragmentHome extends Fragment {
         }
         return notConfiguredAppList;
     }
+*/
 
     BootstrapText getStatusText(boolean status) {
         if (status)

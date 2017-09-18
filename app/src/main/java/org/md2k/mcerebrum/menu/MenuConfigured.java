@@ -36,11 +36,11 @@ import com.mikepenz.materialdrawer.model.ProfileSettingDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
-import org.md2k.mcerebrum.study.StudyInfo;
-import org.md2k.mcerebrum.user.UserInfo;
+import org.md2k.mcerebrum.study.StudyInfoController;
+import org.md2k.mcerebrum.user.UserInfoController;
 
 class MenuConfigured extends AbstractMenu{
-    IProfile[] getHeaderContentType(Context context, UserInfo userInfo, StudyInfo studyInfo, final ResponseCallBack responseCallBack){
+    IProfile[] getHeaderContentType(Context context, UserInfoController userInfo, StudyInfoController studyInfo, final ResponseCallBack responseCallBack){
         IProfile[] iProfiles=new IProfile[2];
         iProfiles[0]=new ProfileDrawerItem().withName(studyInfo.getTitle()).withIcon(studyInfo.getIcon(context));
 /*
@@ -67,7 +67,7 @@ class MenuConfigured extends AbstractMenu{
     private static MenuContent[] menuContent = new MenuContent[]{
             new MenuContent("Home", FontAwesome.Icon.faw_home, MenuContent.PRIMARY_DRAWER_ITEM, MENU_HOME,0),
             new MenuContent("Add/Remove Apps", FontAwesome.Icon.faw_plus, MenuContent.PRIMARY_DRAWER_ITEM, MENU_APP_ADD_REMOVE,0),
-            new MenuContent("AppInfo Settings", FontAwesome.Icon.faw_cog, MenuContent.PRIMARY_DRAWER_ITEM, MENU_APP_SETTINGS,0),
+            new MenuContent("App Settings", FontAwesome.Icon.faw_cog, MenuContent.PRIMARY_DRAWER_ITEM, MENU_APP_SETTINGS,0),
 //            new MenuContent("Step by Step Settings", FontAwesome.Icon.faw_cogs, MenuContent.PRIMARY_DRAWER_ITEM, MENU_APP_SETTINGS,0),
             new MenuContent("Start Study", FontAwesome.Icon.faw_play, MenuContent.PRIMARY_DRAWER_ITEM, MENU_STUDY_START,0)
 //            new MenuContent("Report",FontAwesome.Icon.faw_bar_chart,MenuContent.PRIMARY_DRAWER_ITEM, OP_REPORT),

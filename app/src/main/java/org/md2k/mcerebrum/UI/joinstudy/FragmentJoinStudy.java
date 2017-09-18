@@ -16,7 +16,7 @@ import org.md2k.mcerebrum.Constants;
 import org.md2k.mcerebrum.R;
 import org.md2k.mcerebrum.commons.dialog.Dialog;
 import org.md2k.mcerebrum.configuration.ConfigManager;
-import org.md2k.mcerebrum.user.UserInfo;
+import org.md2k.mcerebrum.user.UserInfoController;
 import org.md2k.mcerebrum.internet.download.DownloadInfo;
 
 import es.dmoral.toasty.Toasty;
@@ -97,7 +97,7 @@ public class FragmentJoinStudy extends Fragment {
     public void downloadConfig(String downloadURL, final String userName) {
         final ActivityMain activityMain=(ActivityMain)getActivity();
         ConfigManager configManager=activityMain.configManager;
-        final UserInfo userInfo =activityMain.userInfo;
+        final UserInfoController userInfo =activityMain.userInfoController;
         materialDialog = Dialog.progress(getActivity(), "Downloading configuration file...").show();
         subscription = configManager.downloadAndExtract(getContext(), downloadURL)
                 .subscribeOn(Schedulers.newThread())

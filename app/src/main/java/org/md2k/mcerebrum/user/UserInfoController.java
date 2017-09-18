@@ -26,26 +26,23 @@ package org.md2k.mcerebrum.user;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import org.md2k.mcerebrum.data.MySharedPreference;
+import org.md2k.md2k.system.user.UserInfo;
 
-public class UserInfo{
-    private String title;
-    private boolean loggedIn;
-    private String loginHash;
+public class UserInfoController {
+    private UserInfo userInfo;
 
-    private static final String TITLE=UserInfo.class.getSimpleName()+"_TITLE";
-    private static final String LOGGED_IN=UserInfo.class.getSimpleName()+"_LOGGED_IN";
+    private static final String TITLE=UserInfoController.class.getSimpleName()+"_TITLE";
+    private static final String LOGGED_IN=UserInfoController.class.getSimpleName()+"_LOGGED_IN";
 
-    public UserInfo(){
+    public UserInfoController(){
+        userInfo=new UserInfo();
         set();
     }
 
     public void set(){
-        title=new MySharedPreference().getString(TITLE, "<not_defined>");
-        loggedIn=new MySharedPreference().getBoolean(LOGGED_IN, false);
+        userInfo.setTitle(new MySharedPreference().getString(TITLE, "<not_defined>"));
+        userInfo.setLoggedIn(new MySharedPreference().getBoolean(LOGGED_IN, false));
     }
     public void clear(){
         MySharedPreference mySharedPreference=new MySharedPreference();
@@ -56,18 +53,21 @@ public class UserInfo{
 
     public void setTitle( String value) {
         if(value==null) value="<not defined>";
-        title=value;
+        userInfo.setTitle(value);
         new MySharedPreference().set(TITLE, value);
     }
     public void setLoggedIn(boolean value) {
-        loggedIn=value;
+        userInfo.setLoggedIn(value);
         new MySharedPreference().set(LOGGED_IN, value);
     }
     public String getTitle(){
-        return title;
+        return userInfo.getTitle();
     }
     public boolean isLoggedIn(){
-        return loggedIn;
+        return userInfo.isLoggedIn();
     }
 
+    public UserInfo getUserInfo() {
+        return userInfo;
+    }
 }

@@ -1,7 +1,7 @@
 package org.md2k.mcerebrum.UI.app_settings;
 
 import android.content.Context;
-import android.util.Log;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,8 +16,7 @@ import com.beardedhen.androidbootstrap.api.defaults.DefaultBootstrapBrand;
 import com.ramotion.foldingcell.FoldingCell;
 
 import org.md2k.mcerebrum.R;
-import org.md2k.mcerebrum.app.AppInfo;
-import org.md2k.mcerebrum.app.AppMC;
+import org.md2k.mcerebrum.app.AppInfoController;
 
 import java.util.HashSet;
 import java.util.List;
@@ -26,22 +25,23 @@ import java.util.List;
  * Simple example of ListAdapter for using with Folding Cell
  * Adapter holds indexes of unfolded elements for correct work with default reusable views behavior
  */
-public class FoldingCellListAdapterAppSettings extends ArrayAdapter<AppInfo> {
+public class CellAppSettings extends ArrayAdapter<AppInfoController> {
 
     private HashSet<Integer> unfoldedIndexes = new HashSet<>();
     private View.OnClickListener defaultRequestBtnClickListener;
     private ResponseCallBack responseCallBack;
 
 
-    public FoldingCellListAdapterAppSettings(Context context, List<AppInfo> apps, ResponseCallBack responseCallBack) {
-        super(context, 0, apps);
+    CellAppSettings(Context context, List<AppInfoController> appInfoControllers, ResponseCallBack responseCallBack) {
+        super(context, 0, appInfoControllers);
         this.responseCallBack = responseCallBack;
     }
 
+    @NonNull
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
         // get item for selected view
-        final AppInfo appInfo = getItem(position);
+        AppInfoController appInfoController=getItem(position);
         // if cell is exists - reuse it, if not - create the new one from resource
         FoldingCell cell = (FoldingCell) convertView;
         ViewHolder viewHolder;
@@ -80,54 +80,59 @@ public class FoldingCellListAdapterAppSettings extends ArrayAdapter<AppInfo> {
             viewHolder = (ViewHolder) cell.getTag();
         }
         // bind data from selected element to view through view holder
-        viewHolder.title.setText(appInfo.getTitle());
-        viewHolder.summary.setText(appInfo.getSummary());
-        viewHolder.content_title.setText(appInfo.getTitle());
-        viewHolder.content_summary.setText(appInfo.getSummary());
-        viewHolder.description.setText(appInfo.getDescription());
-        String versionName = appInfo.getCurrentVersionName();
+        viewHolder.title.setText(appInfoController.getAppBasicInfoController().getTitle());
+        viewHolder.summary.setText(appInfoController.getAppBasicInfoController().getSummary());
+        viewHolder.content_title.setText(appInfoController.getAppBasicInfoController().getTitle());
+        viewHolder.content_summary.setText(appInfoController.getAppBasicInfoController().getSummary());
+        viewHolder.description.setText(appInfoController.getAppBasicInfoController().getDescription());
+        String versionName = appInfoController.getInstallInfoController().getCurrentVersionName();
         if (versionName == null) versionName = "N/A";
         viewHolder.version.setText(versionName);
-        viewHolder.icon_short.setImageDrawable(appInfo.getIcon(getContext()));
-        viewHolder.icon_long.setImageDrawable(appInfo.getIcon(getContext()));
+        viewHolder.icon_short.setImageDrawable(appInfoController.getAppBasicInfoController().getIcon(getContext()));
+        viewHolder.icon_long.setImageDrawable(appInfoController.getAppBasicInfoController().getIcon(getContext()));
 
         View.OnClickListener onClickListenerRun = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                responseCallBack.onResponse(position, FragmentFoldingUIAppSettings.LAUNCH);
+                responseCallBack.onResponse(position, FragmentAppSettings.LAUNCH);
             }
         };
         View.OnClickListener onClickListenerSettings = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                responseCallBack.onResponse(position, FragmentFoldingUIAppSettings.CONFIGURE);
+                responseCallBack.onResponse(position, FragmentAppSettings.CONFIGURE);
             }
         };
         View.OnClickListener onClickListenerClear = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                responseCallBack.onResponse(position, FragmentFoldingUIAppSettings.CLEAR);
+                responseCallBack.onResponse(position, FragmentAppSettings.CLEAR);
             }
         };
-
-        if(!appInfo.isMCerebrumSupported() || appInfo.getInfo()==null || !appInfo.getInfo().isConfigurable())
+        boolean ismCerebrumSupported=appInfoController.getmCerebrumController().ismCerebrumSupported();
+        boolean isStarted=appInfoController.getmCerebrumController().isStarted();
+        boolean isConfigurable = appInfoController.getmCerebrumController().isConfigurable();
+        boolean isConfigured = appInfoController.getmCerebrumController().isConfigured();
+        boolean hasClear = appInfoController.getmCerebrumController().hasClear();
+        boolean isEqualDefault = appInfoController.getmCerebrumController().isEqualDefault();
+        if(!ismCerebrumSupported || !isStarted || !isConfigurable)
             set(viewHolder.buttonSettingsLong, viewHolder.buttonSettingsShort, false, DefaultBootstrapBrand.SECONDARY, true, onClickListenerSettings);
-        else if(appInfo.getInfo().isConfigured())
+        else if(isConfigured)
             set(viewHolder.buttonSettingsLong, viewHolder.buttonSettingsShort, true, DefaultBootstrapBrand.SUCCESS, true, onClickListenerSettings);
         else
             set(viewHolder.buttonSettingsLong, viewHolder.buttonSettingsShort, true, DefaultBootstrapBrand.SUCCESS, false, onClickListenerSettings);
 
-        if(!appInfo.isMCerebrumSupported() || appInfo.getInfo()==null || !appInfo.getInfo().hasClear())
+        if(!ismCerebrumSupported || !isStarted || !hasClear)
             set(viewHolder.buttonClearLong, viewHolder.buttonClearShort, false, DefaultBootstrapBrand.SECONDARY, true, onClickListenerClear);
         else
             set(viewHolder.buttonClearLong, viewHolder.buttonClearShort, true, DefaultBootstrapBrand.DANGER, true, onClickListenerClear);
 
         set(viewHolder.buttonLaunchLong, viewHolder.buttonLaunchShort, true, DefaultBootstrapBrand.SUCCESS, true, onClickListenerRun);
 
-        if(appInfo.isMCerebrumSupported() && appInfo.getInfo()!=null && appInfo.getInfo().isConfigurable() && appInfo.getInfo().isConfigured() && appInfo.getInfo().isEqualDefault()){
+        if(appInfoController.getmCerebrumController().ismCerebrumSupported() && isStarted && isConfigurable && isConfigured && isEqualDefault){
             viewHolder.status.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
             viewHolder.status.setText("configured");
-        }else if(appInfo.isMCerebrumSupported() && appInfo.getInfo()!=null && appInfo.getInfo().isConfigurable()){
+        }else if(ismCerebrumSupported && isStarted && isConfigurable){
             viewHolder.status.setBootstrapBrand(DefaultBootstrapBrand.DANGER);
             viewHolder.status.setText("not configured");
         }else{

@@ -26,86 +26,235 @@ package org.md2k.mcerebrum.app;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.widget.Toast;
+
+import org.md2k.mcerebrum.MyApplication;
 import org.md2k.mcerebrum.configuration.CApp;
+import org.md2k.mcerebrum.core.access.MCerebrumStatus;
+import org.md2k.md2k.system.app.AppBasicInfo;
+import org.md2k.md2k.system.app.AppInfo;
+import org.md2k.md2k.system.app.InstallInfo;
+import org.md2k.md2k.system.study.StudyInfo;
+import org.md2k.md2k.system.user.UserInfo;
 
 import java.util.ArrayList;
 
+import es.dmoral.toasty.Toasty;
+
 public class ApplicationManager {
     private AppInfo[] appInfos;
-    private AppMC[] appMCs;
-    public static final String TYPE_STUDY="STUDY";
-    public static final String TYPE_MCEREBRUM="MCEREBRUM";
-    public static final String TYPE_DATA_KIT="DATAKIT";
+    private AppInfoController[] appInfoControllers;
 
-    public void set(CApp[] cApps){
-        ArrayList<AppInfo> appInfos=new ArrayList<>();
+    //    private AppInfoE[] appInfos;
+//    private AppMC[] appMCs;
+    public void set(CApp[] cApps) {
+        ArrayList<AppInfo> as = new ArrayList<>();
+        ArrayList<AppInfoController> acs = new ArrayList<>();
         for (CApp cApp : cApps) {
-            AppInfo a=new AppInfo(cApp);
-            if (a.isNotInUse()) continue;
-            appInfos.add(a);
+            if (cApp.getUse_as().equalsIgnoreCase("NOT_IN_USE")) continue;
+            AppInfo a = new AppInfo(new AppBasicInfo(), new InstallInfo(), new MCerebrumStatus());
+            as.add(a);
+            AppInfoController ac = new AppInfoController(a, cApp);
+            acs.add(ac);
         }
-        this.appInfos =new AppInfo[appInfos.size()];
-        this.appMCs =new AppMC[appInfos.size()];
-        for(int i=0;i<appInfos.size();i++){
-            this.appInfos[i]=appInfos.get(i);
-            this.appMCs[i]=new AppMC(appInfos.get(i));
+        appInfos = new AppInfo[as.size()];
+        appInfoControllers = new AppInfoController[acs.size()];
+        for (int i = 0; i < as.size(); i++) {
+            appInfos[i] = as.get(i);
+            appInfoControllers[i] = acs.get(i);
+        }
+        start();
+    }
+
+    public void start() {
+        for (AppInfoController appInfoController : appInfoControllers) {
+            appInfoController.getmCerebrumController().startService();
         }
     }
 
+    public void stop() {
+        if(appInfoControllers==null || appInfoControllers.length==0) return;
+        for (AppInfoController appInfoController : appInfoControllers) {
+            try {
+                appInfoController.getmCerebrumController().stopService(null);
+            }catch (Exception ignored){
+
+            }
+        }
+    }
+
+    public ArrayList<AppInfoController> getAppByType(String type) {
+        ArrayList<AppInfoController> acs = new ArrayList<>();
+        for (AppInfoController appInfoController : appInfoControllers) {
+            if (appInfoController.getAppBasicInfoController().isType(type))
+                acs.add(appInfoController);
+        }
+        return acs;
+    }
+
+    public void startStudy(StudyInfo studyInfo, UserInfo userInfo) {
+        if (!isCoreInstalled()) {
+            Toasty.error(MyApplication.getContext(), "Study/DataKit not installed", Toast.LENGTH_SHORT).show();
+            Toasty.error(MyApplication.getContext(), "DataKit not installed", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        AppInfoController a = getAppByType(AppInfo.TYPE_STUDY).get(0);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable("user_info", userInfo);
+        bundle.putParcelable("study_info", studyInfo);
+        bundle.putParcelableArray("app_info", appInfos);
+//        Intent intent = MyApplication.getContext().getPackageManager().getLaunchIntentForPackage(a.getAppBasicInfoController().getPackageName());
+//        intent.putExtras(bundle);
+
+//        MyApplication.getContext().startActivity(intent);
+
+        a.getmCerebrumController().launch(bundle);
+    }
+
+    public AppInfoController[] getAppInfoControllers() {
+        return appInfoControllers;
+    }
+
+    public void setmCerebrumInfo() {
+        for (AppInfoController appInfoController : appInfoControllers) {
+            if (!appInfoController.getmCerebrumController().isStarted())
+                appInfoController.getmCerebrumController().startService();
+            else appInfoController.getmCerebrumController().setStatus();
+        }
+    }
+
+    public boolean isCoreInstalled() {
+        return getAppByType(AppInfo.TYPE_STUDY).size() != 0 && getAppByType(AppInfo.TYPE_DATAKIT).size() != 0;
+    }
+
+    public boolean isRequiredAppInstalled() {
+        for (AppInfoController appInfoController : appInfoControllers)
+            if (appInfoController.getAppBasicInfoController().isUseAs(AppBasicInfo.USE_AS_REQUIRED)) {
+                if (!appInfoController.getInstallInfoController().isInstalled())
+                    return false;
+            }
+        return true;
+    }
+
+    public ArrayList<AppInfoController> getRequiredAppNotInstalled() {
+        ArrayList<AppInfoController> appInfos = new ArrayList<>();
+        if (this.appInfos == null) return appInfos;
+        for (AppInfoController appInfo : this.appInfoControllers) {
+            if (appInfo.getAppBasicInfoController().isUseAs(AppBasicInfo.USE_AS_REQUIRED) && !appInfo.getInstallInfoController().isInstalled()) {
+                appInfos.add(appInfo);
+            }
+        }
+        return appInfos;
+    }
+
+    public ArrayList<AppInfoController> getRequiredAppNotConfigured() {
+        ArrayList<AppInfoController> appInfos = new ArrayList<>();
+        if (this.appInfos == null) return appInfos;
+        for (AppInfoController appInfo : this.appInfoControllers) {
+            if (!appInfo.getAppBasicInfoController().isUseAs(AppBasicInfo.USE_AS_REQUIRED)
+                    || !appInfo.getInstallInfoController().isInstalled())
+                continue;
+            if (appInfo.getmCerebrumController().ismCerebrumSupported()
+                    && appInfo.getmCerebrumController().isStarted()
+                    && appInfo.getmCerebrumController().isConfigurable()
+                    && !appInfo.getmCerebrumController().isEqualDefault()) {
+                appInfos.add(appInfo);
+            }
+        }
+        return appInfos;
+    }
+
+    public ArrayList<AppInfoController> getRequiredAppConfigured() {
+        ArrayList<AppInfoController> appInfos = new ArrayList<>();
+        if (this.appInfos == null) return appInfos;
+        for (AppInfoController appInfo : this.appInfoControllers) {
+            if (!appInfo.getAppBasicInfoController().isUseAs(AppBasicInfo.USE_AS_REQUIRED)
+                    || !appInfo.getInstallInfoController().isInstalled())
+                continue;
+            if (appInfo.getmCerebrumController().ismCerebrumSupported()
+                    && appInfo.getmCerebrumController().isStarted()
+                    && appInfo.getmCerebrumController().isConfigurable()
+                    && appInfo.getmCerebrumController().isEqualDefault()) {
+                appInfos.add(appInfo);
+            }
+        }
+        return appInfos;
+    }
+
+    public int[] getInstallStatus() {
+        int result[] = new int[3];
+        result[0] = 0;
+        result[1] = 0;
+        result[2] = 0;
+        if (appInfos == null) return result;
+        for (int i = 0; i < appInfoControllers.length; i++) {
+            if (!appInfoControllers[i].getInstallInfoController().isInstalled())
+                result[2]++;
+//            else if (appInfoControllers[i].getInstallInfoController().hasUpdate())
+//                result[1]++;
+            else result[0]++;
+        }
+        return result;
+    }
+
+    public void reset(String packageName) {
+        for (int i = 0; i < appInfoControllers.length; i++)
+            if (appInfoControllers[i].getAppBasicInfoController().getPackageName().equals(packageName)) {
+                boolean lastResult = appInfoControllers[i].getInstallInfoController().isInstalled();
+                appInfoControllers[i].getmCerebrumController().setInitialized(false);
+                appInfoControllers[i].getInstallInfoController().setInstalled();
+                if (appInfoControllers[i].getInstallInfoController().isInstalled() != lastResult)
+                    if (appInfoControllers[i].getInstallInfoController().isInstalled())
+                        appInfoControllers[i].getmCerebrumController().startService();
+                    else appInfoControllers[i].getmCerebrumController().stopService(null);
+
+            }
+    }
+
+    /*
     public AppMC[] getAppMCs() {
         return appMCs;
     }
-    public AppInfo getAppInfo(String packageName){
-        for (AppInfo appInfo : appInfos)
+    public AppInfoE getAppInfo(String packageName){
+        for (AppInfoE appInfo : appInfos)
             if (appInfo.getPackageName().equals(packageName))
                 return appInfo;
         return null;
     }
 
-    public int[] getInstallStatus(){
-        int result[]=new int[3];
-        result[0]=0;result[1]=0;result[2]=0;
-        if(appInfos ==null) return result;
-        for (AppInfo appInfo : appInfos) {
-            if (!appInfo.isInstalled())
-                result[2]++;
-            else if (appInfo.isUpdateAvailable())
-                result[1]++;
-            else result[0]++;
-        }
-        return result;
-    }
     public boolean isRequiredAppInstalled(){
         if(appInfos ==null) return false;
-        for(AppInfo appInfo : appInfos)
+        for(AppInfoE appInfo : appInfos)
             if(appInfo.isRequired() && !appInfo.isInstalled()) return false;
         return true;
     }
 
-    public ArrayList<AppInfo> getRequiredAppNotInstalled() {
-        ArrayList<AppInfo> appInfos = new ArrayList<>();
+    public ArrayList<AppInfoE> getRequiredAppNotInstalled() {
+        ArrayList<AppInfoE> appInfos = new ArrayList<>();
         if(this.appInfos ==null) return appInfos;
-        for (AppInfo appInfo : this.appInfos) {
+        for (AppInfoE appInfo : this.appInfos) {
             if (appInfo.isRequired() && !appInfo.isInstalled()) {
                 appInfos.add(appInfo);
             }
         }
         return appInfos;
     }
-    public ArrayList<AppInfo> getAppConfigured() {
-        ArrayList<AppInfo> appInfos = new ArrayList<>();
+    public ArrayList<AppInfoE> getAppConfigured() {
+        ArrayList<AppInfoE> appInfos = new ArrayList<>();
         if(appInfos ==null) return appInfos;
-        for (AppInfo appInfo : this.appInfos) {
+        for (AppInfoE appInfo : this.appInfos) {
             if (appInfo.isInstalled() && appInfo.isMCerebrumSupported() && appInfo.getInfo()!=null && appInfo.getInfo().isConfigurable() && appInfo.getInfo().isConfigured()) {
                 appInfos.add(appInfo);
             }
         }
         return appInfos;
     }
-    public ArrayList<AppInfo> getAppNotConfigured() {
-        ArrayList<AppInfo> a = new ArrayList<>();
+    public ArrayList<AppInfoE> getAppNotConfigured() {
+        ArrayList<AppInfoE> a = new ArrayList<>();
         if(appInfos ==null) return a;
-        for (AppInfo appInfo : appInfos) {
+        for (AppInfoE appInfo : appInfos) {
             if (appInfo.isInstalled() && appInfo.isMCerebrumSupported() && appInfo.getInfo()!=null && appInfo.getInfo().isConfigurable() && !appInfo.getInfo().isConfigured()) {
                 a.add(appInfo);
             }
@@ -113,10 +262,6 @@ public class ApplicationManager {
         return a;
     }
 
-    public void stop() {
-        if(appMCs ==null) return;
-        for (AppMC appMC : appMCs) appMC.stopService();
-    }
 
     public void getInfo() {
         if(appMCs ==null) return;
@@ -124,19 +269,19 @@ public class ApplicationManager {
             appMC.setInfo();
         }
     }
-    public AppInfo getStudy(){
+    public AppInfoE getStudy(){
         return get(TYPE_STUDY);
     }
-    public AppInfo getMCerebrum(){
+    public AppInfoE getMCerebrum(){
         return get(TYPE_MCEREBRUM);
     }
 
-    public AppInfo getDataKit(){
+    public AppInfoE getDataKit(){
         return get(TYPE_DATA_KIT);
     }
-    private AppInfo get(String type){
+    private AppInfoE get(String type){
         if(appInfos ==null) return null;
-        for (AppInfo appInfo : appInfos) {
+        for (AppInfoE appInfo : appInfos) {
             if (appInfo.getType() == null) continue;
             if (type.equals(appInfo.getType().toUpperCase()))
                 return appInfo;
@@ -145,7 +290,7 @@ public class ApplicationManager {
 
     }
 
-    public AppInfo[] getAppInfos() {
+    public AppInfoE[] getAppInfos() {
         return appInfos;
     }
 
@@ -180,5 +325,12 @@ public class ApplicationManager {
             if(appInfos[i].getPackageName().equals(packageName))
                 appMCs[i].clear();
     }
+    public AppBasicInfo[] getAppInfo(){
+        AppBasicInfo[] a=new AppBasicInfo[appInfos.length];
+        for(int i=0;i<appInfos.length;i++)
+            a[i]=appInfos[i].getAppInfo();
+        return a;
+    }
+*/
 
 }

@@ -1,7 +1,12 @@
 package org.md2k.mcerebrum.UI.app_settings;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,19 +20,19 @@ import com.ramotion.foldingcell.FoldingCell;
 
 import org.md2k.mcerebrum.ActivityMain;
 import org.md2k.mcerebrum.R;
-import org.md2k.mcerebrum.app.AppInfo;
-import org.md2k.mcerebrum.app.AppMC;
+import org.md2k.mcerebrum.app.AppBasicInfoController;
+import org.md2k.mcerebrum.app.AppInfoController;
 import org.md2k.mcerebrum.app.ApplicationManager;
 
 import java.util.ArrayList;
 
-public class FragmentFoldingUIAppSettings extends Fragment {
+public class FragmentAppSettings extends Fragment {
     public static final int CONFIGURE = 0;
     public static final int LAUNCH = 1;
     public static final int CLEAR = 2;
     ApplicationManager applicationManager;
-    FoldingCellListAdapterAppSettings adapter;
-    ArrayList<AppInfo> appInfos;
+    CellAppSettings adapter;
+    ArrayList<AppInfoController> appInfoControllers;
     AwesomeTextView textViewConfigured;
     AwesomeTextView textViewNotConfigured;
     AwesomeTextView textViewStatus;
@@ -37,16 +42,26 @@ public class FragmentFoldingUIAppSettings extends Fragment {
         // Defines the xml file for the fragment
         return inflater.inflate(R.layout.fragment_folding_ui_app_settings, parent, false);
     }
-
+    @Override
+    public void onPause(){
+        LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mMessageReceiver);
+        super.onPause();
+    }
     @Override
     public void onResume() {
-
         super.onResume();
-        applicationManager.setInfo();
+        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver,
+                new IntentFilter("connection"));
+        applicationManager.setmCerebrumInfo();
         adapter.notifyDataSetChanged();
-
     }
-
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            // Get extra data included in the Intent
+            adapter.notifyDataSetChanged();
+        }
+    };
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
         ListView theListView = (ListView) view.findViewById(R.id.listview_folding_ui);
@@ -54,24 +69,24 @@ public class FragmentFoldingUIAppSettings extends Fragment {
         textViewConfigured = (AwesomeTextView) view.findViewById(R.id.textview_configured);
         textViewNotConfigured = (AwesomeTextView) view.findViewById(R.id.textview_not_configured);
         textViewStatus = (AwesomeTextView) view.findViewById(R.id.textview_status);
-        final AppInfo[] apps = applicationManager.getAppInfos();
+        final AppInfoController[] apps = applicationManager.getAppInfoControllers();
         // prepare elements to display
-        appInfos = new ArrayList<>();
+        appInfoControllers = new ArrayList<>();
         for (int i = 0; i < apps.length; i++) {
-            if (!apps[i].isInstalled()) continue;
-            if (apps[i].getType().toUpperCase().equals("MCEREBRUM")) continue;
-            appInfos.add(apps[i]);
+//            if (!apps[i].getInstallInfoController().isInstalled()) continue;
+//            if (apps[i].getAppBasicInfoController().isType(AppBasicInfoController.TYPE_MCEREBRUM)) continue;
+            appInfoControllers.add(apps[i]);
         }
         updateTextViewStatus();
-        adapter = new FoldingCellListAdapterAppSettings(getActivity(), appInfos, new ResponseCallBack() {
+        adapter = new CellAppSettings(getActivity(), appInfoControllers, new ResponseCallBack() {
             @Override
             public void onResponse(int position, int operation) {
                 if (operation == CONFIGURE) {
-                    applicationManager.configure(appInfos.get(position).getPackageName());
+                    applicationManager.getAppInfoControllers()[position].getmCerebrumController().configure(null);
                 }else if (operation == LAUNCH) {
-                    appInfos.get(position).launch(getActivity());
+                    applicationManager.getAppInfoControllers()[position].getmCerebrumController().launch(null);
                 } else if(operation == CLEAR){
-                    applicationManager.clear(appInfos.get(position).getPackageName());
+                    applicationManager.getAppInfoControllers()[position].getmCerebrumController().clear(null);
                 }
             }
         });
@@ -90,7 +105,7 @@ public class FragmentFoldingUIAppSettings extends Fragment {
     }
 
 /*
-    void getInfo(AppInfo application, int requestCode) {
+    void getInfo(AppBasicInfo application, int requestCode) {
         try {
             Intent intent = new Intent();
             intent.putExtra("REQUEST", Access.REQUEST_INFO);
@@ -103,9 +118,9 @@ public class FragmentFoldingUIAppSettings extends Fragment {
 
     /*
             RxActivityResult.on(this).startIntent(intent)
-                    .subscribe(new Consumer<Result<FragmentFoldingUIAppSettings>>() {
+                    .subscribe(new Consumer<Result<FragmentAppSettings>>() {
                         @Override
-                        public void accept(Result<FragmentFoldingUIAppSettings> result) throws Exception {
+                        public void accept(Result<FragmentAppSettings> result) throws Exception {
                             Intent data = result.data();
                             int resultCode = result.resultCode();
                             result.data().get
@@ -149,11 +164,11 @@ public class FragmentFoldingUIAppSettings extends Fragment {
 */
     void updateTextViewStatus(){
         BootstrapText bootstrapTextS;
-        BootstrapText bootstrapTextC = new BootstrapText.Builder(getContext()).addText("configured : " + String.valueOf(applicationManager.getAppConfigured().size())).build();
-        BootstrapText bootstrapTextN = new BootstrapText.Builder(getContext()).addText("not configured : " + String.valueOf(applicationManager.getAppNotConfigured().size())).build();
+        BootstrapText bootstrapTextC = new BootstrapText.Builder(getContext()).addText("configured : " + String.valueOf(applicationManager.getRequiredAppConfigured().size())).build();
+        BootstrapText bootstrapTextN = new BootstrapText.Builder(getContext()).addText("not configured : " + String.valueOf(applicationManager.getRequiredAppNotConfigured().size())).build();
         textViewConfigured.setBootstrapText(bootstrapTextC);
         textViewNotConfigured.setBootstrapText(bootstrapTextN);
-        if(applicationManager.getAppNotConfigured().size()==0) {
+        if(applicationManager.getRequiredAppNotConfigured().size()==0) {
             bootstrapTextS = new BootstrapText.Builder(getContext()).addText("Status: ").addFontAwesomeIcon("fa_check").build();
             textViewStatus.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
             textViewStatus.setBootstrapText(bootstrapTextS);

@@ -33,11 +33,11 @@ import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
-import org.md2k.mcerebrum.study.StudyInfo;
-import org.md2k.mcerebrum.user.UserInfo;
+import org.md2k.mcerebrum.study.StudyInfoController;
+import org.md2k.mcerebrum.user.UserInfoController;
 
 class MenuFreebie extends AbstractMenu {
-     IProfile[] getHeaderContentType(final Context context, UserInfo UserInfo, StudyInfo studyInfo, final ResponseCallBack responseCallBack){
+     IProfile[] getHeaderContentType(final Context context, UserInfoController UserInfo, StudyInfoController studyInfo, final ResponseCallBack responseCallBack){
         IProfile[] iProfiles=new IProfile[1];
         iProfiles[0]=new ProfileDrawerItem().withName(UserInfo.getTitle()).withIcon(studyInfo.getIcon(context));
 /*
@@ -57,7 +57,7 @@ class MenuFreebie extends AbstractMenu {
     private  MenuContent[] menuContent = new MenuContent[]{
             new MenuContent("Home", FontAwesome.Icon.faw_home, MenuContent.PRIMARY_DRAWER_ITEM, MENU_HOME,0),
             new MenuContent("Add/Remove Apps", FontAwesome.Icon.faw_plus, MenuContent.PRIMARY_DRAWER_ITEM, MENU_APP_ADD_REMOVE,0),
-            new MenuContent("AppInfo Settings", FontAwesome.Icon.faw_cog, MenuContent.PRIMARY_DRAWER_ITEM, MENU_APP_SETTINGS,0),
+            new MenuContent("App Settings", FontAwesome.Icon.faw_cog, MenuContent.PRIMARY_DRAWER_ITEM, MENU_APP_SETTINGS,0),
             new MenuContent("Join Study", FontAwesome.Icon.faw_link, MenuContent.PRIMARY_DRAWER_ITEM, MENU_JOIN,0)
 //            new MenuContent("Report",FontAwesome.Icon.faw_bar_chart,MenuContent.PRIMARY_DRAWER_ITEM, OP_REPORT),
 //            new MenuContent("Plot",FontAwesome.Icon.faw_line_chart,MenuContent.PRIMARY_DRAWER_ITEM, OP_PLOT),

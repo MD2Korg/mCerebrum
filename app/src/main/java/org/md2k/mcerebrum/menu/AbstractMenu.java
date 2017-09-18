@@ -39,8 +39,9 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
 import org.md2k.mcerebrum.R;
-import org.md2k.mcerebrum.study.StudyInfo;
-import org.md2k.mcerebrum.user.UserInfo;
+import org.md2k.mcerebrum.study.StudyInfoController;
+import org.md2k.mcerebrum.user.UserInfoController;
+import org.md2k.md2k.system.study.StudyInfo;
 
 public abstract class AbstractMenu {
     public static final int MENU_HOME=0;
@@ -59,7 +60,7 @@ public abstract class AbstractMenu {
 
 //    abstract IProfile[] getHeaderContentType(final Context context, UserInfoManager userInfo, StudyInfo studyInfo, final ResponseCallBack responseCallBack);
 
-    public static IProfile[] getHeaderContent(final Context context, UserInfo userInfo, StudyInfo studyInfo, final ResponseCallBack responseCallBack) {
+    public static IProfile[] getHeaderContent(final Context context, UserInfoController userInfo, StudyInfoController studyInfo, final ResponseCallBack responseCallBack) {
         switch (studyInfo.getType()) {
             case StudyInfo.FREEBIE:
                 return new MenuFreebie().getHeaderContentType(context, userInfo, studyInfo, responseCallBack);
@@ -72,7 +73,7 @@ public abstract class AbstractMenu {
         }
     }
 
-    public static IDrawerItem[] getMenuContent(final Context context, StudyInfo studyInfo, final ResponseCallBack responseCallBack) {
+    public static IDrawerItem[] getMenuContent(final Context context, StudyInfoController studyInfo, final ResponseCallBack responseCallBack) {
         switch (studyInfo.getType()) {
             case StudyInfo.FREEBIE:
                 return new MenuFreebie().getMenuContent(responseCallBack);
