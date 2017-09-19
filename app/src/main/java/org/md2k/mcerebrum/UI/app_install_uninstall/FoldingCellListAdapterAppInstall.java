@@ -17,6 +17,7 @@ import com.ramotion.foldingcell.FoldingCell;
 import org.md2k.mcerebrum.R;
 import org.md2k.mcerebrum.app.AppInfoController;
 import org.md2k.md2k.system.app.AppBasicInfo;
+import org.md2k.md2k.system.app.AppInfo;
 
 import java.util.HashSet;
 
@@ -79,7 +80,7 @@ class FoldingCellListAdapterAppInstall extends ArrayAdapter<AppInfoController> {
             viewHolder = (ViewHolder) cell.getTag();
         }
         // bind data from selected element to view through view holder
-        if(appInfoController.getAppBasicInfoController().isUseAs(AppBasicInfo.USE_AS_REQUIRED))
+        if(appInfoController.getAppBasicInfoController().isUseAs(AppInfo.USE_AS_REQUIRED))
             viewHolder.title.setText(appInfoController.getAppBasicInfoController().getTitle()+" (Required)");
         else
             viewHolder.title.setText(appInfoController.getAppBasicInfoController().getTitle());
@@ -113,19 +114,23 @@ class FoldingCellListAdapterAppInstall extends ArrayAdapter<AppInfoController> {
         };
         if(appInfoController.getAppBasicInfoController().getType().equalsIgnoreCase("MCEREBRUM")){
             set(viewHolder.buttonInstallLong, viewHolder.buttonInstallShort, false, DefaultBootstrapBrand.SECONDARY, true, onClickListenerInstall);
-            set(viewHolder.buttonUpdateLong, viewHolder.buttonUpdateShort, false, DefaultBootstrapBrand.SECONDARY, true, onClickListenerUpdate);
             set(viewHolder.buttonUninstallLong, viewHolder.buttonUninstallShort, false, DefaultBootstrapBrand.SECONDARY, true, onClickListenerUninstall);
         }
         else if(appInfoController.getInstallInfoController().isInstalled()) {
             set(viewHolder.buttonInstallLong, viewHolder.buttonInstallShort, false, DefaultBootstrapBrand.SECONDARY, true, onClickListenerInstall);
-            set(viewHolder.buttonUpdateLong, viewHolder.buttonUpdateShort, false, DefaultBootstrapBrand.SECONDARY, true, onClickListenerUpdate);
             set(viewHolder.buttonUninstallLong, viewHolder.buttonUninstallShort, true, DefaultBootstrapBrand.DANGER, true, onClickListenerUninstall);
         }
         else {
             set(viewHolder.buttonInstallLong, viewHolder.buttonInstallShort, true, DefaultBootstrapBrand.SUCCESS, false,onClickListenerInstall);
-            set(viewHolder.buttonUpdateLong, viewHolder.buttonUpdateShort, false, DefaultBootstrapBrand.SECONDARY, true,onClickListenerUpdate);
             set(viewHolder.buttonUninstallLong, viewHolder.buttonUninstallShort, false, DefaultBootstrapBrand.SECONDARY, true, onClickListenerUninstall);
        }
+        if(appInfoController.getInstallInfoController().isInstalled() && appInfoController.getInstallInfoController().hasUpdate()) {
+            set(viewHolder.buttonUpdateLong, viewHolder.buttonUpdateShort, true, DefaultBootstrapBrand.WARNING, false, onClickListenerUpdate);
+        }
+        else{
+            set(viewHolder.buttonUpdateLong, viewHolder.buttonUpdateShort, false, DefaultBootstrapBrand.SECONDARY, true,onClickListenerUpdate);
+
+        }
         viewHolder.updateVersion.setText("N/A");
 
      //   viewHolder.requestsCount.setText(String.valueOf(item.getRequestsCount()));

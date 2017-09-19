@@ -8,6 +8,7 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/../mCerebrum-DataKitAPI/datakitapi" />
             <option value="$PROJECT_DIR$/../mCerebrum-Library/commons" />
             <option value="$PROJECT_DIR$/../mCerebrum-Library/core" />
             <option value="$PROJECT_DIR$/../mCerebrum-Library/system" />

@@ -64,7 +64,12 @@ public class InstallInfoController {
             installInfo.setCurrentVersionCode(AppUtils.getAppVersionCode(packageName));
         }
     }
-    public Observable<Boolean> hasUpdate() {
+    public boolean hasUpdate(){
+        if(installInfo.getUpdateVersionName()==null) return false;
+        if(installInfo.getUpdateVersionName().equalsIgnoreCase(installInfo.getCurrentVersionName())) return false;
+        return true;
+    }
+    public Observable<Boolean> checkUpdate() {
         Observable<VersionInfo> observable = null;
         switch (installInfo.getDownloadType()) {
             case GITHUB:
@@ -78,7 +83,11 @@ public class InstallInfoController {
             return observable.map(new Func1<VersionInfo, Boolean>() {
                 @Override
                 public Boolean call(VersionInfo versionInfo) {
-                    return !installInfo.getCurrentVersionName().equalsIgnoreCase(versionInfo.versionName);
+                    installInfo.setUpdateVersionName(versionInfo.versionName);
+                    if(!installInfo.getCurrentVersionName().equalsIgnoreCase(versionInfo.versionName)) {
+                        return true;
+                    }
+                    else return false;
                 }
             });
         }

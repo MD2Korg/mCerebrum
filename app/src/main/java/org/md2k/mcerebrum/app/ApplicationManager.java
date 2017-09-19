@@ -33,6 +33,7 @@ import android.widget.Toast;
 import org.md2k.mcerebrum.MyApplication;
 import org.md2k.mcerebrum.configuration.CApp;
 import org.md2k.mcerebrum.core.access.MCerebrumStatus;
+import org.md2k.md2k.system.Info;
 import org.md2k.md2k.system.app.AppBasicInfo;
 import org.md2k.md2k.system.app.AppInfo;
 import org.md2k.md2k.system.app.InstallInfo;
@@ -102,15 +103,15 @@ public class ApplicationManager {
         }
         AppInfoController a = getAppByType(AppInfo.TYPE_STUDY).get(0);
         Bundle bundle = new Bundle();
-        bundle.putParcelable("user_info", userInfo);
-        bundle.putParcelable("study_info", studyInfo);
-        bundle.putParcelableArray("app_info", appInfos);
+        Info info = new Info(userInfo, studyInfo, appInfos);
+        bundle.putParcelable("info", info);
 //        Intent intent = MyApplication.getContext().getPackageManager().getLaunchIntentForPackage(a.getAppBasicInfoController().getPackageName());
 //        intent.putExtras(bundle);
 
 //        MyApplication.getContext().startActivity(intent);
 
         a.getmCerebrumController().launch(bundle);
+        stop();
     }
 
     public AppInfoController[] getAppInfoControllers() {
@@ -131,7 +132,7 @@ public class ApplicationManager {
 
     public boolean isRequiredAppInstalled() {
         for (AppInfoController appInfoController : appInfoControllers)
-            if (appInfoController.getAppBasicInfoController().isUseAs(AppBasicInfo.USE_AS_REQUIRED)) {
+            if (appInfoController.getAppBasicInfoController().isUseAs(AppInfo.USE_AS_REQUIRED)) {
                 if (!appInfoController.getInstallInfoController().isInstalled())
                     return false;
             }
@@ -142,7 +143,7 @@ public class ApplicationManager {
         ArrayList<AppInfoController> appInfos = new ArrayList<>();
         if (this.appInfos == null) return appInfos;
         for (AppInfoController appInfo : this.appInfoControllers) {
-            if (appInfo.getAppBasicInfoController().isUseAs(AppBasicInfo.USE_AS_REQUIRED) && !appInfo.getInstallInfoController().isInstalled()) {
+            if (appInfo.getAppBasicInfoController().isUseAs(AppInfo.USE_AS_REQUIRED) && !appInfo.getInstallInfoController().isInstalled()) {
                 appInfos.add(appInfo);
             }
         }
@@ -153,7 +154,7 @@ public class ApplicationManager {
         ArrayList<AppInfoController> appInfos = new ArrayList<>();
         if (this.appInfos == null) return appInfos;
         for (AppInfoController appInfo : this.appInfoControllers) {
-            if (!appInfo.getAppBasicInfoController().isUseAs(AppBasicInfo.USE_AS_REQUIRED)
+            if (!appInfo.getAppBasicInfoController().isUseAs(AppInfo.USE_AS_REQUIRED)
                     || !appInfo.getInstallInfoController().isInstalled())
                 continue;
             if (appInfo.getmCerebrumController().ismCerebrumSupported()
@@ -170,7 +171,7 @@ public class ApplicationManager {
         ArrayList<AppInfoController> appInfos = new ArrayList<>();
         if (this.appInfos == null) return appInfos;
         for (AppInfoController appInfo : this.appInfoControllers) {
-            if (!appInfo.getAppBasicInfoController().isUseAs(AppBasicInfo.USE_AS_REQUIRED)
+            if (!appInfo.getAppBasicInfoController().isUseAs(AppInfo.USE_AS_REQUIRED)
                     || !appInfo.getInstallInfoController().isInstalled())
                 continue;
             if (appInfo.getmCerebrumController().ismCerebrumSupported()
@@ -192,7 +193,7 @@ public class ApplicationManager {
         for (int i = 0; i < appInfoControllers.length; i++) {
             if (!appInfoControllers[i].getInstallInfoController().isInstalled())
                 result[2]++;
-//            else if (appInfoControllers[i].getInstallInfoController().hasUpdate())
+//            else if (appInfoControllers[i].getInstallInfoController().checkUpdate())
 //                result[1]++;
             else result[0]++;
         }

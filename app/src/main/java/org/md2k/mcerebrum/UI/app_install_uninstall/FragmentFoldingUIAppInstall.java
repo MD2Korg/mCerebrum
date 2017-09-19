@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.beardedhen.androidbootstrap.AwesomeTextView;
@@ -28,6 +29,7 @@ import org.md2k.mcerebrum.app.InstallInfoController;
 import org.md2k.mcerebrum.internet.download.DownloadInfo;
 
 import es.dmoral.toasty.Toasty;
+import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -49,6 +51,8 @@ public class FragmentFoldingUIAppInstall extends Fragment {
     FoldingCellListAdapterAppInstall adapter;
     int installAllIndex=-1;
     boolean isUpdateUI=false;
+    Subscription subscriptionUpdate;
+    boolean updateAvailable=false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
@@ -95,7 +99,7 @@ public class FragmentFoldingUIAppInstall extends Fragment {
         bootstrapButtonUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                checkUpdateAll();
             }
         });
         updateTextViewStatus();
@@ -142,6 +146,39 @@ public class FragmentFoldingUIAppInstall extends Fragment {
                 ((FoldingCell) view).toggle(false);
                 // register in adapter that state for selected cell is toggled
                 adapter.registerToggle(pos);
+            }
+        });
+    }
+    void checkUpdateAll(){
+        updateAvailable=false;
+        Observable[] observables=new Observable[applicationManager.getAppInfoControllers().length];
+        for(int i=0;i<applicationManager.getAppInfoControllers().length;i++) {
+            observables[i]=applicationManager.getAppInfoControllers()[i].getInstallInfoController().checkUpdate();
+        }
+        materialDialog = new MaterialDialog.Builder(getActivity())
+                .content("Checking updates ...")
+                .progress(true, 100, false)
+                .show();
+
+        subscriptionUpdate=Observable.merge(observables).subscribe(new Observer<Boolean>() {
+            @Override
+            public void onCompleted() {
+                materialDialog.dismiss();
+                if(updateAvailable){
+                    Toasty.normal(getActivity(),"Update available...", Toast.LENGTH_SHORT).show();
+                }
+                else Toasty.normal(getActivity(),"App is up-to-date", Toast.LENGTH_SHORT).show();
+                onResume();
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                materialDialog.dismiss();
+            }
+
+            @Override
+            public void onNext(Boolean o) {
+                if(o) updateAvailable =true;
             }
         });
     }
