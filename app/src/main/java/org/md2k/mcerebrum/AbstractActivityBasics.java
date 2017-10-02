@@ -1,7 +1,9 @@
 package org.md2k.mcerebrum;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -11,42 +13,51 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.blankj.utilcode.util.Utils;
 
 import org.md2k.mcerebrum.app.ApplicationManager;
-import org.md2k.mcerebrum.commons.dialog.Dialog;
-import org.md2k.mcerebrum.configuration.ConfigManager;
 import org.md2k.mcerebrum.commons.permission.Permission;
 import org.md2k.mcerebrum.commons.permission.PermissionCallback;
-import org.md2k.mcerebrum.internet.download.DownloadInfo;
-import org.md2k.mcerebrum.study.StudyInfoController;
-import org.md2k.mcerebrum.user.UserInfoController;
-import org.md2k.md2k.system.study.StudyInfo;
-import org.md2k.md2k.system.user.UserInfo;
+import org.md2k.mcerebrum.configuration.DataFileManager;
+import org.md2k.system.provider.DataCPManager;
+import org.md2k.mcerebrum.data.DataManager;
+import org.md2k.system.app.AppInfoController;
+import org.md2k.system.constant.MCEREBRUM;
+
+import java.util.ArrayList;
 
 import es.dmoral.toasty.Toasty;
-import rx.Observer;
 import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 public abstract class AbstractActivityBasics extends AppCompatActivity {
     static final String TAG=AbstractActivityBasics.class.getSimpleName();
-    public UserInfoController userInfoController;
-    public StudyInfoController studyInfoController;
+    public DataManager dataManager;
+//    public UserInfoController userInfoController;
+//    public StudyInfoController studyInfoController;
+
     public ApplicationManager applicationManager;
-    public ConfigManager configManager;
+/*    public DataFileManager configManager;
+*/
     Subscription subscription;
     MaterialDialog materialDialog;
     Toolbar toolbar;
 
     abstract void updateUI();
+    void resetConfig(){
+        if(applicationManager!=null) applicationManager.stopMCerebrumService();
+        DataFileManager dfm=new DataFileManager();
+        DataCPManager dcpm = new DataCPManager(this);
+        dataManager = new DataManager(dfm, dcpm);
+        applicationManager=new ApplicationManager(MyApplication.getContext(), dataManager.getDataCPManager().getAppCPs());
+        if(dataManager.getDataCPManager().getStudyCP().getStarted()) {
+            startStudy();
+        }else{
+            applicationManager.startMCerebrumService();
+        }
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Utils.init(this);
-        configManager=new ConfigManager();
-        studyInfoController=new StudyInfoController();
-        userInfoController =new UserInfoController();
-        applicationManager=new ApplicationManager();
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -60,18 +71,21 @@ public abstract class AbstractActivityBasics extends AppCompatActivity {
                     System.exit(0);
                     finish();
                 }else{
-                    prepareConfig();
+                    resetConfig();
+                    updateUI();
+//                    prepareConfig();
                 }
             }
         });
     }
 
+/*
     public boolean readConfig(){
         if(configManager.read() && configManager.isConfigured()) {
                 userInfoController.set();
-                studyInfoController.set(configManager.getConfig());
-                applicationManager.set(configManager.getConfig().getApplications());
-                if (studyInfoController.getType().equalsIgnoreCase(StudyInfo.FREEBIE))
+                studyInfoController.set(configManager.getDataFile());
+                applicationManager.set(configManager.getDataFile().getApplications());
+                if (studyInfoController.getType().equalsIgnoreCase(STUDY.FREEBIE))
                     userInfoController.setTitle("Default");
                 return true;
         }else{
@@ -82,14 +96,18 @@ public abstract class AbstractActivityBasics extends AppCompatActivity {
             return false;
         }
     }
+*/
+/*
     public void prepareConfig(){
         if(!readConfig()){
             downloadConfigDefault();
         }else
             updateUI();
     }
+*/
+/*
     void downloadConfigDefault(){
-        materialDialog = Dialog.progress(this, "Loading configuration file...").show();
+        materialDialog = Dialog.progressWithBar(this, "Loading configuration file...").show();
         subscription = configManager.downloadAndExtractDefault(this)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -114,6 +132,7 @@ public abstract class AbstractActivityBasics extends AppCompatActivity {
                 });
 
     }
+*/
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -125,7 +144,7 @@ public abstract class AbstractActivityBasics extends AppCompatActivity {
             materialDialog.dismiss();
         if(subscription!=null && !subscription.isUnsubscribed())
             subscription.unsubscribe();
-        applicationManager.stop();
+        applicationManager.stopMCerebrumService();
         super.onDestroy();
     }
     @Override
@@ -140,6 +159,17 @@ public abstract class AbstractActivityBasics extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-
+    public void startStudy(){
+        ArrayList<AppInfoController> a = applicationManager.getByType(MCEREBRUM.APP.TYPE_STUDY);
+        if(!applicationManager.isCoreInstalled() || a.size()==0) {
+            Toasty.error(this, "Study/DataKit not installed", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        dataManager.getDataCPManager().getStudyCP().setStarted(this, true);
+        Intent intent = getPackageManager().getLaunchIntentForPackage(a.get(0).getAppBasicInfoController().getPackageName());
+        startActivity(intent);
+        applicationManager.stopMCerebrumService();
+        finish();
+    }
 }
 

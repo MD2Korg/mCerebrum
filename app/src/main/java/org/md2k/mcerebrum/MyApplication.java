@@ -5,6 +5,8 @@ import android.content.Context;
 
 import com.beardedhen.androidbootstrap.TypefaceProvider;
 
+import com.crashlytics.android.Crashlytics;
+import io.fabric.sdk.android.Fabric;
 import rx_activity_result2.RxActivityResult;
 
 /*
@@ -39,6 +41,7 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
         context=getApplicationContext();
         TypefaceProvider.registerDefaultIconSets();
         RxActivityResult.register(this);

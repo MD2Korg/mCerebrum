@@ -52,7 +52,7 @@ public class DownloadConfig {
                     public Boolean call(Boolean aBoolean) {
   /*                      dialog = new MaterialDialog.Builder(AbstractActivityBasics.this)
                                 .content("Downloading configuration file...")
-                                .progress(false, 100, true)
+                                .progressWithBar(false, 100, true)
                                 .show();
 */ /*                       return true;
                     }

@@ -5,6 +5,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.beardedhen.androidbootstrap.AwesomeTextView;
 import com.beardedhen.androidbootstrap.BootstrapButton;
@@ -13,21 +14,24 @@ import com.beardedhen.androidbootstrap.api.defaults.DefaultBootstrapBrand;
 
 import org.md2k.mcerebrum.ActivityMain;
 import org.md2k.mcerebrum.R;
-import org.md2k.mcerebrum.app.AppInfoController;
 import org.md2k.mcerebrum.app.ApplicationManager;
-import org.md2k.mcerebrum.study.StudyInfoController;
-import org.md2k.mcerebrum.user.UserInfoController;
-import org.md2k.md2k.system.app.AppBasicInfo;
+import org.md2k.mcerebrum.data.DataManager;
+import org.md2k.system.app.AppInfoController;
+import org.md2k.system.constant.MCEREBRUM;
 
 import java.util.ArrayList;
 
 import static org.md2k.mcerebrum.menu.AbstractMenu.MENU_APP_ADD_REMOVE;
 import static org.md2k.mcerebrum.menu.AbstractMenu.MENU_APP_SETTINGS;
+import static org.md2k.mcerebrum.menu.AbstractMenu.MENU_JOIN;
 
 public class FragmentHome extends Fragment {
     ApplicationManager applicationManager;
+    DataManager dataManager;
+/*
     StudyInfoController studyInfoController;
     UserInfoController UserInfoController;
+*/
 
     AwesomeTextView awesomeTextViewSummary;
     AwesomeTextView awesomeTextViewInstall;
@@ -35,10 +39,20 @@ public class FragmentHome extends Fragment {
     BootstrapButton bootstrapButtonStart;
     AwesomeTextView awesomeTextViewInstallStatus;
     AwesomeTextView awesomeTextViewSetupStatus;
+    TextView textViewClickInstall;
+    TextView textViewClickSetup;
+    TextView textViewClickJoin;
     View.OnClickListener onClickListernerInstall = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             ((ActivityMain) getActivity()).responseCallBack.onResponse(null, MENU_APP_ADD_REMOVE);
+        }
+    };
+    View.OnClickListener onClickListernerJoin = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if(dataManager.getDataCPManager().getConfigCP().getType().equalsIgnoreCase(MCEREBRUM.CONFIG.TYPE_FREEBIE))
+                ((ActivityMain) getActivity()).responseCallBack.onResponse(null, MENU_JOIN);
         }
     };
 
@@ -58,8 +72,29 @@ public class FragmentHome extends Fragment {
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
         applicationManager = ((ActivityMain) getActivity()).applicationManager;
-        studyInfoController = ((ActivityMain) getActivity()).studyInfoController;
-        UserInfoController = ((ActivityMain) getActivity()).userInfoController;
+        dataManager = ((ActivityMain) getActivity()).dataManager;
+
+//        studyInfoController = ((ActivityMain) getActivity()).studyInfoController;
+//        UserInfoController = ((ActivityMain) getActivity()).userInfoController;
+        view.findViewById(R.id.join1).setOnClickListener(onClickListernerJoin);
+        view.findViewById(R.id.join2).setOnClickListener(onClickListernerJoin);
+        view.findViewById(R.id.join3).setOnClickListener(onClickListernerJoin);
+        view.findViewById(R.id.join4).setOnClickListener(onClickListernerJoin);
+        view.findViewById(R.id.join5).setOnClickListener(onClickListernerJoin);
+        view.findViewById(R.id.join6).setOnClickListener(onClickListernerJoin);
+        view.findViewById(R.id.join7).setOnClickListener(onClickListernerJoin);
+        view.findViewById(R.id.awesome_textview_summary).setOnClickListener(onClickListernerJoin);
+        view.findViewById(R.id.textview_join).setOnClickListener(onClickListernerJoin);
+/*
+        if(dataManager.getDataCPManager().getStudyCP().getType().equalsIgnoreCase(STUDY.FREEBIE)){
+            ((LinearLayout) view.findViewById(R.id.join1)).setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.md_red_900));
+        }
+        else if(dataManager.getDataCPManager().getStudyCP().getType().equalsIgnoreCase(STUDY.SERVER)){
+            ((LinearLayout) view.findViewById(R.id.join1)).setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.md_cyan_900));
+        }
+*/
+
+
         view.findViewById(R.id.app_install1).setOnClickListener(onClickListernerInstall);
         view.findViewById(R.id.app_install2).setOnClickListener(onClickListernerInstall);
         view.findViewById(R.id.app_install3).setOnClickListener(onClickListernerInstall);
@@ -89,6 +124,10 @@ public class FragmentHome extends Fragment {
                 ((ActivityMain) getActivity()).startStudy();
             }
         });
+
+        textViewClickInstall = (TextView) view.findViewById(R.id.textview_install);
+        textViewClickSetup = (TextView) view.findViewById(R.id.textview_setup);
+        textViewClickJoin = (TextView) view.findViewById(R.id.textview_join);
     }
 
     @Override
@@ -97,49 +136,63 @@ public class FragmentHome extends Fragment {
         updateSummary();
         updateInstall();
         updateSetup();
-
+        updateButton();
+    }
+    void updateButton(){
         if (!applicationManager.isCoreInstalled()) {
             bootstrapButtonStart.setEnabled(false);
-            bootstrapButtonStart.setBootstrapBrand(DefaultBootstrapBrand.SECONDARY);
+            bootstrapButtonStart.setBootstrapBrand(DefaultBootstrapBrand.DANGER);
+            bootstrapButtonStart.setBootstrapText(new BootstrapText.Builder(getActivity()).addFontAwesomeIcon("fa-ban").addText("  Start Study").build());
             bootstrapButtonStart.setShowOutline(true);
         } else {
             bootstrapButtonStart.setEnabled(true);
             bootstrapButtonStart.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
+            bootstrapButtonStart.setBootstrapText(new BootstrapText.Builder(getActivity()).addFontAwesomeIcon("fa-play-circle-o").addText("  Start Study").build());
             bootstrapButtonStart.setShowOutline(false);
         }
+
     }
 
     void updateSummary() {
         awesomeTextViewSummary.setBootstrapText(getSummary());
+        if(dataManager.getDataCPManager().getConfigCP().getType().equalsIgnoreCase(MCEREBRUM.CONFIG.TYPE_FREEBIE)) {
+            textViewClickJoin.setVisibility(View.VISIBLE);
+            awesomeTextViewSummary.setBootstrapBrand(DefaultBootstrapBrand.WARNING);
+        }
+        else {
+            awesomeTextViewSummary.setBootstrapBrand(DefaultBootstrapBrand.DANGER);
+            textViewClickJoin.setVisibility(View.INVISIBLE);
+        }
+
     }
 
     void updateInstall() {
-        String notInstalledApp = getRequiredAppNotInstalled();
+        ArrayList<AppInfoController> appInfos = applicationManager.getRequiredAppNotInstalled();
+//        String notInstalledApp = getRequiredAppNotInstalled();
         BootstrapText bt;
-        if (notInstalledApp == null) {
-            bt = new BootstrapText.Builder(getContext()).addText("Applications are installed")
+        if (appInfos.size()==0) {
+            bt = new BootstrapText.Builder(getContext()).addText("Installation Successful")
                     .build();
             awesomeTextViewInstall.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
             awesomeTextViewInstallStatus.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
             awesomeTextViewInstallStatus.setBootstrapText(getStatusText(true));
             awesomeTextViewInstall.setBootstrapText(bt);
-            return;
         } else {
-            bt = new BootstrapText.Builder(getContext()).addText("Please install: " + notInstalledApp)
+            bt = new BootstrapText.Builder(getContext()).addText("Not installed: " + appInfos.size()+" apps")
                     .build();
             awesomeTextViewInstall.setBootstrapBrand(DefaultBootstrapBrand.DANGER);
             awesomeTextViewInstallStatus.setBootstrapBrand(DefaultBootstrapBrand.DANGER);
             awesomeTextViewInstallStatus.setBootstrapText(getStatusText(false));
             awesomeTextViewInstall.setBootstrapText(bt);
-            return;
         }
     }
 
     boolean updateSetup() {
-        String notConfiguredApp = getRequiredAppNotSetup();
+        ArrayList<AppInfoController> appInfos = applicationManager.getRequiredAppNotConfigured();
+//        String notConfiguredApp = getRequiredAppNotSetup();
         BootstrapText bt;
-        if (notConfiguredApp == null) {
-            bt = new BootstrapText.Builder(getContext()).addText("Applications are configured.")
+        if (appInfos.size() == 0) {
+            bt = new BootstrapText.Builder(getContext()).addText("Application Setup Successful")
                     .build();
             awesomeTextViewSetup.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
             awesomeTextViewSetupStatus.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
@@ -147,7 +200,7 @@ public class FragmentHome extends Fragment {
             awesomeTextViewSetup.setBootstrapText(bt);
             return true;
         } else {
-            bt = new BootstrapText.Builder(getContext()).addText("Please configure: " + notConfiguredApp)
+            bt = new BootstrapText.Builder(getContext()).addText("Not Configured: " + appInfos.size()+" apps")
                     .build();
             awesomeTextViewSetup.setBootstrapBrand(DefaultBootstrapBrand.DANGER);
             awesomeTextViewSetupStatus.setBootstrapBrand(DefaultBootstrapBrand.DANGER);
@@ -158,7 +211,11 @@ public class FragmentHome extends Fragment {
     }
 
     BootstrapText getSummary() {
-        return new BootstrapText.Builder(getContext()).addText("Study Title: " + studyInfoController.getTitle() + "      User id:  " + UserInfoController.getTitle())
+        if(dataManager.getDataCPManager().getStudyCP().getType().equalsIgnoreCase(MCEREBRUM.CONFIG.TYPE_FREEBIE))
+        return new BootstrapText.Builder(getContext()).addText("General Use")
+                .build();
+        else
+        return new BootstrapText.Builder(getContext()).addText(dataManager.getDataCPManager().getStudyCP().getTitle())
                 .build();
     }
 

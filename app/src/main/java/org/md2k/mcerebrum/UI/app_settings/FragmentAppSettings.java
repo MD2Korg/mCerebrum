@@ -20,8 +20,8 @@ import com.ramotion.foldingcell.FoldingCell;
 
 import org.md2k.mcerebrum.ActivityMain;
 import org.md2k.mcerebrum.R;
-import org.md2k.mcerebrum.app.AppBasicInfoController;
-import org.md2k.mcerebrum.app.AppInfoController;
+import org.md2k.system.app.AppBasicInfoController;
+import org.md2k.system.app.AppInfoController;
 import org.md2k.mcerebrum.app.ApplicationManager;
 
 import java.util.ArrayList;
@@ -32,7 +32,7 @@ public class FragmentAppSettings extends Fragment {
     public static final int CLEAR = 2;
     ApplicationManager applicationManager;
     CellAppSettings adapter;
-    ArrayList<AppInfoController> appInfoControllers;
+//    ArrayList<AppInfoController> appInfoControllers;
     AwesomeTextView textViewConfigured;
     AwesomeTextView textViewNotConfigured;
     AwesomeTextView textViewStatus;
@@ -69,24 +69,26 @@ public class FragmentAppSettings extends Fragment {
         textViewConfigured = (AwesomeTextView) view.findViewById(R.id.textview_configured);
         textViewNotConfigured = (AwesomeTextView) view.findViewById(R.id.textview_not_configured);
         textViewStatus = (AwesomeTextView) view.findViewById(R.id.textview_status);
-        final AppInfoController[] apps = applicationManager.getAppInfoControllers();
+        final ArrayList<AppInfoController> apps = applicationManager.get();
         // prepare elements to display
+/*
         appInfoControllers = new ArrayList<>();
-        for (int i = 0; i < apps.length; i++) {
+        for (int i = 0; i < apps.size(); i++) {
 //            if (!apps[i].getInstallInfoController().isInstalled()) continue;
 //            if (apps[i].getAppBasicInfoController().isType(AppBasicInfoController.TYPE_MCEREBRUM)) continue;
-            appInfoControllers.add(apps[i]);
+            appInfoControllers.add(apps.get(i));
         }
+*/
         updateTextViewStatus();
-        adapter = new CellAppSettings(getActivity(), appInfoControllers, new ResponseCallBack() {
+        adapter = new CellAppSettings(getActivity(), applicationManager.get(), new ResponseCallBack() {
             @Override
             public void onResponse(int position, int operation) {
                 if (operation == CONFIGURE) {
-                    applicationManager.getAppInfoControllers()[position].getmCerebrumController().configure(null);
+                    applicationManager.get().get(position).getmCerebrumController().configure(null);
                 }else if (operation == LAUNCH) {
-                    applicationManager.getAppInfoControllers()[position].getmCerebrumController().launch(null);
+                    applicationManager.get().get(position).getmCerebrumController().launch(null);
                 } else if(operation == CLEAR){
-                    applicationManager.getAppInfoControllers()[position].getmCerebrumController().clear(null);
+                    applicationManager.get().get(position).getmCerebrumController().clear(null);
                 }
             }
         });
@@ -174,7 +176,7 @@ public class FragmentAppSettings extends Fragment {
             textViewStatus.setBootstrapText(bootstrapTextS);
 /*
             bootstrapButtonInstall.setEnabled(false);
-            bootstrapButtonInstall.setBootstrapBrand(DefaultBootstrapBrand.SECONDARY);
+            bootstrapButtonInstall.setBootstrapBrand(DefaultBootstrapBrand.SEONDARY);
             bootstrapButtonInstall.setShowOutline(true);
 */
         } else {

@@ -1,0 +1,16 @@
+{
+  "syntaxVersion": "4",
+  "packageName": "org.md2k.mcerebrum",
+  "providerJavaPackage": "org.md2k.mcerebrum.provider",
+  "authority": "org.md2k.mcerebrum.provider",
+  "providerClassName": "SampleProvider",
+  "databaseFileName": "sample.db",
+  "databaseVersion": 1,
+  "sqliteOpenHelperClassName": "SampleSQLiteOpenHelper",
+  "sqliteOpenHelperCallbacksClassName": "SampleSQLiteOpenHelperCallbacks",
+  "enableForeignKeys": true,
+  "useAnnotations": true,
+  "useSupportLibrary": true,
+  "generateBeans": true,
+  "debugLogsFieldName": "LOG_DEBUG_PROVIDER"
+}

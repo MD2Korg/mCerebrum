@@ -15,8 +15,11 @@ import com.beardedhen.androidbootstrap.api.attributes.BootstrapBrand;
 import com.beardedhen.androidbootstrap.api.defaults.DefaultBootstrapBrand;
 import com.ramotion.foldingcell.FoldingCell;
 
+import org.md2k.mcerebrum.Constants;
+import org.md2k.mcerebrum.MyApplication;
 import org.md2k.mcerebrum.R;
-import org.md2k.mcerebrum.app.AppInfoController;
+import org.md2k.system.app.AppInfoController;
+import org.md2k.system.constant.MCEREBRUM;
 
 import java.util.HashSet;
 import java.util.List;
@@ -85,11 +88,13 @@ public class CellAppSettings extends ArrayAdapter<AppInfoController> {
         viewHolder.content_title.setText(appInfoController.getAppBasicInfoController().getTitle());
         viewHolder.content_summary.setText(appInfoController.getAppBasicInfoController().getSummary());
         viewHolder.description.setText(appInfoController.getAppBasicInfoController().getDescription());
-        String versionName = appInfoController.getInstallInfoController().getCurrentVersionName();
-        if (versionName == null) versionName = "N/A";
+        String versionName= appInfoController.getInstallInfoController().getCurrentVersionName();if(versionName==null) versionName="not installed";
         viewHolder.version.setText(versionName);
-        viewHolder.icon_short.setImageDrawable(appInfoController.getAppBasicInfoController().getIcon(getContext()));
-        viewHolder.icon_long.setImageDrawable(appInfoController.getAppBasicInfoController().getIcon(getContext()));
+        String lastVersionName= appInfoController.getInstallInfoController().getLastVersionName();if(lastVersionName==null) lastVersionName="up-to-date";
+        viewHolder.updateVersion.setText(lastVersionName);
+
+        viewHolder.icon_short.setImageDrawable(appInfoController.getAppBasicInfoController().getIcon(MyApplication.getContext(),Constants.CONFIG_MCEREBRUM_DIR()));
+        viewHolder.icon_long.setImageDrawable(appInfoController.getAppBasicInfoController().getIcon(MyApplication.getContext(), Constants.CONFIG_MCEREBRUM_DIR()));
 
         View.OnClickListener onClickListenerRun = new View.OnClickListener() {
             @Override
@@ -110,11 +115,12 @@ public class CellAppSettings extends ArrayAdapter<AppInfoController> {
             }
         };
         boolean ismCerebrumSupported=appInfoController.getmCerebrumController().ismCerebrumSupported();
-        boolean isStarted=appInfoController.getmCerebrumController().isStarted();
+        boolean isStarted=appInfoController.getmCerebrumController().isServiceRunning();
         boolean isConfigurable = appInfoController.getmCerebrumController().isConfigurable();
         boolean isConfigured = appInfoController.getmCerebrumController().isConfigured();
         boolean hasClear = appInfoController.getmCerebrumController().hasClear();
         boolean isEqualDefault = appInfoController.getmCerebrumController().isEqualDefault();
+        boolean isInstalled = appInfoController.getInstallInfoController().isInstalled();
         if(!ismCerebrumSupported || !isStarted || !isConfigurable)
             set(viewHolder.buttonSettingsLong, viewHolder.buttonSettingsShort, false, DefaultBootstrapBrand.SECONDARY, true, onClickListenerSettings);
         else if(isConfigured)
@@ -126,19 +132,23 @@ public class CellAppSettings extends ArrayAdapter<AppInfoController> {
             set(viewHolder.buttonClearLong, viewHolder.buttonClearShort, false, DefaultBootstrapBrand.SECONDARY, true, onClickListenerClear);
         else
             set(viewHolder.buttonClearLong, viewHolder.buttonClearShort, true, DefaultBootstrapBrand.DANGER, true, onClickListenerClear);
-
+        if(!isInstalled || appInfoController.getAppBasicInfoController().isType(MCEREBRUM.APP.TYPE_MCEREBRUM)||appInfoController.getAppBasicInfoController().isType(MCEREBRUM.APP.TYPE_STUDY))
+            set(viewHolder.buttonLaunchLong, viewHolder.buttonLaunchShort, false, DefaultBootstrapBrand.SECONDARY, true, onClickListenerRun);
+        else
         set(viewHolder.buttonLaunchLong, viewHolder.buttonLaunchShort, true, DefaultBootstrapBrand.SUCCESS, true, onClickListenerRun);
 
-        if(appInfoController.getmCerebrumController().ismCerebrumSupported() && isStarted && isConfigurable && isConfigured && isEqualDefault){
+        if(!isInstalled){
+            viewHolder.status.setBootstrapBrand(DefaultBootstrapBrand.DANGER);
+            viewHolder.status.setText("not installed");
+        }else if(ismCerebrumSupported && isStarted && isConfigurable && isConfigured && isEqualDefault){
             viewHolder.status.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
             viewHolder.status.setText("configured");
-        }else if(ismCerebrumSupported && isStarted && isConfigurable){
+        }else if(ismCerebrumSupported && isStarted && isConfigurable && appInfoController.getAppBasicInfoController().isUseAs(MCEREBRUM.APP.USE_AS_REQUIRED)){
             viewHolder.status.setBootstrapBrand(DefaultBootstrapBrand.DANGER);
             viewHolder.status.setText("not configured");
         }else{
             viewHolder.status.setText("");
         }
-        viewHolder.updateVersion.setText("N/A");
 
         return cell;
     }

@@ -24,22 +24,25 @@
             android:layout_weight="0.25"
             android:background="@color/backGroundDark"
             android:orientation="vertical"
+            android:id="@+id/join1"
             android:weightSum="1">
 
             <LinearLayout
+                android:id="@+id/join2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="0.25"
-                android:background="@color/backGroundDark"
                 android:orientation="horizontal"
                 android:weightSum="1">
 
                 <LinearLayout
+                    android:id="@+id/join3"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="0.5">
 
                     <TextView
+                        android:id="@+id/join4"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:padding="10dp"
@@ -48,11 +51,13 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/join5"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="0.5">
 
                     <com.beardedhen.androidbootstrap.AwesomeTextView
+                        android:id="@+id/join6"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="right"
@@ -66,18 +71,29 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/join7"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="vertical"
                 android:layout_weight="0.75">
 
                 <com.beardedhen.androidbootstrap.AwesomeTextView
                     android:id="@+id/awesome_textview_summary"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5dp"
+                    android:layout_marginLeft="10dp"
+                    android:textSize="18dp"
                     android:paddingTop="10dp"
                     app:bootstrapBrand="success"
                     app:bootstrapText="Look, I'm in a large well" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:text="(click to join study)"
+                    android:textColor="@color/grey_700"
+                    android:id="@+id/textview_join"
+                    />
 
             </LinearLayout>
 
@@ -145,17 +161,28 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.75">
+                android:orientation="vertical"
+                android:layout_weight="0.75"
+                >
 
                 <com.beardedhen.androidbootstrap.AwesomeTextView
                     android:id="@+id/awesome_textview_install"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
                     android:paddingTop="10dp"
+                    android:textSize="18dp"
                     app:bootstrapBrand="warning"
                     app:bootstrapText="Look, I'm in a large well" />
-
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="(click to install)"
+                    android:layout_marginLeft="10dp"
+                    android:textColor="@color/grey_700"
+                    android:id="@+id/textview_install"
+                    />
             </LinearLayout>
 
 
@@ -220,6 +247,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="vertical"
                 android:id="@+id/app_setup6"
                 android:layout_weight="0.75">
 
@@ -228,9 +256,20 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
                     android:paddingTop="10dp"
+                    android:textSize="18dp"
                     app:bootstrapBrand="warning"
                     app:bootstrapText="Look, I'm in a large well" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="(click to setup)"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="2dp"
+                    android:textColor="@color/grey_700"
+                    android:id="@+id/textview_setup"
+                    />
 
             </LinearLayout>
 

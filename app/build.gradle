@@ -1,11 +1,30 @@
-version = '0.0.2'
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+        mavenLocal()
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'io.fabric.tools:gradle:1.24.2'
+        classpath 'org.jraf:acpg-gradle-plugin:1.13.1'
+    }
+}
+version = '0.0.9'
 apply from: 'versioning.gradle'
 
 apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
+apply plugin: 'org.jraf.acpg.gradleplugin'
+
+repositories {
+    maven { url 'https://maven.fabric.io/public' }
+}
+
 
 android {
     compileSdkVersion 25
-    buildToolsVersion "25.0.1"
+    buildToolsVersion "25.0.3"
     defaultConfig {
         applicationId "org.md2k.mcerebrum"
         minSdkVersion 19
@@ -14,6 +33,7 @@ android {
         versionName version
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        buildConfigField 'boolean', 'LOG_DEBUG_PROVIDER', "true"
     }
     buildTypes {
         release {
@@ -40,9 +60,23 @@ android {
         exclude 'META-INF/rxjava.properties'
     }
 }
-
+acpg {
+    entitiesDir file('etc/acpg')
+    providerJavaPackage 'org.md2k.mcerebrum.provider'
+    authority 'org.md2k.mcerebrum.provider'
+    providerClassName 'SampleProvider'
+    databaseFileName 'sample.db'
+    databaseVersion 1
+    sqliteOpenHelperCallbacksClassName 'SampleSQLiteOpenHelperCallbacks'
+    enableForeignKeys true
+    useAnnotations true
+    useSupportLibrary true
+    generateBeans true
+    // Name of a boolean field in BuildConfig to enable/disable debug logging in the generated code
+    // Optional - default value: "DEBUG"
+    debugLogsFieldName 'LOG_DEBUG_PROVIDER'
+}
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
@@ -60,22 +94,19 @@ dependencies {
     compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
     compile 'com.google.code.gson:gson:2.8.0'
     compile 'com.github.GrenderG:Toasty:1.2.5'
-    compile 'com.github.dmytrodanylyk.circular-progress-button:library:1.1.3'
-    compile 'com.akexorcist:RoundCornerProgressBar:2.0.3'
     compile 'com.github.javiersantos:AppUpdater:2.6.3'
-
     //RX OnActivityResult
     compile 'com.github.VictorAlbertos:RxActivityResult:0.4.5-2.x'
-
     //MD2K commons
     compile project(':commons')
     compile project(':core')
     compile project(':system')
-
     //Folding UI
     compile 'com.ramotion.foldingcell:folding-cell:1.2.1'
     //Bootstrap
     compile 'com.beardedhen:androidbootstrap:2.3.1'
-
     testCompile 'junit:junit:4.12'
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
+        transitive = true;
+    }
 }

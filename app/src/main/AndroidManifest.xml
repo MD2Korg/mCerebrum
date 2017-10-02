@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.md2k.mcerebrum" >
+    package="org.md2k.mcerebrum">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -13,25 +13,27 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <activity
             android:name=".ActivityMain"
             android:screenOrientation="portrait"
-            android:theme="@style/MaterialDrawerTheme.TranslucentStatus" >
+            android:theme="@style/MaterialDrawerTheme.TranslucentStatus">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <receiver android:name=".BootReceiver" >
+
+        <receiver android:name=".BootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
 
-        <activity android:name=".UI.login.ActivityLogin" >
-        </activity>
+        <activity android:name=".UI.login.ActivityLogin"></activity>
+
+<!--
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="org.md2k.mcerebrum.provider"
@@ -41,6 +43,26 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
+
+-->
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="org.md2k.mcerebrum.provider_file"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="1cad146ed866fa3d49c3bc8376ff52af7d9970da" />
+        <provider
+            android:name=".provider.SampleProvider"
+            android:authorities="org.md2k.mcerebrum.provider"
+            android:grantUriPermissions="true"
+            android:exported="true" />
+
     </application>
 
 </manifest>

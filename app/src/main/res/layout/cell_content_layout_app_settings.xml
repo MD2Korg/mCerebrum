@@ -158,7 +158,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentStart="true" />
-
                 <TextView
                     android:id="@+id/textview_update"
                     android:layout_width="wrap_content"
@@ -166,6 +165,7 @@
                     android:layout_alignStart="@id/content_deadline_badge"
                     android:layout_below="@id/content_deadline_badge"
                     android:textColor="@color/mainTextColor"
+                    android:text="Latest Version"
                     android:textSize="12sp"
                     android:textStyle="bold" />
 
