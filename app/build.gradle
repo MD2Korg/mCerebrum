@@ -10,7 +10,7 @@ buildscript {
         classpath 'org.jraf:acpg-gradle-plugin:1.13.1'
     }
 }
-version = '0.0.9'
+version = '2.0.2'
 apply from: 'versioning.gradle'
 
 apply plugin: 'com.android.application'
@@ -80,13 +80,23 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    compile('com.mikepenz:materialdrawer:5.9.0@aar') {
+        transitive = true
+    }
+    //RX OnActivityResult
+    //MD2K commons
+    compile project(':commons')
+    compile project(':core')
+    compile project(':system')
+    //Folding UI
+    //Bootstrap
+    compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
+        transitive = true;
+    }
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.rengwuxian.materialedittext:library:2.1.4'
     compile 'com.github.medyo:fancybuttons:1.8'
     compile 'com.mikepenz:fontawesome-typeface:4.7.0.0@aar'
-    compile('com.mikepenz:materialdrawer:5.9.0@aar') {
-        transitive = true
-    }
     compile 'com.mikepenz:google-material-typeface:2.2.0.1@aar'
     compile 'com.blankj:utilcode:1.8.1'
     compile 'com.squareup.retrofit2:retrofit:2.3.0'
@@ -95,18 +105,9 @@ dependencies {
     compile 'com.google.code.gson:gson:2.8.0'
     compile 'com.github.GrenderG:Toasty:1.2.5'
     compile 'com.github.javiersantos:AppUpdater:2.6.3'
-    //RX OnActivityResult
     compile 'com.github.VictorAlbertos:RxActivityResult:0.4.5-2.x'
-    //MD2K commons
-    compile project(':commons')
-    compile project(':core')
-    compile project(':system')
-    //Folding UI
     compile 'com.ramotion.foldingcell:folding-cell:1.2.1'
-    //Bootstrap
     compile 'com.beardedhen:androidbootstrap:2.3.1'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
     testCompile 'junit:junit:4.12'
-    compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
-        transitive = true;
-    }
 }

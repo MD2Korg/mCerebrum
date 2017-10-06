@@ -7,7 +7,7 @@ import android.content.IntentFilter;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import org.md2k.mcerebrum.app.ApplicationManager;
+import org.md2k.system.app.ApplicationManager;
 import org.md2k.mcerebrum.configuration.DataFileManager;
 import org.md2k.system.provider.DataCPManager;
 import org.md2k.mcerebrum.data.DataManager;
@@ -47,7 +47,6 @@ import br.com.goncalves.pugnotification.notification.PugNotification;
 public class BootReceiver extends BroadcastReceiver
 {
     Context context;
-    ApplicationManager applicationManager;
     AppInfoController appInfoController;
     @Override
     public void onReceive(Context context, Intent intent) {
@@ -57,11 +56,10 @@ public class BootReceiver extends BroadcastReceiver
         Log.d("abc","..."+dataManager.getDataCPManager());
         Log.d("abc","..."+dataManager.getDataCPManager().getAppCPs());
         if(dataManager.isStartAtBoot() && dataManager.getDataCPManager().getStudyCP().getStarted()) {
-            applicationManager=new ApplicationManager(context, dataManager.getDataCPManager().getAppCPs());
             Log.d("abc","check core");
-            if(!applicationManager.isCoreInstalled()) return;
+            if(!dataManager.getApplicationManager().isCoreInstalled()) return;
             Log.d("abc","check core - success");
-            ArrayList<AppInfoController> a = applicationManager.getByType(MCEREBRUM.APP.TYPE_STUDY);
+            ArrayList<AppInfoController> a = dataManager.getApplicationManager().getByType(MCEREBRUM.APP.TYPE_STUDY);
             Log.d("abc","check study");
             if(a.size()==0) return;
             Log.d("abc","check study - success");

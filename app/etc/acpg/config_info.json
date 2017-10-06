@@ -54,7 +54,12 @@
     },
     {
       "name": "last_updated",
-      "type": "Long",
+      "type": "String",
+      "nullable": true
+    },
+    {
+      "name": "file_name",
+      "type": "String",
       "nullable": true
     }
   ],

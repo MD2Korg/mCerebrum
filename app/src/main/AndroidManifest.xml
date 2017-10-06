@@ -31,9 +31,9 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".UI.login.ActivityLogin"></activity>
+        <activity android:name=".UI.login.ActivityLogin" />
 
-<!--
+        <!--
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="org.md2k.mcerebrum.provider"
@@ -43,8 +43,7 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
-
--->
+        -->
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="org.md2k.mcerebrum.provider_file"
@@ -54,14 +53,16 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/provider_paths" />
         </provider>
+
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="1cad146ed866fa3d49c3bc8376ff52af7d9970da" />
+
         <provider
             android:name=".provider.SampleProvider"
             android:authorities="org.md2k.mcerebrum.provider"
-            android:grantUriPermissions="true"
-            android:exported="true" />
+            android:exported="true"
+            android:grantUriPermissions="true" />
 
     </application>
 

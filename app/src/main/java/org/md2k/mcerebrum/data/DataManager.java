@@ -26,54 +26,70 @@ package org.md2k.mcerebrum.data;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import org.md2k.datakitapi.time.DateTime;
 import org.md2k.mcerebrum.MyApplication;
 import org.md2k.mcerebrum.configuration.AppFile;
 import org.md2k.mcerebrum.configuration.ConfigFile;
 import org.md2k.mcerebrum.configuration.DataFileManager;
 import org.md2k.mcerebrum.configuration.StudyFile;
-import org.md2k.system.app.AppFromJson;
-import org.md2k.system.app.VersionInfo;
-import org.md2k.system.provider.DataCPManager;
+import org.md2k.system.app.ApplicationManager;
 import org.md2k.system.constant.MCEREBRUM;
-import org.md2k.system.provider.StudyCP;
-import org.md2k.system.provider.UserCP;
-
-import rx.Observable;
-import rx.functions.Func1;
+import org.md2k.system.provider.DataCPManager;
 
 public class DataManager {
     private DataFileManager dataFileManager;
     private DataCPManager dataCPManager;
-    public DataManager(DataFileManager dataFileManager, DataCPManager dataCPManager){
+    public ApplicationManager applicationManager;
+
+    public DataManager(DataFileManager dataFileManager, DataCPManager dataCPManager) {
         this.dataCPManager = dataCPManager;
         this.dataFileManager = dataFileManager;
-        resetDataCP();
-    }
-    public void resetDataCP(){
-        try {
-            if (dataFileManager.getDataFile() == null || dataFileManager.getDataFile().getConfig()==null)
-                dataFileManager.loadFromAsset();
-            if (dataCPManager.isNew(dataFileManager.getDataFile().getConfig().getId(), dataFileManager.getDataFile().getConfig().getType())) {
-                dataCPManager.deleteForNew();
-                prepareDP();
-            }
-        }catch (Exception e){
-
+        if (dataFileManager.getDataFile() == null || dataFileManager.getDataFile().getConfig() == null
+                || dataCPManager.isNew(dataFileManager.getDataFile().getConfig().getId(), dataFileManager.getDataFile().getConfig().getType())) {
+            loadDefault();
         }
+        applicationManager=new ApplicationManager(MyApplication.getContext(), dataCPManager.getAppCPs());
+
     }
-    private void prepareDP(){
+
+    public ApplicationManager getApplicationManager() {
+        return applicationManager;
+    }
+
+    public void loadDefault() {
+        if(applicationManager!=null) applicationManager.stopMCerebrumService();
+        dataCPManager.deleteAll();
+        dataFileManager.loadFromAsset();
+        prepareDP();
+        dataCPManager.getUserCP().set(MyApplication.getContext(), MCEREBRUM.CONFIG.TYPE_FREEBIE, "Freebie");
+        applicationManager=new ApplicationManager(MyApplication.getContext(), dataCPManager.getAppCPs());
+
+    }
+
+    public void resetDataCP(String type, String userName) {
+        applicationManager.stopMCerebrumService();
+        dataCPManager.deleteAll();
+        prepareDP();
+        dataCPManager.getUserCP().set(MyApplication.getContext(), type, userName);
+        applicationManager=new ApplicationManager(MyApplication.getContext(), dataCPManager.getAppCPs());
+    }
+
+    private void prepareDP() {
         ConfigFile configFile = dataFileManager.getDataFile().getConfig();
-        dataCPManager.setConfigCP(configFile.getId(), configFile.getType(), configFile.getTitle(), configFile.getSummary(), configFile.getDescription(), configFile.getVersion(), configFile.getUpdate(), configFile.getExpected_version(), null, configFile.getDownload_link(), DateTime.getDateTime()/1000);
+        dataCPManager.setConfigCP(configFile.getId(), configFile.getType(), configFile.getTitle(), configFile.getSummary(), configFile.getDescription(), configFile.getVersion(), configFile.getUpdate(), configFile.getExpected_version(), configFile.getDownload_link(), configFile.getFile_name());
+
         StudyFile studyFile = dataFileManager.getDataFile().getStudy();
-        dataCPManager.setStudyCP(studyFile.getId(), studyFile.getType(), studyFile.getTitle(), studyFile.getSummary(), studyFile.getDescription(), studyFile.getVersion(), studyFile.getIcon(), studyFile.getCover_image(), studyFile.getStart_at_boot(), false);
+        dataCPManager.setStudyCP(studyFile.getId(), studyFile.getType(), studyFile.getTitle(), studyFile.getSummary(), studyFile.getDescription(), studyFile.getVersion(), studyFile.getIcon(), studyFile.getCover_image(), studyFile.getStart_at_boot());
+
         AppFile[] appFiles = dataFileManager.getDataFile().getApps();
         for (AppFile appFile : appFiles) {
-            if(appFile.getUse_as().equalsIgnoreCase(MCEREBRUM.APP.USE_AS_NOT_IN_USE)) continue;
-            dataCPManager.setAppCPs(appFile.getId(), appFile.getType(), appFile.getTitle(), appFile.getSummary(), appFile.getDescription(), appFile.getPackage_name(), appFile.getDownload_link(), appFile.getUpdate(), appFile.getUse_as(), appFile.getExpected_version(), appFile.getIcon(), null, null, false, false, false);
+            if (appFile.getUse_as().equalsIgnoreCase(MCEREBRUM.APP.USE_AS_NOT_IN_USE)) continue;
+            dataCPManager.setAppCPs(appFile.getId(), appFile.getType(), appFile.getTitle(), appFile.getSummary(), appFile.getDescription(), appFile.getPackage_name(), appFile.getDownload_link(), appFile.getUpdate(), appFile.getUse_as(), appFile.getExpected_version(), appFile.getIcon());
         }
+        applicationManager=new ApplicationManager(MyApplication.getContext(), dataCPManager.getAppCPs());
+
     }
-    public void updateDataDP(){
+
+    public void updateDataDP() {
         dataCPManager.deleteForUpdate();
         prepareDP();
     }
@@ -85,49 +101,10 @@ public class DataManager {
     public DataCPManager getDataCPManager() {
         return dataCPManager;
     }
-    public boolean isStartAtBoot(){
-        if(dataCPManager.getStudyCP().getStartAtBoot() && dataCPManager.getStudyCP().getStarted())
+
+    public boolean isStartAtBoot() {
+        if (dataCPManager.getStudyCP().getStartAtBoot() && dataCPManager.getStudyCP().getStarted())
             return true;
         return false;
-    }
-
-    public Observable<Boolean> checkUpdateConfig() {
-        dataCPManager.getConfigCP().setLatestVersion(MyApplication.getContext(), dataCPManager.getConfigCP().getConfigInfoBean().getVersions());
-        if(MCEREBRUM.CONFIG.UPDATE_TYPE_NEVER.equalsIgnoreCase(dataCPManager.getConfigCP().getConfigInfoBean().getUpdates()))
-            return Observable.just(false);
-        if(dataCPManager.getConfigCP().getConfigInfoBean().getExpectedVersion()!=null) return Observable.just(false);
-        if(dataCPManager.getConfigCP().getConfigInfoBean().getDownloadLink()==null) return Observable.just(false);
-
-        if (dataCPManager.getConfigCP().getType().equalsIgnoreCase(MCEREBRUM.CONFIG.TYPE_SERVER)) {
-            return Observable.just(true).map(new Func1<Boolean, Boolean>() {
-                @Override
-                public Boolean call(Boolean aBoolean) {
-                    UserCP userCP=dataCPManager.getUserCP();
-                    boolean isUpdate = dataFileManager.checkUpdateServer(dataCPManager.getConfigCP().getConfigInfoBean().getDownloadLink(), userCP.getTitle(), userCP.getPasswordHash(), dataCPManager.getConfigCP().getConfigInfoBean().getLastUpdated());
-                    if(isUpdate){
-                        dataCPManager.getConfigCP().setLatestVersion(MyApplication.getContext(), "YES");
-                    }else{
-                        dataCPManager.getConfigCP().setLatestVersion(MyApplication.getContext(), dataCPManager.getConfigCP().getConfigInfoBean().getVersions());
-                    }
-                    return isUpdate;
-                }
-            });
-        }else{
-            return new AppFromJson().getVersion(MyApplication.getContext(), dataCPManager.getConfigCP().getConfigInfoBean().getDownloadLink())
-                    .map(new Func1<VersionInfo, Boolean>() {
-                        @Override
-                        public Boolean call(VersionInfo versionInfo) {
-                            if(versionInfo.versionName.equalsIgnoreCase(dataCPManager.getConfigCP().getConfigInfoBean().getVersions())) {
-                                dataCPManager.getConfigCP().setLatestVersion(MyApplication.getContext(), dataCPManager.getConfigCP().getConfigInfoBean().getVersions());
-                                return false;
-                            }
-                            else {
-                                dataCPManager.getConfigCP().setLatestVersion(MyApplication.getContext(), versionInfo.versionName);
-                                return true;
-                            }
-                        }
-                    });
-
-        }
     }
 }

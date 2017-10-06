@@ -13,7 +13,7 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 import org.md2k.mcerebrum.ActivityMain;
 import org.md2k.mcerebrum.MyApplication;
 import org.md2k.mcerebrum.R;
-import org.md2k.mcerebrum.app.ApplicationManager;
+import org.md2k.system.app.ApplicationManager;
 import org.md2k.mcerebrum.commons.dialog.Dialog;
 import org.md2k.mcerebrum.data.DataManager;
 import org.md2k.system.cerebralcortexwebapi.CCWebAPICalls;

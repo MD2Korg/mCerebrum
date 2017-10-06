@@ -1,9 +1,7 @@
 package org.md2k.mcerebrum;
 
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
@@ -12,14 +10,13 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.blankj.utilcode.util.Utils;
 
-import org.md2k.mcerebrum.app.ApplicationManager;
 import org.md2k.mcerebrum.commons.permission.Permission;
 import org.md2k.mcerebrum.commons.permission.PermissionCallback;
 import org.md2k.mcerebrum.configuration.DataFileManager;
-import org.md2k.system.provider.DataCPManager;
 import org.md2k.mcerebrum.data.DataManager;
 import org.md2k.system.app.AppInfoController;
 import org.md2k.system.constant.MCEREBRUM;
+import org.md2k.system.provider.DataCPManager;
 
 import java.util.ArrayList;
 
@@ -32,7 +29,6 @@ public abstract class AbstractActivityBasics extends AppCompatActivity {
 //    public UserInfoController userInfoController;
 //    public StudyInfoController studyInfoController;
 
-    public ApplicationManager applicationManager;
 /*    public DataFileManager configManager;
 */
     Subscription subscription;
@@ -41,15 +37,14 @@ public abstract class AbstractActivityBasics extends AppCompatActivity {
 
     abstract void updateUI();
     void resetConfig(){
-        if(applicationManager!=null) applicationManager.stopMCerebrumService();
+        if(dataManager!=null && dataManager.getApplicationManager()!=null) dataManager.getApplicationManager().stopMCerebrumService();
         DataFileManager dfm=new DataFileManager();
         DataCPManager dcpm = new DataCPManager(this);
         dataManager = new DataManager(dfm, dcpm);
-        applicationManager=new ApplicationManager(MyApplication.getContext(), dataManager.getDataCPManager().getAppCPs());
         if(dataManager.getDataCPManager().getStudyCP().getStarted()) {
             startStudy();
         }else{
-            applicationManager.startMCerebrumService();
+            dataManager.getApplicationManager().startMCerebrumService();
         }
 
     }
@@ -144,7 +139,7 @@ public abstract class AbstractActivityBasics extends AppCompatActivity {
             materialDialog.dismiss();
         if(subscription!=null && !subscription.isUnsubscribed())
             subscription.unsubscribe();
-        applicationManager.stopMCerebrumService();
+        dataManager.getApplicationManager().stopMCerebrumService();
         super.onDestroy();
     }
     @Override
@@ -160,15 +155,15 @@ public abstract class AbstractActivityBasics extends AppCompatActivity {
         }
     }
     public void startStudy(){
-        ArrayList<AppInfoController> a = applicationManager.getByType(MCEREBRUM.APP.TYPE_STUDY);
-        if(!applicationManager.isCoreInstalled() || a.size()==0) {
+        ArrayList<AppInfoController> a = dataManager.getApplicationManager().getByType(MCEREBRUM.APP.TYPE_STUDY);
+        if(!dataManager.getApplicationManager().isCoreInstalled() || a.size()==0) {
             Toasty.error(this, "Study/DataKit not installed", Toast.LENGTH_SHORT).show();
             return;
         }
         dataManager.getDataCPManager().getStudyCP().setStarted(this, true);
         Intent intent = getPackageManager().getLaunchIntentForPackage(a.get(0).getAppBasicInfoController().getPackageName());
         startActivity(intent);
-        applicationManager.stopMCerebrumService();
+        dataManager.getApplicationManager().stopMCerebrumService();
         finish();
     }
 }

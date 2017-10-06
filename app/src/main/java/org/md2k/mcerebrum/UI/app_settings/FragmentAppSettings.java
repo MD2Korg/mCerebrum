@@ -22,7 +22,7 @@ import org.md2k.mcerebrum.ActivityMain;
 import org.md2k.mcerebrum.R;
 import org.md2k.system.app.AppBasicInfoController;
 import org.md2k.system.app.AppInfoController;
-import org.md2k.mcerebrum.app.ApplicationManager;
+import org.md2k.system.app.ApplicationManager;
 
 import java.util.ArrayList;
 
@@ -65,7 +65,7 @@ public class FragmentAppSettings extends Fragment {
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
         ListView theListView = (ListView) view.findViewById(R.id.listview_folding_ui);
-        applicationManager = ((ActivityMain) getActivity()).applicationManager;
+        applicationManager = ((ActivityMain) getActivity()).dataManager.getApplicationManager();
         textViewConfigured = (AwesomeTextView) view.findViewById(R.id.textview_configured);
         textViewNotConfigured = (AwesomeTextView) view.findViewById(R.id.textview_not_configured);
         textViewStatus = (AwesomeTextView) view.findViewById(R.id.textview_status);

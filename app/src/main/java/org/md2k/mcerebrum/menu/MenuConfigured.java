@@ -37,10 +37,9 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
 import org.md2k.system.provider.StudyCP;
-import org.md2k.system.provider.UserCP;
 
 class MenuConfigured extends AbstractMenu{
-    IProfile[] getHeaderContentType(Context context, UserCP userCP, StudyCP studyCP, final ResponseCallBack responseCallBack){
+    IProfile[] getHeaderContentType(Context context, String userName, StudyCP studyCP, final ResponseCallBack responseCallBack){
         IProfile[] iProfiles=new IProfile[2];
         iProfiles[0]=new ProfileDrawerItem().withName(studyCP.getTitle()).withIcon(getIcon(context, studyCP.getIcon()));
 /*

@@ -15,7 +15,8 @@
         android:orientation="vertical">
 
 
-        <!--summary -->
+<!--
+        &lt;!&ndash;summary &ndash;&gt;
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -102,7 +103,7 @@
         </LinearLayout>
 
 
-        <!--App install -->
+        &lt;!&ndash;App install &ndash;&gt;
         <LinearLayout
             android:id="@+id/app_install1"
             android:layout_width="match_parent"
@@ -188,6 +189,7 @@
 
 
         </LinearLayout>
+-->
     </LinearLayout>
 
 

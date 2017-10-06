@@ -26,35 +26,26 @@ package org.md2k.mcerebrum.configuration;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.Environment;
 import android.util.Log;
 
-import com.blankj.utilcode.util.AppUtils;
-import com.blankj.utilcode.util.FileUtils;
-
 import org.md2k.mcerebrum.Constants;
 import org.md2k.mcerebrum.MyApplication;
-import org.md2k.mcerebrum.commons.dialog.Dialog;
-import org.md2k.mcerebrum.commons.dialog.DialogCallback;
 import org.md2k.mcerebrum.commons.storage.Storage;
 import org.md2k.mcerebrum.commons.storage.StorageType;
 import org.md2k.system.cerebralcortexwebapi.CCWebAPICalls;
 import org.md2k.system.cerebralcortexwebapi.interfaces.CerebralCortexWebApi;
 import org.md2k.system.cerebralcortexwebapi.models.AuthResponse;
-import org.md2k.system.cerebralcortexwebapi.models.MinioBucket;
 import org.md2k.system.cerebralcortexwebapi.models.MinioObjectStats;
 import org.md2k.system.cerebralcortexwebapi.utils.ApiUtils;
+import org.md2k.system.constant.MCEREBRUM;
 import org.md2k.system.internet.download.DownloadFile;
 import org.md2k.system.internet.download.DownloadInfo;
 import org.md2k.system.internet.github.model.AssetInfo;
 import org.md2k.system.internet.github.model.ReleaseInfo;
 import org.md2k.system.internet.github.service.Github;
-import org.md2k.system.constant.MCEREBRUM;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
@@ -62,7 +53,6 @@ import rx.Observable;
 import rx.functions.Func1;
 
 import static com.blankj.utilcode.util.ZipUtils.unzipFile;
-import static com.blankj.utilcode.util.ZipUtils.zipFile;
 
 public class DataFileManager {
     private DataFile dataFile;
@@ -73,12 +63,16 @@ public class DataFileManager {
             loadFromAsset();
     }
 
-    private void read() {
+    public boolean read() {
         try {
             dataFile = null;
             dataFile = Storage.readJson(Constants.CONFIG_MCEREBRUM_CONFIGFILE(), DataFile.class);
-        } catch (FileNotFoundException ignored) {
+            if(dataFile==null) return false;
+            return true;
+        } catch (Exception ignored) {
+            return false;
         }
+
     }
 
     public DataFile getDataFile() {
@@ -115,6 +109,7 @@ public class DataFileManager {
             }
         });
     }
+/*
     public boolean checkUpdateServer(String serverName, String userName, String password, long lastUpdate) {
         CerebralCortexWebApi ccService;
         CCWebAPICalls ccWebAPICalls;
@@ -130,6 +125,7 @@ public class DataFileManager {
         if(Double.parseDouble(objectList.get(0).getLastModified())<=lastUpdate) return false;
         return true;
     }
+*/
 /*
     public Observable<DownloadInfo> downloadAndExtractFromServer(String serverName, String userName, String password) {
         CerebralCortexWebApi ccService;

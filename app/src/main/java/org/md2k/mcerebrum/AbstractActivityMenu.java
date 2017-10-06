@@ -16,14 +16,13 @@ import org.md2k.mcerebrum.UI.app_settings.FragmentAppSettings;
 import org.md2k.mcerebrum.UI.check_update.FragmentCheckUpdate;
 import org.md2k.mcerebrum.UI.home.FragmentHome;
 import org.md2k.mcerebrum.UI.joinstudy.FragmentJoinStudy;
-import org.md2k.mcerebrum.app.ApplicationManager;
+import org.md2k.system.app.ApplicationManager;
 import org.md2k.mcerebrum.commons.dialog.Dialog;
 import org.md2k.mcerebrum.commons.dialog.DialogCallback;
 import org.md2k.mcerebrum.menu.AbstractMenu;
 import org.md2k.mcerebrum.menu.ResponseCallBack;
 
 public abstract class AbstractActivityMenu extends AbstractActivityBasics {
-    private static final int REQUESTCODE_LOGIN = 1234;
     private Drawer result = null;
     int selectedMenu = AbstractMenu.MENU_HOME;
 
@@ -41,7 +40,7 @@ public abstract class AbstractActivityMenu extends AbstractActivityBasics {
                 .withActivity(this)
                 .withHeaderBackground(AbstractMenu.getCoverImage(this, dataManager.getDataCPManager().getStudyCP().getCoverImage()))
                 .withCompactStyle(true)
-                .addProfiles(AbstractMenu.getHeaderContent(this, dataManager.getDataCPManager().getUserCP(), dataManager.getDataCPManager().getStudyCP(), dataManager.getDataCPManager().getConfigCP(), responseCallBack))
+                .addProfiles(AbstractMenu.getHeaderContent(this, dataManager.getDataCPManager().getUserCP().getUserName(), dataManager.getDataCPManager().getStudyCP(), dataManager.getDataCPManager().getConfigCP(), responseCallBack))
                 .build();
 
         result = new DrawerBuilder()
@@ -87,19 +86,19 @@ public abstract class AbstractActivityMenu extends AbstractActivityBasics {
             switch (responseId) {
                 case AbstractMenu.MENU_HOME:
                     toolbar.setTitle(dataManager.getDataCPManager().getStudyCP().getTitle());
-                    getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new FragmentHome()).commitAllowingStateLoss();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentHome()).commitAllowingStateLoss();
                     break;
                 case AbstractMenu.MENU_APP_ADD_REMOVE:
-                    getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new FragmentAppInstall()).commitAllowingStateLoss();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentAppInstall()).commitAllowingStateLoss();
                     break;
                 case AbstractMenu.MENU_APP_SETTINGS:
-                    getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new FragmentAppSettings()).commitAllowingStateLoss();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentAppSettings()).commitAllowingStateLoss();
                     break;
                 case AbstractMenu.MENU_JOIN:
-                    getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new FragmentJoinStudy()).commitAllowingStateLoss();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentJoinStudy()).commitAllowingStateLoss();
                     break;
                 case AbstractMenu.MENU_CHECK_UPDATE:
-                    getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new FragmentCheckUpdate()).commitAllowingStateLoss();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentCheckUpdate()).commitAllowingStateLoss();
                     break;
 
                 case AbstractMenu.MENU_LEAVE:
@@ -107,12 +106,9 @@ public abstract class AbstractActivityMenu extends AbstractActivityBasics {
                         @Override
                         public void onSelected(String value) {
                             if (value.equals("Yes")) {
-                                applicationManager.stopMCerebrumService();
-//                                dataManager.getDataCPManager().deleteForNew();
-                                dataManager.getDataFileManager().loadFromAsset();
-                                dataManager.resetDataCP();
-                                applicationManager=new ApplicationManager(AbstractActivityMenu.this, dataManager.getDataCPManager().getAppCPs());
-                                applicationManager.startMCerebrumService();
+                                dataManager.getApplicationManager().stopMCerebrumService();
+                                dataManager.loadDefault();
+                                dataManager.getApplicationManager().startMCerebrumService();
                                 updateUI();
 //                                prepareConfig();
                             }
@@ -141,18 +137,6 @@ public abstract class AbstractActivityMenu extends AbstractActivityBasics {
         }
     };
 
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUESTCODE_LOGIN) {
-            if (resultCode == RESULT_OK) {
-                String userName = data.getStringExtra("username");
-                dataManager.getDataCPManager().getUserCP().setTitle(MyApplication.getContext(),userName);
-                dataManager.getDataCPManager().getUserCP().setLoggedIn(MyApplication.getContext(), true);
-                updateUI();
-            }
-        }
-        //Handle Code
-    }
 
     @Override
     public void onDestroy() {

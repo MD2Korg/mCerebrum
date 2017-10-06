@@ -1,9 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="colorPrimary">#1e2c3c</color>
+    <color name="colorPrimaryDark">#1e2c3c</color>
+    <color name="colorPrimaryLight">#B2DFDB</color>
+    <color name="colorAccent">@color/md_cyan_A700</color>
+
+    <!--
     <color name="colorPrimary">#0d525d</color>
     <color name="colorPrimaryDark">#00796B</color>
     <color name="colorPrimaryLight">#B2DFDB</color>
+    <color name="colorAccent">@color/md_cyan_A700</color>
+-->
+
+<!--
     <color name="colorAccent">#FF5722</color>
+-->
     <color name="colorBackground">#154360</color>
     <color name="colorPrimaryText">#FFFFFF</color>
     <color name="colorSecondaryText">#757575</color>
@@ -30,4 +41,8 @@
     <color name="tealsecondary">#00838F</color>
     <color name="tealthird">#0097A7</color>
     <color name="fontPrimanry">#ffff</color>
+
+
+    <color name="material_drawer_dark_selected_text">@color/colorAccent</color>
+
 </resources>

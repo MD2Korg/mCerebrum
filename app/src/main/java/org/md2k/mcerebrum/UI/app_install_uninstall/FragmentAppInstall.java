@@ -24,8 +24,9 @@ import com.ramotion.foldingcell.FoldingCell;
 import org.md2k.mcerebrum.ActivityMain;
 import org.md2k.mcerebrum.R;
 import org.md2k.system.app.AppInfoController;
-import org.md2k.mcerebrum.app.ApplicationManager;
+import org.md2k.system.app.ApplicationManager;
 import org.md2k.system.app.InstallInfoController;
+import org.md2k.system.constant.MCEREBRUM;
 import org.md2k.system.internet.download.DownloadInfo;
 
 import es.dmoral.toasty.Toasty;
@@ -34,6 +35,9 @@ import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+
+import static org.md2k.mcerebrum.menu.AbstractMenu.MENU_CHECK_UPDATE;
+import static org.md2k.mcerebrum.menu.AbstractMenu.MENU_HOME;
 
 public class FragmentAppInstall extends Fragment {
     public static final int INSTALL = 0;
@@ -50,6 +54,7 @@ public class FragmentAppInstall extends Fragment {
     ApplicationManager applicationManager;
     CellAppInstall adapter;
     int installAllIndex = -1;
+    int count=0;
     boolean isUpdateUI = false;
     Subscription subscriptionUpdate;
     boolean updateAvailable = false;
@@ -82,7 +87,7 @@ public class FragmentAppInstall extends Fragment {
         intentFilter.addDataScheme("package");
         getContext().registerReceiver(br, intentFilter);
 
-        applicationManager = ((ActivityMain) getActivity()).applicationManager;
+        applicationManager = ((ActivityMain) getActivity()).dataManager.getApplicationManager();
         // prepare elements to display
         textViewInstalled = (AwesomeTextView) view.findViewById(R.id.textview_installed);
         textViewUpdate = (AwesomeTextView) view.findViewById(R.id.textview_update);
@@ -97,12 +102,16 @@ public class FragmentAppInstall extends Fragment {
             }
         });
         bootstrapButtonUpdate = (BootstrapButton) view.findViewById(R.id.button_update);
+
         bootstrapButtonUpdate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                checkUpdateAll();
+                ((ActivityMain) getActivity()).responseCallBack.onResponse(null, MENU_CHECK_UPDATE);
+
+//                checkUpdateAll();
             }
         });
+
         updateTextViewStatus();
 //        String st="{fa_download}: "+installed[0]+"   {fa_refresh}: "+installed[1]+"   {fa_trash}: "+installed[2];
 //        textViewInstalled.setBootstrapText(bootstrapText);
@@ -151,19 +160,21 @@ public class FragmentAppInstall extends Fragment {
         });
     }
 
+/*
     void checkUpdateAll() {
         updateAvailable = false;
         Observable[] observables = new Observable[applicationManager.get().size()];
         for (int i = 0; i < applicationManager.get().size(); i++) {
             observables[i] = applicationManager.get(i).getInstallInfoController().checkUpdate();
         }
+        count=0;
         materialDialog = new MaterialDialog.Builder(getActivity())
                 .content("Checking updates ...")
                 .progress(true, 100, false)
                 .show();
 
 
-        subscription = applicationManager.checkUpdate().subscribe(new Observer() {
+        subscription = applicationManager.hasUpdate().subscribe(new Observer() {
             @Override
             public void onCompleted() {
                 materialDialog.dismiss();
@@ -178,15 +189,26 @@ public class FragmentAppInstall extends Fragment {
 
             @Override
             public void onError(Throwable e) {
+                materialDialog.dismiss();
+                Toasty.error(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onNext(Object o) {
                 Boolean b= (Boolean) o;
+
+                materialDialog.dismiss();
+                count++;
+                materialDialog = new MaterialDialog.Builder(getActivity())
+                        .content("Checking updates ..."+String.valueOf(count))
+                        .progress(true, 100, false)
+                        .show();
+
                 updateAvailable |= b;
             }
         });
 
+*/
 /*
         subscriptionUpdate = Observable.merge(observables).subscribe(new Observer<Boolean>() {
             @Override
@@ -210,16 +232,38 @@ public class FragmentAppInstall extends Fragment {
                 if (o) updateAvailable = true;
             }
         });
+*//*
+
+    }
 */
+    void installMCerebrumIfRequired(){
+        int ind_mc=0;
+        for(int i=0;i<applicationManager.get().size();i++) {
+            if (applicationManager.get(i).getAppBasicInfoController().isType(MCEREBRUM.APP.TYPE_MCEREBRUM)) {
+                ind_mc=i;
+                break;
+            }
+        }
+        if(applicationManager.get(ind_mc).getInstallInfoController().isInstalled() &&
+                !applicationManager.get(ind_mc).getInstallInfoController().hasUpdate()) {
+            installAllIndex=-1;
+            return;
+        }
+        install(applicationManager.get(ind_mc));
+        installAllIndex=-1;
     }
 
     void downloadAndInstallAll() {
         if (installAllIndex == -1) {
             return;
         }
-        while (installAllIndex < applicationManager.get().size() && applicationManager.get(installAllIndex).getInstallInfoController().isInstalled() && !applicationManager.get().get(installAllIndex).getInstallInfoController().hasUpdate())
+        while (installAllIndex < applicationManager.get().size()
+                && ((applicationManager.get(installAllIndex).getInstallInfoController().isInstalled()
+                && !applicationManager.get().get(installAllIndex).getInstallInfoController().hasUpdate())
+                || applicationManager.get().get(installAllIndex).getAppBasicInfoController().isType(MCEREBRUM.APP.TYPE_MCEREBRUM)))
             installAllIndex++;
         if (installAllIndex >= applicationManager.get().size()) {
+            installMCerebrumIfRequired();
             installAllIndex = -1;
             return;
         }

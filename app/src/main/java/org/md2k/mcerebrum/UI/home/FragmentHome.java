@@ -14,7 +14,7 @@ import com.beardedhen.androidbootstrap.api.defaults.DefaultBootstrapBrand;
 
 import org.md2k.mcerebrum.ActivityMain;
 import org.md2k.mcerebrum.R;
-import org.md2k.mcerebrum.app.ApplicationManager;
+import org.md2k.system.app.ApplicationManager;
 import org.md2k.mcerebrum.data.DataManager;
 import org.md2k.system.app.AppInfoController;
 import org.md2k.system.constant.MCEREBRUM;
@@ -71,7 +71,7 @@ public class FragmentHome extends Fragment {
 
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
-        applicationManager = ((ActivityMain) getActivity()).applicationManager;
+        applicationManager = ((ActivityMain) getActivity()).dataManager.getApplicationManager();
         dataManager = ((ActivityMain) getActivity()).dataManager;
 
 //        studyInfoController = ((ActivityMain) getActivity()).studyInfoController;

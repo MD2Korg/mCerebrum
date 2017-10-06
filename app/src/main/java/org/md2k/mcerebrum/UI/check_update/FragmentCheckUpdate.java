@@ -1,26 +1,31 @@
 package org.md2k.mcerebrum.UI.check_update;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.beardedhen.androidbootstrap.AwesomeTextView;
-import com.beardedhen.androidbootstrap.BootstrapText;
-import com.beardedhen.androidbootstrap.api.defaults.DefaultBootstrapBrand;
 
 import org.md2k.mcerebrum.ActivityMain;
+import org.md2k.mcerebrum.Constants;
+import org.md2k.mcerebrum.MyApplication;
 import org.md2k.mcerebrum.R;
-import org.md2k.mcerebrum.app.ApplicationManager;
 import org.md2k.mcerebrum.commons.dialog.Dialog;
+import org.md2k.mcerebrum.commons.dialog.DialogCallback;
 import org.md2k.mcerebrum.data.DataManager;
+import org.md2k.mcerebrum.update.Update;
+import org.md2k.system.app.AppInfoController;
+import org.md2k.system.app.ApplicationManager;
+import org.md2k.system.constant.MCEREBRUM;
 import org.md2k.system.internet.download.DownloadInfo;
-import org.md2k.system.provider.UserCP;
 
 import es.dmoral.toasty.Toasty;
 import rx.Observable;
@@ -31,6 +36,7 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 import static org.md2k.mcerebrum.menu.AbstractMenu.MENU_APP_ADD_REMOVE;
+import static org.md2k.mcerebrum.menu.AbstractMenu.MENU_HOME;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -38,71 +44,15 @@ import static org.md2k.mcerebrum.menu.AbstractMenu.MENU_APP_ADD_REMOVE;
  */
 public class FragmentCheckUpdate extends Fragment {
     Subscription subscription;
-    Subscription subscriptionApp;
+    Subscription subscriptionUpdate;
+    int installAllIndex = -1;
+    boolean res=false;
+    boolean isUpdateUI = false;
 
     MaterialDialog materialDialog;
     DataManager dataManager;
-    ApplicationManager applicationManager;
     ActivityMain activityMain;
-    AwesomeTextView awesomeTextViewSummary;
-    AwesomeTextView awesomeTextViewInstall;
-    AwesomeTextView awesomeTextViewSummaryStatus;
-    AwesomeTextView awesomeTextViewInstallStatus;
-    TextView textViewClickInstall;
-    TextView textViewClickJoin;
-    int count;
-    int countUpdate;
-    View.OnClickListener onClickListernerInstall = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            ((ActivityMain) getActivity()).responseCallBack.onResponse(null, MENU_APP_ADD_REMOVE);
-        }
-    };
-    View.OnClickListener onClickListernerJoin = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if (dataManager.getDataCPManager().getConfigCP().getConfigInfoBean().getVersions() == null || dataManager.getDataCPManager().getConfigCP().getConfigInfoBean().getVersions().equalsIgnoreCase(dataManager.getDataCPManager().getConfigCP().getConfigInfoBean().getLatestVersion()))
-                return;
-            materialDialog = Dialog.progressIndeterminate(getActivity(), "Downloading new configuration file...").show();
-            final UserCP userCP = dataManager.getDataCPManager().getUserCP();
-            subscription = Observable.just(true).subscribeOn(Schedulers.newThread()).flatMap(new Func1<Boolean, Observable<DownloadInfo>>() {
-                @Override
-                public Observable<DownloadInfo> call(Boolean aBoolean) {
-
-                    return dataManager.getDataFileManager()
-                            .downloadAndExtractFromServer(dataManager.getDataCPManager().getConfigCP().getConfigInfoBean().getDownloadLink(), userCP.getTitle(), userCP.getPasswordHash());
-                }
-            }).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Observer<DownloadInfo>() {
-                        @Override
-                        public void onCompleted() {
-                            materialDialog.dismiss();
-                            dataManager.updateDataDP();
-                            Toasty.success(getActivity(), "Successfully Logged in", Toast.LENGTH_SHORT).show();
-                            activityMain.updateUI();
-
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            Toasty.error(getContext(), e.getMessage()).show();
-                            materialDialog.dismiss();
-
-                        }
-
-                        @Override
-                        public void onNext(DownloadInfo downloadInfo) {
-
-                        }
-                    });
-
-/*
-            if(dataManager.getDataCPManager().getConfigCP().getType().equalsIgnoreCase(MCEREBRUM.CONFIG.TYPE_FREEBIE))
-                ((ActivityMain) getActivity()).responseCallBack.onResponse(null, MENU_JOIN);
-*/
-        }
-    };
-
+    boolean hasUpdate;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
@@ -112,151 +62,236 @@ public class FragmentCheckUpdate extends Fragment {
 
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
-        prepareClick(view);
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Intent.ACTION_PACKAGE_REMOVED);
+        intentFilter.addAction(Intent.ACTION_PACKAGE_ADDED);
+        intentFilter.addAction(Intent.ACTION_PACKAGE_REPLACED);
+        intentFilter.addAction(Intent.ACTION_PACKAGE_CHANGED);
+        intentFilter.addDataScheme("package");
+        getContext().registerReceiver(br, intentFilter);
         activityMain = (ActivityMain) getActivity();
         dataManager = activityMain.dataManager;
-        applicationManager = activityMain.applicationManager;
-        count = 0;
-        countUpdate = 0;
         materialDialog = new MaterialDialog.Builder(getActivity())
                 .content("Checking updates ...")
                 .progress(true, 100, false)
                 .show();
 
-        subscription = dataManager.checkUpdateConfig().subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Boolean>() {
-            @Override
-            public void onCompleted() {
-                count++;
-                if (count >= 2)
-                    materialDialog.dismiss();
-                updateSummary();
-                Log.d("abc", "count=" + count);
-            }
+        subscription = Update.hasUpdate(MyApplication.getContext(), dataManager, dataManager.getApplicationManager())
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<Boolean>() {
+                    @Override
+                    public void onCompleted() {
+                        materialDialog.dismiss();
+                        if (!hasUpdate) {
+                            Toasty.success(getActivity(), "up-to-date", Toast.LENGTH_SHORT).show();
+                            ((ActivityMain) getActivity()).responseCallBack.onResponse(null, MENU_APP_ADD_REMOVE);
+                        } else {
+                            Dialog.simple(activityMain, "Update Available", "Do you want to update?", "Yes", "Cancel", new DialogCallback() {
+                                @Override
+                                public void onSelected(String value) {
+                                    if ("Yes".equals(value)) {
+                                        subscriptionUpdate = Update.hasUpdateConfigServer(getActivity(), dataManager.getDataCPManager().getServerCP()).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
+                                                .flatMap(new Func1<Boolean, Observable<Boolean>>() {
+                                                    @Override
+                                                    public Observable<Boolean> call(Boolean aBoolean) {
+                                                        if (aBoolean == true)
+                                                            return Update.updateConfigServer(dataManager, dataManager.getDataCPManager().getServerCP(), Constants.CONFIG_ROOT_DIR())
+                                                                    .subscribeOn(Schedulers.newThread())
+                                                                    .observeOn(AndroidSchedulers.mainThread()).map(new Func1<Boolean, Boolean>() {
+                                                                        @Override
+                                                                        public Boolean call(Boolean aBoolean) {
+                                                                            return null;
+                                                                        }
+                                                                    });
 
-            @Override
-            public void onError(Throwable e) {
-                materialDialog.dismiss();
-            }
+                                                        return Observable.just(true);
+                                                    }
+                                                }).flatMap(new Func1<Boolean, Observable<Boolean>>() {
+                                                    @Override
+                                                    public Observable<Boolean> call(Boolean aBoolean) {
+                                                        return Update.hasUpdateApp(dataManager.getApplicationManager());
+                                                    }
+                                                }).subscribe(new Observer<Boolean>() {
+                                                    @Override
+                                                    public void onCompleted() {
+                                                        if(res==true){
+                                                            installAllIndex = 0;
+                                                            downloadAndInstallAll();
 
-            @Override
-            public void onNext(Boolean aBoolean) {
-            }
-        });
-        subscriptionApp = applicationManager.checkUpdate().subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer() {
-            @Override
-            public void onCompleted() {
-                count++;
-                if (count >= 2)
-                    materialDialog.dismiss();
-                Log.d("abc", "count=" + count);
-                updateInstall();
+                                                        }else{
+                                                            activityMain.responseCallBack.onResponse(null, MENU_APP_ADD_REMOVE);
+                                                        }
+                                                    }
 
-            }
+                                                    @Override
+                                                    public void onError(Throwable e) {
+                                                        activityMain.responseCallBack.onResponse(null, MENU_APP_ADD_REMOVE);
+                                                    }
 
-            @Override
-            public void onError(Throwable e) {
-                materialDialog.dismiss();
-            }
+                                                    @Override
+                                                    public void onNext(Boolean aBoolean) {
+                                                        res=res | aBoolean;
+                                                    }
+                                                });
 
-            @Override
-            public void onNext(Object o) {
-                Boolean b = (Boolean) o;
-                if (b == true) countUpdate++;
-            }
-        });
+                                    } else {
+                                        ((ActivityMain) getActivity()).responseCallBack.onResponse(null, MENU_HOME);
+                                    }
+                                }
+                            }).show();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Toasty.error(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                        materialDialog.dismiss();
+                    }
+
+                    @Override
+                    public void onNext(Boolean aBoolean) {
+                        hasUpdate = true;
+
+                    }
+                });
+    }
+
+    @Override
+    public void onDestroyView() {
+        if (materialDialog != null && materialDialog.isShowing()) materialDialog.dismiss();
+/*
+        if (subscription != null && !subscription.isUnsubscribed())
+            subscription.unsubscribe();
+        if (subscriptionUpdate != null && !subscriptionUpdate.isUnsubscribed())
+            subscriptionUpdate.unsubscribe();
+*/
+        super.onDestroyView();
     }
 
     @Override
     public void onResume() {
+        if (isUpdateUI) {
+            downloadAndInstallAll();
+            isUpdateUI = false;
+        }
         super.onResume();
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
+    void installMCerebrumIfRequired() {
+        int ind_mc = 0;
+        for (int i = 0; i < dataManager.getApplicationManager().get().size(); i++) {
+            if (dataManager.getApplicationManager().get(i).getAppBasicInfoController().isType(MCEREBRUM.APP.TYPE_MCEREBRUM)) {
+                ind_mc = i;
+                break;
+            }
+        }
+        if (dataManager.getApplicationManager().get(ind_mc).getInstallInfoController().isInstalled() &&
+                !dataManager.getApplicationManager().get(ind_mc).getInstallInfoController().hasUpdate()) {
+            installAllIndex = -1;
+            return;
+        }
+        install(dataManager.getApplicationManager().get(ind_mc));
+        installAllIndex = -1;
+    }
+
+    void downloadAndInstallAll() {
+        if (installAllIndex == -1) {
+            ((ActivityMain) getActivity()).responseCallBack.onResponse(null, MENU_APP_ADD_REMOVE);
+            return;
+        }
+        while (installAllIndex < dataManager.getApplicationManager().get().size()
+                && ((dataManager.getApplicationManager().get(installAllIndex).getInstallInfoController().isInstalled()
+                && !dataManager.getApplicationManager().get().get(installAllIndex).getInstallInfoController().hasUpdate())
+                || dataManager.getApplicationManager().get().get(installAllIndex).getAppBasicInfoController().isType(MCEREBRUM.APP.TYPE_MCEREBRUM)))
+            installAllIndex++;
+        if (installAllIndex >= dataManager.getApplicationManager().get().size()) {
+            installMCerebrumIfRequired();
+            installAllIndex = -1;
+            return;
+        }
+        install(dataManager.getApplicationManager().get().get(installAllIndex));
+        installAllIndex++;
+/*
+        downloadAndInstall(applicationManager.get()[installAllIndex].getInstallInfoController());
+        applicationManager.get()[installAllIndex].getInstallInfoController().install(getActivity());
+*/
+/*
+        if(applicationManager.get()[installAllIndex].getDownloadFromGithub()!=null || applicationManager.getAppInfos()[installAllIndex].getDownloadFromURL()!=null){
+            downloadAndInstall(applicationManager.getAppInfos()[installAllIndex]);
+        }
+        else new AppInstall(applicationManager.getAppInfos()[installAllIndex]).install(getActivity());
+*/
+    }
+
+    void install(final AppInfoController appInfoController) {
+
+        materialDialog = new MaterialDialog.Builder(getActivity())
+                .content("Downloading " + appInfoController.getAppBasicInfoController().getTitle() + " ...")
+                .progress(false, 100, true)
+                .show();
+        subscription = appInfoController.getInstallInfoController().install(getActivity())
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<DownloadInfo>() {
+                    @Override
+                    public void onCompleted() {
+                        materialDialog.dismiss();
+//                        applicationManager.startMCerebrumService(appInfoController);
+//                        applicationManager.startMCerebrumService();
+
+                        //                       new AppInstall(appInfo).install(getActivity());
+//                        Intent returnIntent = new Intent();
+//                        returnIntent.putExtra("type", TYPE_GENERAL);
+//                        setResult(Activity.RESULT_OK, returnIntent);
+//                        finish();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        Toasty.error(getActivity(), "Error: Download failed (e=" + e.toString() + ")").show();
+                        materialDialog.dismiss();
+                    }
+
+                    @Override
+                    public void onNext(DownloadInfo downloadInfo) {
+                        Log.d("abc", "total=" + downloadInfo.getTotalFileSize() + "downloaded=" + downloadInfo.getCurrentFileSize() + " progressWithBar=" + downloadInfo.getProgress());
+                        materialDialog.setProgress((int) downloadInfo.getProgress());
+                    }
+                });
     }
 
     @Override
     public void onDestroy() {
-        if (materialDialog != null && materialDialog.isShowing()) materialDialog.dismiss();
-        if (subscription != null && !subscription.isUnsubscribed())
-            subscription.unsubscribe();
-        if (subscriptionApp != null && !subscriptionApp.isUnsubscribed())
-            subscriptionApp.unsubscribe();
+        getContext().unregisterReceiver(br);
+        if (subscription != null && !subscription.isUnsubscribed()) subscription.unsubscribe();
+        if (materialDialog != null && materialDialog.isShowing())
+            materialDialog.dismiss();
         super.onDestroy();
     }
 
-    void prepareClick(View view) {
-        view.findViewById(R.id.join1).setOnClickListener(onClickListernerJoin);
-        view.findViewById(R.id.join2).setOnClickListener(onClickListernerJoin);
-        view.findViewById(R.id.join3).setOnClickListener(onClickListernerJoin);
-        view.findViewById(R.id.join4).setOnClickListener(onClickListernerJoin);
-        view.findViewById(R.id.join5).setOnClickListener(onClickListernerJoin);
-        view.findViewById(R.id.join6).setOnClickListener(onClickListernerJoin);
-        view.findViewById(R.id.join7).setOnClickListener(onClickListernerJoin);
-        view.findViewById(R.id.awesome_textview_summary).setOnClickListener(onClickListernerJoin);
-        view.findViewById(R.id.textview_join).setOnClickListener(onClickListernerJoin);
+    private BroadcastReceiver br = new BroadcastReceiver() {
 
-        view.findViewById(R.id.app_install1).setOnClickListener(onClickListernerInstall);
-        view.findViewById(R.id.app_install2).setOnClickListener(onClickListernerInstall);
-        view.findViewById(R.id.app_install3).setOnClickListener(onClickListernerInstall);
-        view.findViewById(R.id.app_install4).setOnClickListener(onClickListernerInstall);
-        view.findViewById(R.id.app_install5).setOnClickListener(onClickListernerInstall);
-        view.findViewById(R.id.awesome_textview_install_status).setOnClickListener(onClickListernerInstall);
-        view.findViewById(R.id.awesome_textview_install).setOnClickListener(onClickListernerInstall);
-
-        awesomeTextViewSummaryStatus = (AwesomeTextView) view.findViewById(R.id.join6);
-        awesomeTextViewSummary = (AwesomeTextView) view.findViewById(R.id.awesome_textview_summary);
-        awesomeTextViewInstall = (AwesomeTextView) view.findViewById(R.id.awesome_textview_install);
-        awesomeTextViewInstallStatus = (AwesomeTextView) view.findViewById(R.id.awesome_textview_install_status);
-
-        textViewClickInstall = (TextView) view.findViewById(R.id.textview_install);
-        textViewClickJoin = (TextView) view.findViewById(R.id.textview_join);
-    }
-
-    void updateSummary() {
-        if (dataManager.getDataCPManager().getConfigCP().getConfigInfoBean().getVersions() == null || dataManager.getDataCPManager().getConfigCP().getConfigInfoBean().getVersions().equalsIgnoreCase(dataManager.getDataCPManager().getConfigCP().getConfigInfoBean().getLatestVersion())) {
-            awesomeTextViewSummary.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
-            awesomeTextViewSummary.setBootstrapText(new BootstrapText.Builder(getActivity()).addText("up-to-date").build());
-            textViewClickJoin.setVisibility(View.INVISIBLE);
-            awesomeTextViewSummaryStatus.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
-            awesomeTextViewSummaryStatus.setBootstrapText(getStatusText(true));
-        } else {
-            awesomeTextViewSummary.setBootstrapBrand(DefaultBootstrapBrand.WARNING);
-            awesomeTextViewSummary.setBootstrapText(new BootstrapText.Builder(getActivity()).addText("update available").build());
-            textViewClickJoin.setVisibility(View.VISIBLE);
-            awesomeTextViewSummaryStatus.setBootstrapBrand(DefaultBootstrapBrand.DANGER);
-            awesomeTextViewSummaryStatus.setBootstrapText(getStatusText(false));
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            switch (intent.getAction()) {
+                case Intent.ACTION_PACKAGE_ADDED:
+//                case Intent.ACTION_PACKAGE_CHANGED:
+//                case Intent.ACTION_PACKAGE_REPLACED:
+                case Intent.ACTION_PACKAGE_REMOVED:
+                    String[] temp = intent.getData().toString().split(":");
+                    String packageName;
+                    if (temp.length == 1)
+                        packageName = temp[0];
+                    else if (temp.length == 2)
+                        packageName = temp[1];
+                    else packageName = "";
+                    dataManager.getApplicationManager().reset(packageName);
+                    isUpdateUI = true;
+//                    getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new FragmentFoldingUIAppInstall()).commitAllowingStateLoss();
+                    break;
+            }
         }
-    }
-
-    void updateInstall() {
-        BootstrapText bt;
-        if (countUpdate == 0) {
-            bt = new BootstrapText.Builder(getContext()).addText("up-to-date")
-                    .build();
-            awesomeTextViewInstall.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
-            awesomeTextViewInstallStatus.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
-            awesomeTextViewInstallStatus.setBootstrapText(getStatusText(true));
-            awesomeTextViewInstall.setBootstrapText(bt);
-        } else {
-            bt = new BootstrapText.Builder(getContext()).addText("Update available: (App: " + countUpdate + " )")
-                    .build();
-            awesomeTextViewInstall.setBootstrapBrand(DefaultBootstrapBrand.DANGER);
-            awesomeTextViewInstallStatus.setBootstrapBrand(DefaultBootstrapBrand.DANGER);
-            awesomeTextViewInstallStatus.setBootstrapText(getStatusText(false));
-            awesomeTextViewInstall.setBootstrapText(bt);
-        }
-    }
-
-    BootstrapText getStatusText(boolean status) {
-        if (status)
-            return new BootstrapText.Builder(getContext()).addText("Status:   ").addFontAwesomeIcon("fa_check_circle")
-                    .build();
-        else
-            return new BootstrapText.Builder(getContext()).addText("Status:   ").addFontAwesomeIcon("fa_times")
-                    .build();
-    }
-
+    };
 
 }

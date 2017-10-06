@@ -1,6 +1,7 @@
 package org.md2k.mcerebrum.UI.joinstudy;
 
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,28 +13,33 @@ import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.rengwuxian.materialedittext.MaterialEditText;
 
 import org.md2k.mcerebrum.ActivityMain;
+import org.md2k.mcerebrum.Constants;
 import org.md2k.mcerebrum.MyApplication;
 import org.md2k.mcerebrum.R;
-import org.md2k.mcerebrum.app.ApplicationManager;
 import org.md2k.mcerebrum.commons.dialog.Dialog;
+import org.md2k.mcerebrum.commons.dialog.DialogCallback;
 import org.md2k.mcerebrum.data.DataManager;
-import org.md2k.system.internet.download.DownloadInfo;
-import org.md2k.system.cerebralcortexwebapi.CCWebAPICalls;
-import org.md2k.system.cerebralcortexwebapi.interfaces.CerebralCortexWebApi;
+import org.md2k.system.app.ApplicationManager;
+import org.md2k.system.cerebralcortexwebapi.ServerManager;
 import org.md2k.system.cerebralcortexwebapi.models.AuthResponse;
-import org.md2k.system.cerebralcortexwebapi.utils.ApiUtils;
+import org.md2k.system.cerebralcortexwebapi.models.MinioObjectStats;
+import org.md2k.system.constant.MCEREBRUM;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 import es.dmoral.toasty.Toasty;
 import rx.Observable;
 import rx.Observer;
+import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+
+import static com.blankj.utilcode.util.ZipUtils.unzipFile;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -66,10 +72,12 @@ public class FragmentJoinStudy extends Fragment {
      */
     Subscription subscription;
     MaterialDialog materialDialog;
-    CerebralCortexWebApi ccService;
-    CCWebAPICalls ccWebAPICalls;
     DataManager dataManager;
     ActivityMain activityMain;
+    AuthResponse authResponse;
+    MinioObjectStats minioObject;
+    String userName, password, serverName;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
@@ -100,10 +108,10 @@ public class FragmentJoinStudy extends Fragment {
                         editTextServer.getText().toString().equals("")) {
                     Toasty.error(getContext(), "Error: Invalid Username and/or password and/or Server name", Toast.LENGTH_SHORT, true).show();
                 } else {
-                    String userName = editTextUserName.getText().toString();
-                    String password = editTextPassword.getText().toString();
-                    String server = editTextServer.getText().toString();
-                    tryLogin(userName, convertSHA(password), server);
+                    userName = editTextUserName.getText().toString();
+                    password = convertSHA(editTextPassword.getText().toString());
+                    serverName = editTextServer.getText().toString();
+                    tryLogin();
                 }
             }
 
@@ -112,63 +120,70 @@ public class FragmentJoinStudy extends Fragment {
 
         });
     }
-    String convertSHA(String password){
-        MessageDigest md = null;
+
+    private String convertSHA(String password) {
+        MessageDigest md;
         try {
             md = MessageDigest.getInstance("SHA-256");
-        md.update(password.getBytes("UTF-8")); // Change this to "UTF-16" if needed
-        byte[] digest = md.digest();
+            md.update(password.getBytes("UTF-8")); // Change this to "UTF-16" if needed
+            byte[] digest = md.digest();
             return String.format("%064x", new java.math.BigInteger(1, digest));
 
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
+        } catch (NoSuchAlgorithmException | UnsupportedEncodingException ignored) {
         }
         return "";
     }
-    String uuid, token;
-    void tryLogin(final String userName, final String password, final String serverName) {
+
+    void tryLogin() {
         materialDialog = Dialog.progressIndeterminate(getActivity(), "Connecting to the server...").show();
-
-
-        ccService = ApiUtils.getCCService(serverName);
-        ccWebAPICalls = new CCWebAPICalls(ccService);
         subscription = Observable.just(true).subscribeOn(Schedulers.newThread())
-                .flatMap(new Func1<Boolean, Observable<AuthResponse>>() {
+                .flatMap(new Func1<Boolean, Observable<List<MinioObjectStats>>>() {
                     @Override
-                    public Observable<AuthResponse> call(Boolean aBoolean) {
-                        AuthResponse authResponse = ccWebAPICalls.authenticateUser(userName, password);
-                        if(authResponse==null) return Observable.error(new Throwable("Invalid Username/password/server name"));
-                        uuid=authResponse.getUserUuid();
-                        token=authResponse.getAccessToken();
+                    public Observable<List<MinioObjectStats>> call(Boolean aBoolean) {
+                        authResponse = ServerManager.authenticate(serverName, userName, password);
+                        if (authResponse == null)
+                            return Observable.error(new Throwable("Invalid Username/password/server name"));
+                        return Observable.just(ServerManager.getConfigFiles(serverName, authResponse.getAccessToken()));
+                    }
+                }).observeOn(AndroidSchedulers.mainThread())
+                .flatMap(new Func1<List<MinioObjectStats>, Observable<MinioObjectStats>>() {
+                    @Override
+                    public Observable<MinioObjectStats> call(List<MinioObjectStats> minioObjectStatses) {
+                        return getObservableFile(minioObjectStatses);
 
-//                        saveData(userName, authResponse.getUserUuid(), authResponse.getAccessToken(), password);
-                        return Observable.just(authResponse);
                     }
-                }).flatMap(new Func1<AuthResponse, Observable<DownloadInfo>>() {
+                }).observeOn(Schedulers.newThread())
+                .flatMap(new Func1<MinioObjectStats, Observable<Boolean>>() {
                     @Override
-                    public Observable<DownloadInfo> call(AuthResponse ar) {
-                        return dataManager.getDataFileManager().downloadAndExtractFromServer(serverName, userName, password);
+                    public Observable<Boolean> call(MinioObjectStats minioObjectStats) {
+                        minioObject=minioObjectStats;
+                        if(!ServerManager.download(serverName, authResponse.getAccessToken(), minioObjectStats.getObjectName()))
+                        return Observable.error(new Throwable("Download failed"));
+                        return Observable.just(true);
                     }
-                }).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<DownloadInfo>() {
+                }).subscribeOn(Schedulers.newThread())
+                .flatMap(new Func1<Boolean, Observable<Boolean>>() {
+                    @Override
+                    public Observable<Boolean> call(Boolean aBoolean) {
+                        String a = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
+                        if (!unzipFile(a+"/config.zip", Constants.CONFIG_ROOT_DIR()))
+                            return Observable.error(new Throwable("Failed to unzip"));
+                        else {
+                            if(!dataManager.getDataFileManager().read()){
+                                dataManager.loadDefault();
+                                return Observable.error(new Throwable("Configuration file format error"));
+                            }else
+                                return Observable.just(true);
+                        }
+                    }
+                }).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Boolean>() {
                     @Override
                     public void onCompleted() {
                         materialDialog.dismiss();
-                        dataManager.resetDataCP();
-                        activityMain.applicationManager=new ApplicationManager(getActivity(), dataManager.getDataCPManager().getAppCPs());
-                        Toasty.success(getActivity(), "Successfully Logged in",Toast.LENGTH_SHORT).show();
-                        saveData(userName, uuid, token, password, serverName);
-
+                        Toasty.success(getActivity(), "Configuration file downloaded", Toast.LENGTH_SHORT).show();
+                        dataManager.resetDataCP(MCEREBRUM.CONFIG.TYPE_SERVER, userName);
+                        dataManager.getDataCPManager().getServerCP().set(MyApplication.getContext(), serverName, userName, authResponse.getUserUuid(), password, authResponse.getAccessToken(), minioObject.getObjectName(), minioObject.getLastModified(), minioObject.getLastModified());
                         activityMain.updateUI();
-                        /*
-                        if (!activityMain.readConfig()) {
-                            Toasty.error(getContext(), "Error: Configuration file format error").show();
-                            activityMain.prepareConfig();
-                        } else {
-                            activityMain.updateUI();
-                        }
-*/
                     }
 
                     @Override
@@ -178,60 +193,46 @@ public class FragmentJoinStudy extends Fragment {
                     }
 
                     @Override
-                    public void onNext(DownloadInfo downloadInfo) {
+                    public void onNext(Boolean downloadInfo) {
 //                        materialDialog.setProgress((int) downloadInfo.getProgress());
                     }
                 });
 
     }
 
-    void saveData(String userTitle, String uuid, String token, String hashPassword, String server) {
-        DataManager dataManager = ((ActivityMain) getActivity()).dataManager;
-        dataManager.getDataCPManager().getUserCP().set(MyApplication.getContext(), userTitle, uuid, token, true, hashPassword);
-        dataManager.getDataCPManager().getConfigCP().setDownloadLink(MyApplication.getContext(), server);
+    Observable<MinioObjectStats> getObservableFile(final List<MinioObjectStats> list) {
+        Toasty.success(getActivity(), "Successfully Logged in", Toast.LENGTH_SHORT).show();
+        materialDialog.dismiss();
+        if (list.size() == 0)
+            return Observable.error(new Throwable("Configuration file doesn't exist"));
+        if (list.size() == 1) return Observable.just(list.get(0));
+        return Observable.create(new Observable.OnSubscribe<MinioObjectStats>() {
+            @Override
+            public void call(final Subscriber<? super MinioObjectStats> subscriber) {
+                try {
+                    String[] fileName = new String[list.size()];
+                    for (int i = 0; i < list.size(); i++)
+                        fileName[i] = list.get(i).getObjectName();
+                    Dialog.singleChoice(getActivity(), "Select Configuration File", fileName, -1, new DialogCallback() {
+                        @Override
+                        public void onSelected(String value) {
+                            for (int i = 0; i < list.size(); i++) {
+                                if (list.get(i).getObjectName().equals(value)) {
+                                    subscriber.onNext(list.get(i));
+                                    subscriber.onCompleted();
+                                    materialDialog = Dialog.progressIndeterminate(getActivity(), "Downloading configuration file...").show();
 
-    }
-
-/*
-    public void downloadConfig(String downloadURL) {
-
-        final ActivityMain activityMain = (ActivityMain) getActivity();
-        final DataManager dataManager = activityMain.dataManager;
-        materialDialog = Dialog.progressWithBar(getActivity(), "Downloading configuration file...").show();
-        subscription = dataManager.getDataFileManager().downloadAndExtract(getContext(), downloadURL)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<DownloadInfo>() {
-                    @Override
-                    public void onCompleted() {
-                        materialDialog.dismiss();
-                        dataManager.resetDataCP();
-                        activityMain.updateUI();
-                        */
-/*
-                        if (!activityMain.readConfig()) {
-                            Toasty.error(getContext(), "Error: Configuration file format error").show();
-                            activityMain.prepareConfig();
-                        } else {
-                            activityMain.updateUI();
+                                }
+                            }
+                            subscriber.onError(new Throwable("File is not selected"));
                         }
-*//*
-
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        Toasty.error(getContext(), "Error: Download failed (e=" + e.getMessage() + ")").show();
-                        materialDialog.dismiss();
-                    }
-
-                    @Override
-                    public void onNext(DownloadInfo downloadInfo) {
-                        materialDialog.setProgress((int) downloadInfo.getProgress());
-                    }
-                });
+                    }).show();
+                } catch (Exception e) {
+                    subscriber.onError(e);        // Signal about the error to subscriber
+                }
+            }
+        });
     }
-*/
 
     @Override
     public void onDestroy() {

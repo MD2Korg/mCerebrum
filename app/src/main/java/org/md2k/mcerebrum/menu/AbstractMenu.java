@@ -48,7 +48,6 @@ import org.md2k.mcerebrum.R;
 import org.md2k.system.constant.MCEREBRUM;
 import org.md2k.system.provider.ConfigCP;
 import org.md2k.system.provider.StudyCP;
-import org.md2k.system.provider.UserCP;
 
 import java.io.IOException;
 
@@ -73,16 +72,16 @@ public abstract class AbstractMenu {
 
 //    abstract IProfile[] getHeaderContentType(final Context context, UserInfoManager userInfo, StudyInfo studyInfo, final ResponseCallBack responseCallBack);
 
-    public static IProfile[] getHeaderContent(final Context context, UserCP userCP, StudyCP studyCP, ConfigCP configCP, final ResponseCallBack responseCallBack) {
+    public static IProfile[] getHeaderContent(final Context context, String userName, StudyCP studyCP, ConfigCP configCP, final ResponseCallBack responseCallBack) {
         switch (configCP.getType().toUpperCase()) {
             case MCEREBRUM.CONFIG.TYPE_FREEBIE:
-                return new MenuFreebie().getHeaderContentType(context, userCP, studyCP, responseCallBack);
+                return new MenuFreebie().getHeaderContentType(context, userName, studyCP, responseCallBack);
             case MCEREBRUM.CONFIG.TYPE_CONFIGURED:
-                return new MenuConfigured().getHeaderContentType(context, userCP, studyCP, responseCallBack);
+                return new MenuConfigured().getHeaderContentType(context, userName, studyCP, responseCallBack);
             case MCEREBRUM.CONFIG.TYPE_SERVER:
-                return new MenuServer().getHeaderContentType(context, userCP, studyCP, responseCallBack);
+                return new MenuServer().getHeaderContentType(context, userName, studyCP, responseCallBack);
             default:
-                return new MenuFreebie().getHeaderContentType(context, userCP, studyCP, responseCallBack);
+                return new MenuFreebie().getHeaderContentType(context, userName, studyCP, responseCallBack);
         }
     }
 

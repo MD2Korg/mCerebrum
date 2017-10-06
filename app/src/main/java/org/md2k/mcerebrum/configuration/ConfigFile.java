@@ -36,6 +36,7 @@ public class ConfigFile {
     private String version;
     private String download_link;
     private String expected_version;
+    private String file_name;
 
     public String getId() {
         return id;
@@ -71,5 +72,9 @@ public class ConfigFile {
 
     public String getExpected_version() {
         return expected_version;
+    }
+
+    public String getFile_name() {
+        return file_name;
     }
 }
