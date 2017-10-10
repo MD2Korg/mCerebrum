@@ -139,7 +139,7 @@ public class FragmentCheckUpdate extends Fragment {
                                         ((ActivityMain) getActivity()).responseCallBack.onResponse(null, MENU_HOME);
                                     }
                                 }
-                            }).show();
+                            }).cancelable(false).show();
                         }
                     }
 

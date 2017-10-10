@@ -1,6 +1,5 @@
 package org.md2k.mcerebrum;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 
@@ -16,7 +15,6 @@ import org.md2k.mcerebrum.UI.app_settings.FragmentAppSettings;
 import org.md2k.mcerebrum.UI.check_update.FragmentCheckUpdate;
 import org.md2k.mcerebrum.UI.home.FragmentHome;
 import org.md2k.mcerebrum.UI.joinstudy.FragmentJoinStudy;
-import org.md2k.system.app.ApplicationManager;
 import org.md2k.mcerebrum.commons.dialog.Dialog;
 import org.md2k.mcerebrum.commons.dialog.DialogCallback;
 import org.md2k.mcerebrum.menu.AbstractMenu;
