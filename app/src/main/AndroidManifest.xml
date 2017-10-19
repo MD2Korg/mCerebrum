@@ -31,8 +31,6 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".UI.login.ActivityLogin" />
-
         <!--
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -59,11 +57,15 @@
             android:value="1cad146ed866fa3d49c3bc8376ff52af7d9970da" />
 
         <provider
-            android:name=".provider.SampleProvider"
+            android:name=".core.access.SampleProvider"
             android:authorities="org.md2k.mcerebrum.provider"
             android:exported="true"
             android:grantUriPermissions="true" />
 
+        <activity
+            android:name=".UI.check_update.ActivityCheckUpdate"
+            android:exported="true"
+            android:enabled="true" />
     </application>
 
 </manifest>

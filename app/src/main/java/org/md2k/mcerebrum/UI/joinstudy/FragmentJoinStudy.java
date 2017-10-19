@@ -18,12 +18,14 @@ import org.md2k.mcerebrum.MyApplication;
 import org.md2k.mcerebrum.R;
 import org.md2k.mcerebrum.commons.dialog.Dialog;
 import org.md2k.mcerebrum.commons.dialog.DialogCallback;
-import org.md2k.mcerebrum.data.DataManager;
-import org.md2k.system.app.ApplicationManager;
+import org.md2k.mcerebrum.core.access.configinfo.ConfigCP;
+import org.md2k.mcerebrum.core.access.serverinfo.ServerCP;
+import org.md2k.mcerebrum.core.access.userinfo.UserCP;
+import org.md2k.mcerebrum.core.constant.MCEREBRUM;
+import org.md2k.mcerebrum.configuration.ConfigManager;
 import org.md2k.system.cerebralcortexwebapi.ServerManager;
 import org.md2k.system.cerebralcortexwebapi.models.AuthResponse;
 import org.md2k.system.cerebralcortexwebapi.models.MinioObjectStats;
-import org.md2k.system.constant.MCEREBRUM;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -72,7 +74,6 @@ public class FragmentJoinStudy extends Fragment {
      */
     Subscription subscription;
     MaterialDialog materialDialog;
-    DataManager dataManager;
     ActivityMain activityMain;
     AuthResponse authResponse;
     MinioObjectStats minioObject;
@@ -88,7 +89,6 @@ public class FragmentJoinStudy extends Fragment {
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
         activityMain = (ActivityMain) getActivity();
-        dataManager = activityMain.dataManager;
         final BootstrapButton button_cancel = (BootstrapButton) view.findViewById(R.id.button_login_cancel);
         button_cancel.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -169,11 +169,14 @@ public class FragmentJoinStudy extends Fragment {
                         if (!unzipFile(a+"/config.zip", Constants.CONFIG_ROOT_DIR()))
                             return Observable.error(new Throwable("Failed to unzip"));
                         else {
-                            if(!dataManager.getDataFileManager().read()){
-                                dataManager.loadDefault();
+                            if(!ConfigManager.load(getContext())){
                                 return Observable.error(new Throwable("Configuration file format error"));
-                            }else
+                            }else {
+                                UserCP.set(getContext(), null, userName);
+                                ServerCP.set(MyApplication.getContext(), serverName, userName, authResponse.getUserUuid(), password, authResponse.getAccessToken(), minioObject.getObjectName(), minioObject.getLastModified(), minioObject.getLastModified());
+                                ConfigCP.setDownloadFrom(getContext(), MCEREBRUM.CONFIG.TYPE_SERVER);
                                 return Observable.just(true);
+                            }
                         }
                     }
                 }).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Observer<Boolean>() {
@@ -181,8 +184,6 @@ public class FragmentJoinStudy extends Fragment {
                     public void onCompleted() {
                         materialDialog.dismiss();
                         Toasty.success(getActivity(), "Configuration file downloaded", Toast.LENGTH_SHORT).show();
-                        dataManager.resetDataCP(MCEREBRUM.CONFIG.TYPE_SERVER, userName);
-                        dataManager.getDataCPManager().getServerCP().set(MyApplication.getContext(), serverName, userName, authResponse.getUserUuid(), password, authResponse.getAccessToken(), minioObject.getObjectName(), minioObject.getLastModified(), minioObject.getLastModified());
                         activityMain.updateUI();
                     }
 

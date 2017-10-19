@@ -7,15 +7,13 @@ buildscript {
 
     dependencies {
         classpath 'io.fabric.tools:gradle:1.24.2'
-        classpath 'org.jraf:acpg-gradle-plugin:1.13.1'
     }
 }
-version = '2.0.3'
+version = '2.0.5'
 apply from: 'versioning.gradle'
 
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
-apply plugin: 'org.jraf.acpg.gradleplugin'
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
@@ -59,22 +57,6 @@ android {
         exclude 'META-INF/LGPL2.1'
         exclude 'META-INF/rxjava.properties'
     }
-}
-acpg {
-    entitiesDir file('etc/acpg')
-    providerJavaPackage 'org.md2k.mcerebrum.provider'
-    authority 'org.md2k.mcerebrum.provider'
-    providerClassName 'SampleProvider'
-    databaseFileName 'sample.db'
-    databaseVersion 1
-    sqliteOpenHelperCallbacksClassName 'SampleSQLiteOpenHelperCallbacks'
-    enableForeignKeys true
-    useAnnotations true
-    useSupportLibrary true
-    generateBeans true
-    // Name of a boolean field in BuildConfig to enable/disable debug logging in the generated code
-    // Optional - default value: "DEBUG"
-    debugLogsFieldName 'LOG_DEBUG_PROVIDER'
 }
 dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {

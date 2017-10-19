@@ -1,11 +1,17 @@
 package org.md2k.mcerebrum.UI.home;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.beardedhen.androidbootstrap.AwesomeTextView;
 import com.beardedhen.androidbootstrap.BootstrapButton;
@@ -13,21 +19,25 @@ import com.beardedhen.androidbootstrap.BootstrapText;
 import com.beardedhen.androidbootstrap.api.defaults.DefaultBootstrapBrand;
 
 import org.md2k.mcerebrum.ActivityMain;
+import org.md2k.mcerebrum.MyApplication;
 import org.md2k.mcerebrum.R;
-import org.md2k.system.app.ApplicationManager;
-import org.md2k.mcerebrum.data.DataManager;
-import org.md2k.system.app.AppInfoController;
-import org.md2k.system.constant.MCEREBRUM;
+import org.md2k.mcerebrum.core.access.configinfo.ConfigCP;
+import org.md2k.mcerebrum.core.access.studyinfo.StudyCP;
+import org.md2k.mcerebrum.core.access.appinfo.AppAccess;
+import org.md2k.mcerebrum.core.access.appinfo.AppBasicInfo;
+import org.md2k.mcerebrum.core.constant.MCEREBRUM;
+import org.md2k.system.appinfo.AppInstall;
+import org.md2k.system.appinfo.BroadCastMessage;
 
 import java.util.ArrayList;
+
+import es.dmoral.toasty.Toasty;
 
 import static org.md2k.mcerebrum.menu.AbstractMenu.MENU_APP_ADD_REMOVE;
 import static org.md2k.mcerebrum.menu.AbstractMenu.MENU_APP_SETTINGS;
 import static org.md2k.mcerebrum.menu.AbstractMenu.MENU_JOIN;
 
 public class FragmentHome extends Fragment {
-    ApplicationManager applicationManager;
-    DataManager dataManager;
 /*
     StudyInfoController studyInfoController;
     UserInfoController UserInfoController;
@@ -51,7 +61,7 @@ public class FragmentHome extends Fragment {
     View.OnClickListener onClickListernerJoin = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if(dataManager.getDataCPManager().getConfigCP().getType().equalsIgnoreCase(MCEREBRUM.CONFIG.TYPE_FREEBIE))
+            if(ConfigCP.getType(MyApplication.getContext()).equalsIgnoreCase(MCEREBRUM.CONFIG.TYPE_FREEBIE))
                 ((ActivityMain) getActivity()).responseCallBack.onResponse(null, MENU_JOIN);
         }
     };
@@ -71,8 +81,6 @@ public class FragmentHome extends Fragment {
 
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
-        applicationManager = ((ActivityMain) getActivity()).dataManager.getApplicationManager();
-        dataManager = ((ActivityMain) getActivity()).dataManager;
 
 //        studyInfoController = ((ActivityMain) getActivity()).studyInfoController;
 //        UserInfoController = ((ActivityMain) getActivity()).userInfoController;
@@ -121,7 +129,14 @@ public class FragmentHome extends Fragment {
         bootstrapButtonStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((ActivityMain) getActivity()).startStudy();
+                ArrayList<String> packageNames = AppBasicInfo.getStudy(getContext());
+                if (packageNames.size() == 0 || !AppInstall.isCoreInstalled(getContext())) {
+                    Toasty.error(getContext(), "Datakit/study is not installed", Toast.LENGTH_SHORT).show();
+                } else {
+                    StudyCP.setStarted(getContext(), true);
+                    AppAccess.launch(getContext(), packageNames.get(0));
+                    getActivity().finish();
+                }
             }
         });
 
@@ -133,13 +148,34 @@ public class FragmentHome extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        AppInstall.set(getContext());
+        AppAccess.set(getContext());
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(mMessageReceiver,
+                new IntentFilter(MCEREBRUM.APP_ACCESS.APPCP_CHANGED));
+
+        BroadCastMessage.send(getActivity(), MCEREBRUM.APP_ACCESS.OP_DATAKIT_STOP);
         updateSummary();
         updateInstall();
         updateSetup();
         updateButton();
     }
+    @Override
+    public void onPause(){
+        super.onPause();
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mMessageReceiver);
+    }
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            updateSummary();
+            updateInstall();
+            updateSetup();
+            updateButton();
+        }
+    };
+
     void updateButton(){
-        if (!applicationManager.isCoreInstalled()) {
+        if (!AppInstall.isCoreInstalled(getContext())) {
             bootstrapButtonStart.setEnabled(false);
             bootstrapButtonStart.setBootstrapBrand(DefaultBootstrapBrand.DANGER);
             bootstrapButtonStart.setBootstrapText(new BootstrapText.Builder(getActivity()).addFontAwesomeIcon("fa-ban").addText("  Start Study").build());
@@ -155,7 +191,7 @@ public class FragmentHome extends Fragment {
 
     void updateSummary() {
         awesomeTextViewSummary.setBootstrapText(getSummary());
-        if(dataManager.getDataCPManager().getConfigCP().getType().equalsIgnoreCase(MCEREBRUM.CONFIG.TYPE_FREEBIE)) {
+        if(ConfigCP.getType(MyApplication.getContext()).equalsIgnoreCase(MCEREBRUM.CONFIG.TYPE_FREEBIE)) {
             textViewClickJoin.setVisibility(View.VISIBLE);
             awesomeTextViewSummary.setBootstrapBrand(DefaultBootstrapBrand.WARNING);
         }
@@ -167,7 +203,7 @@ public class FragmentHome extends Fragment {
     }
 
     void updateInstall() {
-        ArrayList<AppInfoController> appInfos = applicationManager.getRequiredAppNotInstalled();
+        ArrayList<String> appInfos = AppInstall.getRequiredAppNotInstalled(MyApplication.getContext());
 //        String notInstalledApp = getRequiredAppNotInstalled();
         BootstrapText bt;
         if (appInfos.size()==0) {
@@ -188,7 +224,7 @@ public class FragmentHome extends Fragment {
     }
 
     boolean updateSetup() {
-        ArrayList<AppInfoController> appInfos = applicationManager.getRequiredAppNotConfigured();
+        ArrayList<String> appInfos = AppAccess.getRequiredAppNotConfigured(getContext());
 //        String notConfiguredApp = getRequiredAppNotSetup();
         BootstrapText bt;
         if (appInfos.size() == 0) {
@@ -211,36 +247,38 @@ public class FragmentHome extends Fragment {
     }
 
     BootstrapText getSummary() {
-        if(dataManager.getDataCPManager().getStudyCP().getType().equalsIgnoreCase(MCEREBRUM.CONFIG.TYPE_FREEBIE))
+        String name=StudyCP.getTitle(getContext());
+        if(name.equalsIgnoreCase(MCEREBRUM.CONFIG.TYPE_FREEBIE))
         return new BootstrapText.Builder(getContext()).addText("General Use")
                 .build();
         else
-        return new BootstrapText.Builder(getContext()).addText(dataManager.getDataCPManager().getStudyCP().getTitle())
+        return new BootstrapText.Builder(getContext()).addText(StudyCP.getTitle(MyApplication.getContext()))
                 .build();
     }
 
     String getRequiredAppNotInstalled() {
         String notInstalledAppList = "";
-        ArrayList<AppInfoController> appInfos = applicationManager.getRequiredAppNotInstalled();
+        ArrayList<String> appInfos = AppInstall.getRequiredAppNotInstalled(MyApplication.getContext());
         if (appInfos.size() == 0) return null;
         for (int i = 0; i < appInfos.size(); i++) {
             if (i == 0)
-                notInstalledAppList = appInfos.get(i).getAppBasicInfoController().getTitle();
+                notInstalledAppList = AppBasicInfo.getTitle(MyApplication.getContext(), appInfos.get(i));
             else
-                notInstalledAppList += ", " + appInfos.get(i).getAppBasicInfoController().getTitle();
+                notInstalledAppList += ", " + AppBasicInfo.getTitle(MyApplication.getContext(), appInfos.get(i));
         }
         return notInstalledAppList;
     }
 
     String getRequiredAppNotSetup() {
         String notInstalledAppList = "";
-        ArrayList<AppInfoController> appInfos = applicationManager.getRequiredAppNotConfigured();
+
+        ArrayList<String> appInfos = AppAccess.getRequiredAppNotConfigured(getContext());
         if (appInfos.size() == 0) return null;
         for (int i = 0; i < appInfos.size(); i++) {
             if (i == 0)
-                notInstalledAppList = appInfos.get(i).getAppBasicInfoController().getTitle();
+                notInstalledAppList = AppBasicInfo.getTitle(getContext(), appInfos.get(i));
             else
-                notInstalledAppList += ", " + appInfos.get(i).getAppBasicInfoController().getTitle();
+                notInstalledAppList += ", " + AppBasicInfo.getTitle(getContext(), appInfos.get(i));
         }
         return notInstalledAppList;
     }

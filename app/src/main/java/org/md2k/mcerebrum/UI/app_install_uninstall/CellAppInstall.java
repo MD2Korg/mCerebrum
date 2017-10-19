@@ -1,6 +1,7 @@
 package org.md2k.mcerebrum.UI.app_install_uninstall;
 
 import android.app.Activity;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,10 +17,10 @@ import com.beardedhen.androidbootstrap.api.defaults.DefaultBootstrapBrand;
 import com.ramotion.foldingcell.FoldingCell;
 
 import org.md2k.mcerebrum.Constants;
-import org.md2k.mcerebrum.MyApplication;
 import org.md2k.mcerebrum.R;
-import org.md2k.system.app.AppInfoController;
-import org.md2k.system.constant.MCEREBRUM;
+import org.md2k.mcerebrum.core.access.appinfo.AppBasicInfo;
+import org.md2k.mcerebrum.core.constant.MCEREBRUM;
+import org.md2k.mcerebrum.system.appinfo.AppInstall;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -28,15 +29,17 @@ import java.util.HashSet;
  * Simple example of ListAdapter for using with Folding Cell
  * Adapter holds indexes of unfolded elements for correct work with default reusable views behavior
  */
-class CellAppInstall extends ArrayAdapter<AppInfoController> {
+class CellAppInstall extends ArrayAdapter<String> {
 
     private HashSet<Integer> unfoldedIndexes = new HashSet<>();
     private View.OnClickListener defaultRequestBtnClickListener;
     private ResponseCallBack responseCallBack;
+    FragmentAppInstall f;
 
 
-    CellAppInstall(Activity activity, ArrayList<AppInfoController> objects, ResponseCallBack responseCallBack) {
-        super(activity, 0, objects);
+    CellAppInstall(FragmentAppInstall activity, ArrayList<String> objects, ResponseCallBack responseCallBack) {
+        super(activity.getContext(), 0, objects);
+        f=activity;
         this.responseCallBack=responseCallBack;
     }
 
@@ -44,7 +47,7 @@ class CellAppInstall extends ArrayAdapter<AppInfoController> {
     @Override
     public View getView(final int position, View convertView, @NonNull ViewGroup parent) {
         // get item for selected view
-        final AppInfoController appInfoController = getItem(position);
+        String packageName=getItem(position);
         // if cell is exists - reuse it, if not - create the new one from resource
         FoldingCell cell = (FoldingCell) convertView;
         ViewHolder viewHolder;
@@ -84,20 +87,25 @@ class CellAppInstall extends ArrayAdapter<AppInfoController> {
             viewHolder = (ViewHolder) cell.getTag();
         }
         // bind data from selected element to view through view holder
-        if(appInfoController.getAppBasicInfoController().isUseAs(MCEREBRUM.APP.USE_AS_REQUIRED))
-            viewHolder.title.setText(appInfoController.getAppBasicInfoController().getTitle()+" (Required)");
+        String useAs=AppBasicInfo.getUseAs(getContext(), packageName);
+        if(useAs!=null && useAs.equalsIgnoreCase(MCEREBRUM.APP.USE_AS_REQUIRED))
+            viewHolder.title.setText(AppBasicInfo.getTitle(getContext(), packageName)+" (Required)");
         else
-            viewHolder.title.setText(appInfoController.getAppBasicInfoController().getTitle());
-        viewHolder.summary.setText(appInfoController.getAppBasicInfoController().getSummary());
-        viewHolder.content_title.setText(appInfoController.getAppBasicInfoController().getTitle());
-        viewHolder.content_summary.setText(appInfoController.getAppBasicInfoController().getSummary());
-        viewHolder.description.setText(appInfoController.getAppBasicInfoController().getDescription());
-        String versionName= appInfoController.getInstallInfoController().getCurrentVersionName();if(versionName==null) versionName="not installed";
+            viewHolder.title.setText(AppBasicInfo.getTitle(getContext(), packageName));
+        viewHolder.summary.setText(AppBasicInfo.getSummary(getContext(), packageName));
+        viewHolder.content_title.setText(AppBasicInfo.getTitle(getContext(), packageName));
+        viewHolder.content_summary.setText(AppBasicInfo.getSummary(getContext(), packageName));
+        viewHolder.description.setText(AppBasicInfo.getDescription(getContext(), packageName));
+        String versionName= AppInstall.getCurrentVersion(getContext(), packageName);
         viewHolder.version.setText(versionName);
-        String lastVersionName= appInfoController.getInstallInfoController().getLastVersionName();if(lastVersionName==null) lastVersionName="up-to-date";
+        String lastVersionName= AppInstall.getLatestVersion(getContext(), packageName);
         viewHolder.updateVersion.setText(lastVersionName);
-        viewHolder.icon_short.setImageDrawable(appInfoController.getAppBasicInfoController().getIcon(MyApplication.getContext(), Constants.CONFIG_MCEREBRUM_DIR()));
-        viewHolder.icon_long.setImageDrawable(appInfoController.getAppBasicInfoController().getIcon(MyApplication.getContext(), Constants.CONFIG_MCEREBRUM_DIR()));
+        Drawable d;
+        if(f.icons.containsKey(packageName))
+            d=f.icons.get(packageName);
+        else d = AppBasicInfo.getIcon(getContext(), packageName, Constants.CONFIG_MCEREBRUM_DIR());
+        viewHolder.icon_short.setImageDrawable(d);
+        viewHolder.icon_long.setImageDrawable(d);
 
         View.OnClickListener onClickListenerUninstall=new View.OnClickListener() {
             @Override
@@ -118,11 +126,16 @@ class CellAppInstall extends ArrayAdapter<AppInfoController> {
                 responseCallBack.onResponse(position, FragmentAppInstall.UPDATE);
             }
         };
-        if(appInfoController.getAppBasicInfoController().getType().equalsIgnoreCase("MCEREBRUM")){
+        boolean isInstalled = AppInstall.getInstalled(getContext(), packageName);
+        if(isInstalled && !f.icons.containsKey(packageName))
+            f.icons.put(packageName, AppBasicInfo.getIcon(getContext(), packageName, Constants.CONFIG_MCEREBRUM_DIR()));
+        boolean hasUpdate = AppInstall.hasUpdate(getContext(), packageName);
+
+        if(AppBasicInfo.getMCerebrum(getContext()).equals(packageName)){
             set(viewHolder.buttonInstallLong, viewHolder.buttonInstallShort, false, DefaultBootstrapBrand.SECONDARY, true, onClickListenerInstall);
             set(viewHolder.buttonUninstallLong, viewHolder.buttonUninstallShort, false, DefaultBootstrapBrand.SECONDARY, true, onClickListenerUninstall);
         }
-        else if(appInfoController.getInstallInfoController().isInstalled()) {
+        else if(isInstalled) {
             set(viewHolder.buttonInstallLong, viewHolder.buttonInstallShort, false, DefaultBootstrapBrand.SECONDARY, true, onClickListenerInstall);
             set(viewHolder.buttonUninstallLong, viewHolder.buttonUninstallShort, true, DefaultBootstrapBrand.DANGER, true, onClickListenerUninstall);
         }
@@ -130,14 +143,12 @@ class CellAppInstall extends ArrayAdapter<AppInfoController> {
             set(viewHolder.buttonInstallLong, viewHolder.buttonInstallShort, true, DefaultBootstrapBrand.SUCCESS, false,onClickListenerInstall);
             set(viewHolder.buttonUninstallLong, viewHolder.buttonUninstallShort, false, DefaultBootstrapBrand.SECONDARY, true, onClickListenerUninstall);
        }
-        if(appInfoController.getInstallInfoController().isInstalled() && appInfoController.getInstallInfoController().hasUpdate()) {
+        if(isInstalled && hasUpdate) {
             set(viewHolder.buttonUpdateLong, viewHolder.buttonUpdateShort, true, DefaultBootstrapBrand.WARNING, false, onClickListenerUpdate);
         }
         else{
             set(viewHolder.buttonUpdateLong, viewHolder.buttonUpdateShort, false, DefaultBootstrapBrand.SECONDARY, true,onClickListenerUpdate);
         }
-        boolean isInstalled = appInfoController.getInstallInfoController().isInstalled();
-        boolean hasUpdate = appInfoController.getInstallInfoController().hasUpdate();
 
         if(!isInstalled){
             viewHolder.status.setBootstrapBrand(DefaultBootstrapBrand.DANGER);
@@ -149,18 +160,6 @@ class CellAppInstall extends ArrayAdapter<AppInfoController> {
             viewHolder.status.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
             viewHolder.status.setText("installed");
         }
-
-     //   viewHolder.requestsCount.setText(String.valueOf(item.getRequestsCount()));
-   //     viewHolder.pledgePrice.setText(item.getPledgePrice());
-        // set custom btn handler for list item from that item
-
-  /*      if (appInfo.getRequestBtnClickListener() != null) {
-            viewHolder.contentRequestBtn.setOnClickListener(appInfo.getRequestBtnClickListener());
-        } else {
-            // (optionally) add "default" handler if no handler found in item
-            viewHolder.contentRequestBtn.setOnClickListener(defaultRequestBtnClickListener);
-        }
-*/
 
         return cell;
     }

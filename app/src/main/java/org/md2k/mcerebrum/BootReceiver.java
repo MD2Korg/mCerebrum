@@ -3,16 +3,12 @@ package org.md2k.mcerebrum;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
-import org.md2k.system.app.ApplicationManager;
-import org.md2k.mcerebrum.configuration.DataFileManager;
-import org.md2k.system.provider.DataCPManager;
-import org.md2k.mcerebrum.data.DataManager;
-import org.md2k.system.app.AppInfoController;
-import org.md2k.system.constant.MCEREBRUM;
+import org.md2k.mcerebrum.core.access.studyinfo.StudyCP;
+import org.md2k.mcerebrum.core.access.appinfo.AppAccess;
+import org.md2k.mcerebrum.core.access.appinfo.AppBasicInfo;
+import org.md2k.mcerebrum.system.appinfo.AppInstall;
 
 import java.util.ArrayList;
 
@@ -47,35 +43,37 @@ import br.com.goncalves.pugnotification.notification.PugNotification;
 public class BootReceiver extends BroadcastReceiver
 {
     Context context;
-    AppInfoController appInfoController;
     @Override
     public void onReceive(Context context, Intent intent) {
         this.context=context;
-        DataManager dataManager;
-        dataManager = new DataManager(new DataFileManager(), new DataCPManager(context));
-        Log.d("abc","..."+dataManager.getDataCPManager());
-        Log.d("abc","..."+dataManager.getDataCPManager().getAppCPs());
-        if(dataManager.isStartAtBoot() && dataManager.getDataCPManager().getStudyCP().getStarted()) {
+        if(StudyCP.getStartAtBoot(context) && StudyCP.getStarted(context)) {
             Log.d("abc","check core");
-            if(!dataManager.getApplicationManager().isCoreInstalled()) return;
+            if(!AppInstall.isCoreInstalled(context)) return;
             Log.d("abc","check core - success");
+            ArrayList<String> packageNames= AppBasicInfo.getStudy(context);
+            if(packageNames.size()==0) return;
+            AppAccess.startBackground(context, packageNames.get(0));
+/*
             ArrayList<AppInfoController> a = dataManager.getApplicationManager().getByType(MCEREBRUM.APP.TYPE_STUDY);
             Log.d("abc","check study");
             if(a.size()==0) return;
             Log.d("abc","check study - success");
             appInfoController=a.get(0);
+*/
 /*
             LocalBroadcastManager.getInstance(context).registerReceiver(mMessageReceiver,
                     new IntentFilter("connection"));
 */
 //            applicationManager.startMCerebrumService(appInfoController);
 //            appInfoController.get
+/*
             Log.d("abc","start mcerebrum background");
             Intent intent1=new Intent();
-            intent1.setClassName(appInfoController.getAppBasicInfoController().getPackageName(), appInfoController.getAppBasicInfoController().getPackageName()+".ActivityMain");
+            intent1.setClassName(appInfoController.getAppBasicInfo().getPackageName(), appInfoController.getAppBasicInfo().getPackageName()+".ActivityMain");
             intent1.putExtra("background",true);
             intent1.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent1);
+*/
 /*
             new Thread(new Runnable() {
                 @Override
@@ -87,7 +85,7 @@ public class BootReceiver extends BroadcastReceiver
                         e.printStackTrace();
                     }
                     Log.d("abc","trying to start");
-                    appInfoController.getmCerebrumController().startBackground(null);
+                    appInfoController.getAppAccess().startBackground(null);
                     Log.d("abc","stop mcerebrum...background");
                     applicationManager.stopMCerebrumService(appInfoController);
 
@@ -105,7 +103,7 @@ public class BootReceiver extends BroadcastReceiver
         @Override
         public void onReceive(Context context, Intent intent) {
             // Get extra data included in the Intent
-            appInfoController.getmCerebrumController().startBackground(null);
+            appInfoController.getAppAccess().startBackground(null);
             stop();
         }
     };

@@ -1,18 +1,20 @@
 package org.md2k.mcerebrum.UI.app_install_uninstall;
 
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.beardedhen.androidbootstrap.AwesomeTextView;
@@ -23,21 +25,24 @@ import com.ramotion.foldingcell.FoldingCell;
 
 import org.md2k.mcerebrum.ActivityMain;
 import org.md2k.mcerebrum.R;
-import org.md2k.system.app.AppInfoController;
-import org.md2k.system.app.ApplicationManager;
-import org.md2k.system.app.InstallInfoController;
-import org.md2k.system.constant.MCEREBRUM;
-import org.md2k.system.internet.download.DownloadInfo;
+import org.md2k.mcerebrum.core.access.ActivityEmpty;
+import org.md2k.mcerebrum.core.access.appinfo.AppAccess;
+import org.md2k.mcerebrum.core.access.appinfo.AppBasicInfo;
+import org.md2k.mcerebrum.core.constant.MCEREBRUM;
+import org.md2k.mcerebrum.core.internet.download.DownloadInfo;
+import org.md2k.system.appinfo.AppInstall;
+import org.md2k.system.appinfo.BroadCastMessage;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 
 import es.dmoral.toasty.Toasty;
-import rx.Observable;
 import rx.Observer;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import static org.md2k.mcerebrum.menu.AbstractMenu.MENU_CHECK_UPDATE;
-import static org.md2k.mcerebrum.menu.AbstractMenu.MENU_HOME;
 
 public class FragmentAppInstall extends Fragment {
     public static final int INSTALL = 0;
@@ -51,34 +56,44 @@ public class FragmentAppInstall extends Fragment {
     AwesomeTextView textViewStatus;
     BootstrapButton bootstrapButtonInstall;
     BootstrapButton bootstrapButtonUpdate;
-    ApplicationManager applicationManager;
     CellAppInstall adapter;
+    HashMap<String, Drawable> icons;
     int installAllIndex = -1;
-    int count=0;
+    int count = 0;
     boolean isUpdateUI = false;
     Subscription subscriptionUpdate;
     boolean updateAvailable = false;
+    ArrayList<String> packageNames;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
-        // Defines the xml file for the fragment
         return inflater.inflate(R.layout.fragment_folding_ui_app_install, parent, false);
     }
 
     @Override
     public void onResume() {
+        super.onResume();
+        AppInstall.set(getContext());
+        AppAccess.set(getContext());
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(mMessageReceiver,
+                new IntentFilter(MCEREBRUM.APP_ACCESS.APPCP_CHANGED));
         if (isUpdateUI) {
             downloadAndInstallAll();
             isUpdateUI = false;
         }
-        super.onResume();
+    }
+    @Override
+    public void onPause(){
+        super.onPause();
+        LocalBroadcastManager.getInstance(getContext()).unregisterReceiver(mMessageReceiver);
     }
 
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
         ListView theListView = (ListView) view.findViewById(R.id.listview_folding_ui);
         installAllIndex = -1;
-
+        icons=new HashMap<>();
+        packageNames = AppBasicInfo.get(getContext());
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(Intent.ACTION_PACKAGE_REMOVED);
         intentFilter.addAction(Intent.ACTION_PACKAGE_ADDED);
@@ -87,7 +102,6 @@ public class FragmentAppInstall extends Fragment {
         intentFilter.addDataScheme("package");
         getContext().registerReceiver(br, intentFilter);
 
-        applicationManager = ((ActivityMain) getActivity()).dataManager.getApplicationManager();
         // prepare elements to display
         textViewInstalled = (AwesomeTextView) view.findViewById(R.id.textview_installed);
         textViewUpdate = (AwesomeTextView) view.findViewById(R.id.textview_update);
@@ -107,48 +121,22 @@ public class FragmentAppInstall extends Fragment {
             @Override
             public void onClick(View v) {
                 ((ActivityMain) getActivity()).responseCallBack.onResponse(null, MENU_CHECK_UPDATE);
-
-//                checkUpdateAll();
             }
         });
 
         updateTextViewStatus();
-//        String st="{fa_download}: "+installed[0]+"   {fa_refresh}: "+installed[1]+"   {fa_trash}: "+installed[2];
-//        textViewInstalled.setBootstrapText(bootstrapText);
-        // add custom btn handler to first list item
-/*
-        items.get(0).setRequestBtnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getActivity(), "CUSTOM HANDLER FOR FIRST BUTTON", Toast.LENGTH_SHORT).show();
-            }
-        });
-*/
-        adapter = new CellAppInstall(getActivity(), applicationManager.get(), new ResponseCallBack() {
+        adapter = new CellAppInstall(FragmentAppInstall.this, packageNames, new ResponseCallBack() {
             @Override
             public void onResponse(int position, int operation) {
-                InstallInfoController installInfoController = applicationManager.get(position).getInstallInfoController();
-                if (operation == UNINSTALL) {
-                    installInfoController.uninstall(getActivity(), 1000);
-                } else if (operation == INSTALL) {
-                    install(applicationManager.get(position));
-                    //                   installInfoController.install(getActivity());
-/*
-                    if(appInfo.getDownloadFromGithub()!=null || appInfo.getDownloadFromURL()!=null){
-                        downloadAndInstall(appInfo);
-                    }
-                    else new AppInstall(appInfo).install(getActivity());
-*/
-                } else {
-                    install(applicationManager.get(position));
-//                    installInfoController.install(getActivity());
-                }
+                if (operation == UNINSTALL)
+                    AppInstall.uninstall(getActivity(), packageNames.get(position), 1000);
+                else
+                    install(packageNames.get(position));
 
             }
         });
         theListView.setAdapter(adapter);
 
-        // set on click event listener to list view
         theListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int pos, long l) {
@@ -160,148 +148,56 @@ public class FragmentAppInstall extends Fragment {
         });
     }
 
-/*
-    void checkUpdateAll() {
-        updateAvailable = false;
-        Observable[] observables = new Observable[applicationManager.get().size()];
-        for (int i = 0; i < applicationManager.get().size(); i++) {
-            observables[i] = applicationManager.get(i).getInstallInfoController().checkUpdate();
+    private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            updateTextViewStatus();
+            adapter.notifyDataSetChanged();
         }
-        count=0;
-        materialDialog = new MaterialDialog.Builder(getActivity())
-                .content("Checking updates ...")
-                .progress(true, 100, false)
-                .show();
+    };
 
-
-        subscription = applicationManager.hasUpdate().subscribe(new Observer() {
-            @Override
-            public void onCompleted() {
-                materialDialog.dismiss();
-                if (updateAvailable) {
-                    Toasty.normal(getActivity(), "Update available...", Toast.LENGTH_SHORT).show();
-                    adapter.notifyDataSetChanged();
-                    updateTextViewStatus();
-                } else
-                    Toasty.normal(getActivity(), "Apps are up-to-date", Toast.LENGTH_SHORT).show();
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                materialDialog.dismiss();
-                Toasty.error(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onNext(Object o) {
-                Boolean b= (Boolean) o;
-
-                materialDialog.dismiss();
-                count++;
-                materialDialog = new MaterialDialog.Builder(getActivity())
-                        .content("Checking updates ..."+String.valueOf(count))
-                        .progress(true, 100, false)
-                        .show();
-
-                updateAvailable |= b;
-            }
-        });
-
-*/
-/*
-        subscriptionUpdate = Observable.merge(observables).subscribe(new Observer<Boolean>() {
-            @Override
-            public void onCompleted() {
-                materialDialog.dismiss();
-                if (updateAvailable) {
-                    Toasty.normal(getActivity(), "Update available...", Toast.LENGTH_SHORT).show();
-                    adapter.notifyDataSetChanged();
-                    updateTextViewStatus();
-                } else
-                    Toasty.normal(getActivity(), "Apps are up-to-date", Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                materialDialog.dismiss();
-            }
-
-            @Override
-            public void onNext(Boolean o) {
-                if (o) updateAvailable = true;
-            }
-        });
-*//*
-
-    }
-*/
-    void installMCerebrumIfRequired(){
-        int ind_mc=0;
-        for(int i=0;i<applicationManager.get().size();i++) {
-            if (applicationManager.get(i).getAppBasicInfoController().isType(MCEREBRUM.APP.TYPE_MCEREBRUM)) {
-                ind_mc=i;
-                break;
-            }
-        }
-        if(applicationManager.get(ind_mc).getInstallInfoController().isInstalled() &&
-                !applicationManager.get(ind_mc).getInstallInfoController().hasUpdate()) {
-            installAllIndex=-1;
+    void installMCerebrumIfRequired() {
+        String packageName = AppBasicInfo.getMCerebrum(getContext());
+        if(!AppInstall.hasUpdate(getContext(), packageName)){
+            installAllIndex = -1;
             return;
         }
-        install(applicationManager.get(ind_mc));
-        installAllIndex=-1;
+        install(packageName);
+        installAllIndex = -1;
     }
 
     void downloadAndInstallAll() {
         if (installAllIndex == -1) {
             return;
         }
-        while (installAllIndex < applicationManager.get().size()
-                && ((applicationManager.get(installAllIndex).getInstallInfoController().isInstalled()
-                && !applicationManager.get().get(installAllIndex).getInstallInfoController().hasUpdate())
-                || applicationManager.get().get(installAllIndex).getAppBasicInfoController().isType(MCEREBRUM.APP.TYPE_MCEREBRUM)))
+        while (installAllIndex < packageNames.size()
+                && ((AppInstall.getInstalled(getContext(), packageNames.get(installAllIndex))
+                && !AppInstall.hasUpdate(getContext(), packageNames.get(installAllIndex)))
+                || MCEREBRUM.APP.TYPE_MCEREBRUM.equalsIgnoreCase(AppBasicInfo.getType(getContext(), packageNames.get(installAllIndex)))))
             installAllIndex++;
-        if (installAllIndex >= applicationManager.get().size()) {
+        if (installAllIndex >= packageNames.size()) {
             installMCerebrumIfRequired();
             installAllIndex = -1;
             return;
         }
-        install(applicationManager.get().get(installAllIndex));
+        install(packageNames.get(installAllIndex));
         installAllIndex++;
-/*
-        downloadAndInstall(applicationManager.get()[installAllIndex].getInstallInfoController());
-        applicationManager.get()[installAllIndex].getInstallInfoController().install(getActivity());
-*/
-/*
-        if(applicationManager.get()[installAllIndex].getDownloadFromGithub()!=null || applicationManager.getAppInfos()[installAllIndex].getDownloadFromURL()!=null){
-            downloadAndInstall(applicationManager.getAppInfos()[installAllIndex]);
-        }
-        else new AppInstall(applicationManager.getAppInfos()[installAllIndex]).install(getActivity());
-*/
     }
 
-    void install(final AppInfoController appInfoController) {
+    void install(String packageName) {
 
         materialDialog = new MaterialDialog.Builder(getActivity())
-                .content("Downloading " + appInfoController.getAppBasicInfoController().getTitle() + " ...")
+                .content("Downloading " + AppBasicInfo.getTitle(getContext(), packageName) + " ...")
                 .progress(false, 100, true)
                 .show();
-        subscription = appInfoController.getInstallInfoController().install(getActivity())
+        subscription = AppInstall.install(getActivity(), packageName)
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Observer<DownloadInfo>() {
                     @Override
                     public void onCompleted() {
                         materialDialog.dismiss();
-//                        applicationManager.startMCerebrumService(appInfoController);
-//                        applicationManager.startMCerebrumService();
-
-                        //                       new AppInstall(appInfo).install(getActivity());
-//                        Intent returnIntent = new Intent();
-//                        returnIntent.putExtra("type", TYPE_GENERAL);
-//                        setResult(Activity.RESULT_OK, returnIntent);
-//                        finish();
+                        BroadCastMessage.send(getContext());
                     }
 
                     @Override
@@ -343,10 +239,19 @@ public class FragmentAppInstall extends Fragment {
                     else if (temp.length == 2)
                         packageName = temp[1];
                     else packageName = "";
-                    applicationManager.reset(packageName);
+                    AppInstall.set(context, packageName);
                     adapter.notifyDataSetChanged();
                     updateTextViewStatus();
                     isUpdateUI = true;
+                    try {
+                        Intent i = new Intent();
+                        i.setComponent(new ComponentName(packageName, "org.md2k.mcerebrum.core.access.ActivityEmpty"));
+                        startActivity(i);
+                    }catch(Exception e){
+                    }
+                    BroadCastMessage.send(getActivity(), MCEREBRUM.APP_ACCESS.OP_DATAKIT_STOP);
+
+
 //                    getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new FragmentFoldingUIAppInstall()).commitAllowingStateLoss();
                     break;
             }
@@ -354,33 +259,35 @@ public class FragmentAppInstall extends Fragment {
     };
 
     void updateTextViewStatus() {
-        int[] installed = applicationManager.getInstallStatus();
-        BootstrapText bootstrapTextS;
-        BootstrapText bootstrapTextI = new BootstrapText.Builder(getContext()).addFontAwesomeIcon("fa_download").addText(" : " + String.valueOf(installed[0])).build();
-        BootstrapText bootstrapTextU = new BootstrapText.Builder(getContext()).addFontAwesomeIcon("fa_refresh").addText(" : " + String.valueOf(installed[1])).build();
-        BootstrapText bootstrapTextD = new BootstrapText.Builder(getContext()).addFontAwesomeIcon("fa_trash").addText(" : " + String.valueOf(installed[2])).build();
-        textViewInstalled.setBootstrapText(bootstrapTextI);
-        textViewUpdate.setBootstrapText(bootstrapTextU);
-        textViewNotInstalled.setBootstrapText(bootstrapTextD);
-        if (applicationManager.isRequiredAppInstalled()) {
-            bootstrapTextS = new BootstrapText.Builder(getContext()).addText("Status: ").addFontAwesomeIcon("fa_check").build();
-            textViewStatus.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
-            textViewStatus.setBootstrapText(bootstrapTextS);
+        try {
+            int[] installed = AppInstall.getInstallStatus(getContext());
+            BootstrapText bootstrapTextS;
+            BootstrapText bootstrapTextI = new BootstrapText.Builder(getContext()).addFontAwesomeIcon("fa_download").addText(" : " + String.valueOf(installed[0])).build();
+            BootstrapText bootstrapTextU = new BootstrapText.Builder(getContext()).addFontAwesomeIcon("fa_refresh").addText(" : " + String.valueOf(installed[1])).build();
+            BootstrapText bootstrapTextD = new BootstrapText.Builder(getContext()).addFontAwesomeIcon("fa_trash").addText(" : " + String.valueOf(installed[2])).build();
+            textViewInstalled.setBootstrapText(bootstrapTextI);
+            textViewUpdate.setBootstrapText(bootstrapTextU);
+            textViewNotInstalled.setBootstrapText(bootstrapTextD);
+            if (AppInstall.isRequiredAppInstalled(getContext())) {
+                bootstrapTextS = new BootstrapText.Builder(getContext()).addText("Status: ").addFontAwesomeIcon("fa_check").build();
+                textViewStatus.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
+                textViewStatus.setBootstrapText(bootstrapTextS);
 /*
             bootstrapButtonInstall.setEnabled(false);
             bootstrapButtonInstall.setBootstrapBrand(DefaultBootstrapBrand.SECONDARY);
             bootstrapButtonInstall.setShowOutline(true);
 */
-        } else {
-            bootstrapTextS = new BootstrapText.Builder(getContext()).addText("Status: ").addFontAwesomeIcon("fa_times").build();
-            textViewStatus.setBootstrapBrand(DefaultBootstrapBrand.DANGER);
-            textViewStatus.setBootstrapText(bootstrapTextS);
+            } else {
+                bootstrapTextS = new BootstrapText.Builder(getContext()).addText("Status: ").addFontAwesomeIcon("fa_times").build();
+                textViewStatus.setBootstrapBrand(DefaultBootstrapBrand.DANGER);
+                textViewStatus.setBootstrapText(bootstrapTextS);
 /*
             bootstrapButtonInstall.setEnabled(true);
             bootstrapButtonInstall.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
             bootstrapButtonInstall.setShowOutline(false);
 */
-        }
+            }
+        }catch(Exception e){}
     }
 
 }

@@ -18,11 +18,12 @@ import com.beardedhen.androidbootstrap.BootstrapText;
 import com.beardedhen.androidbootstrap.api.defaults.DefaultBootstrapBrand;
 import com.ramotion.foldingcell.FoldingCell;
 
-import org.md2k.mcerebrum.ActivityMain;
 import org.md2k.mcerebrum.R;
-import org.md2k.system.app.AppBasicInfoController;
-import org.md2k.system.app.AppInfoController;
-import org.md2k.system.app.ApplicationManager;
+import org.md2k.mcerebrum.core.access.appinfo.AppAccess;
+import org.md2k.mcerebrum.core.access.appinfo.AppBasicInfo;
+import org.md2k.mcerebrum.core.constant.MCEREBRUM;
+import org.md2k.system.appinfo.AppInstall;
+import org.md2k.system.appinfo.BroadCastMessage;
 
 import java.util.ArrayList;
 
@@ -30,12 +31,11 @@ public class FragmentAppSettings extends Fragment {
     public static final int CONFIGURE = 0;
     public static final int LAUNCH = 1;
     public static final int CLEAR = 2;
-    ApplicationManager applicationManager;
     CellAppSettings adapter;
-//    ArrayList<AppInfoController> appInfoControllers;
     AwesomeTextView textViewConfigured;
     AwesomeTextView textViewNotConfigured;
     AwesomeTextView textViewStatus;
+    ArrayList<String> packageNames;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
@@ -50,9 +50,11 @@ public class FragmentAppSettings extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        LocalBroadcastManager.getInstance(getActivity()).registerReceiver(mMessageReceiver,
-                new IntentFilter("connection"));
-        applicationManager.setmCerebrumInfo();
+        AppInstall.set(getContext());
+        AppAccess.set(getContext());
+        LocalBroadcastManager.getInstance(getContext()).registerReceiver(mMessageReceiver,
+                new IntentFilter(MCEREBRUM.APP_ACCESS.APPCP_CHANGED));
+        BroadCastMessage.send(getActivity(), MCEREBRUM.APP_ACCESS.OP_DATAKIT_STOP);
         adapter.notifyDataSetChanged();
     }
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
@@ -65,33 +67,13 @@ public class FragmentAppSettings extends Fragment {
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
         ListView theListView = (ListView) view.findViewById(R.id.listview_folding_ui);
-        applicationManager = ((ActivityMain) getActivity()).dataManager.getApplicationManager();
+        packageNames= AppBasicInfo.get(getContext());
         textViewConfigured = (AwesomeTextView) view.findViewById(R.id.textview_configured);
         textViewNotConfigured = (AwesomeTextView) view.findViewById(R.id.textview_not_configured);
         textViewStatus = (AwesomeTextView) view.findViewById(R.id.textview_status);
-        final ArrayList<AppInfoController> apps = applicationManager.get();
         // prepare elements to display
-/*
-        appInfoControllers = new ArrayList<>();
-        for (int i = 0; i < apps.size(); i++) {
-//            if (!apps[i].getInstallInfoController().isInstalled()) continue;
-//            if (apps[i].getAppBasicInfoController().isType(AppBasicInfoController.TYPE_MCEREBRUM)) continue;
-            appInfoControllers.add(apps.get(i));
-        }
-*/
         updateTextViewStatus();
-        adapter = new CellAppSettings(getActivity(), applicationManager.get(), new ResponseCallBack() {
-            @Override
-            public void onResponse(int position, int operation) {
-                if (operation == CONFIGURE) {
-                    applicationManager.get().get(position).getmCerebrumController().configure(null);
-                }else if (operation == LAUNCH) {
-                    applicationManager.get().get(position).getmCerebrumController().launch(null);
-                } else if(operation == CLEAR){
-                    applicationManager.get().get(position).getmCerebrumController().clear(null);
-                }
-            }
-        });
+        createAdapter();
         theListView.setAdapter(adapter);
 
         // set on click event listener to list view
@@ -104,6 +86,21 @@ public class FragmentAppSettings extends Fragment {
                 adapter.registerToggle(pos);
             }
         });
+    }
+    private void createAdapter(){
+        adapter = new CellAppSettings(getActivity(), packageNames, new ResponseCallBack() {
+            @Override
+            public void onResponse(int position, int operation) {
+                if (operation == CONFIGURE) {
+                    AppAccess.configure(getContext(), packageNames.get(position));
+                }else if (operation == LAUNCH) {
+                    AppAccess.launch(getContext(), packageNames.get(position));
+                } else if(operation == CLEAR){
+                    AppAccess.clear(getContext(), packageNames.get(position));
+                }
+            }
+        });
+
     }
 
 /*
@@ -118,77 +115,36 @@ public class FragmentAppSettings extends Fragment {
         }
 */
 
-    /*
-            RxActivityResult.on(this).startIntent(intent)
-                    .subscribe(new Consumer<Result<FragmentAppSettings>>() {
-                        @Override
-                        public void accept(Result<FragmentAppSettings> result) throws Exception {
-                            Intent data = result.data();
-                            int resultCode = result.resultCode();
-                            result.data().get
-                            // the requestCode using which the activity is started can be received here.
-                            int requestCode = result.requestCode();
-
-    */
-/*
-                    if(requestCode == YourActivity.YOUR_REQUEST_CODE)
-                    {
-                        // Do Something
-                    }
-
-                    if (resultCode == RESULT_OK) {
-//                        result.targetUI().showImage(data);
-                    } else {
-//                        result.targetUI().printUserCanceled();
-                    }
-*//*
-
-                    }
-                });
-    }
-
-*/
-/*
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        try {
-            if (requestCode >= 2000 && requestCode <= 3000) {
-                requestCode = requestCode - 2000;
-                Info info = data.getParcelableExtra(Access.RESPONSE);
-                Log.d("abc", "requestCode="+requestCode);
-                applicationManager.getAppMCs()[requestCode].getInfo(info);
-            }
-        } catch (Exception ignored) {
-
-        }
-    }
-*/
     void updateTextViewStatus(){
         BootstrapText bootstrapTextS;
-        BootstrapText bootstrapTextC = new BootstrapText.Builder(getContext()).addText("configured : " + String.valueOf(applicationManager.getRequiredAppConfigured().size())).build();
-        BootstrapText bootstrapTextN = new BootstrapText.Builder(getContext()).addText("not configured : " + String.valueOf(applicationManager.getRequiredAppNotConfigured().size())).build();
+        BootstrapText bootstrapTextC = new BootstrapText.Builder(getContext()).addText("configured : " + String.valueOf(AppAccess.getRequiredAppConfigured(getContext()).size())).build();
+        BootstrapText bootstrapTextN = new BootstrapText.Builder(getContext()).addText("not configured : " + String.valueOf(AppAccess.getRequiredAppNotConfigured(getContext()).size())).build();
         textViewConfigured.setBootstrapText(bootstrapTextC);
         textViewNotConfigured.setBootstrapText(bootstrapTextN);
-        if(applicationManager.getRequiredAppNotConfigured().size()==0) {
+        if(AppAccess.getRequiredAppNotConfigured(getContext()).size()==0) {
             bootstrapTextS = new BootstrapText.Builder(getContext()).addText("Status: ").addFontAwesomeIcon("fa_check").build();
             textViewStatus.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
             textViewStatus.setBootstrapText(bootstrapTextS);
+
 /*
             bootstrapButtonInstall.setEnabled(false);
             bootstrapButtonInstall.setBootstrapBrand(DefaultBootstrapBrand.SEONDARY);
             bootstrapButtonInstall.setShowOutline(true);
 */
+
         } else {
             bootstrapTextS = new BootstrapText.Builder(getContext()).addText("Status: ").addFontAwesomeIcon("fa_times").build();
             textViewStatus.setBootstrapBrand(DefaultBootstrapBrand.DANGER);
             textViewStatus.setBootstrapText(bootstrapTextS);
+
 /*
             bootstrapButtonInstall.setEnabled(true);
             bootstrapButtonInstall.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
             bootstrapButtonInstall.setShowOutline(false);
 */
+
         }
+
     }
 
 }

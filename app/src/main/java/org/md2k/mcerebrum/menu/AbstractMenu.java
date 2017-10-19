@@ -44,10 +44,10 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
 import org.md2k.mcerebrum.Constants;
+import org.md2k.mcerebrum.MyApplication;
 import org.md2k.mcerebrum.R;
-import org.md2k.system.constant.MCEREBRUM;
-import org.md2k.system.provider.ConfigCP;
-import org.md2k.system.provider.StudyCP;
+import org.md2k.mcerebrum.core.access.configinfo.ConfigCP;
+import org.md2k.mcerebrum.core.constant.MCEREBRUM;
 
 import java.io.IOException;
 
@@ -72,21 +72,28 @@ public abstract class AbstractMenu {
 
 //    abstract IProfile[] getHeaderContentType(final Context context, UserInfoManager userInfo, StudyInfo studyInfo, final ResponseCallBack responseCallBack);
 
-    public static IProfile[] getHeaderContent(final Context context, String userName, StudyCP studyCP, ConfigCP configCP, final ResponseCallBack responseCallBack) {
-        switch (configCP.getType().toUpperCase()) {
+    public static IProfile[] getHeaderContent(final Context context, String userName, final ResponseCallBack responseCallBack) {
+        if(ConfigCP.getDownloadFrom(MyApplication.getContext())==null){
+            return new MenuFreebie().getHeaderContentType(context, userName, responseCallBack);
+        }
+        switch (ConfigCP.getDownloadFrom(MyApplication.getContext()).toUpperCase()) {
             case MCEREBRUM.CONFIG.TYPE_FREEBIE:
-                return new MenuFreebie().getHeaderContentType(context, userName, studyCP, responseCallBack);
+                return new MenuFreebie().getHeaderContentType(context, userName, responseCallBack);
             case MCEREBRUM.CONFIG.TYPE_CONFIGURED:
-                return new MenuConfigured().getHeaderContentType(context, userName, studyCP, responseCallBack);
+                return new MenuConfigured().getHeaderContentType(context, userName, responseCallBack);
             case MCEREBRUM.CONFIG.TYPE_SERVER:
-                return new MenuServer().getHeaderContentType(context, userName, studyCP, responseCallBack);
+                return new MenuServer().getHeaderContentType(context, userName, responseCallBack);
             default:
-                return new MenuFreebie().getHeaderContentType(context, userName, studyCP, responseCallBack);
+                return new MenuFreebie().getHeaderContentType(context, userName, responseCallBack);
         }
     }
 
-    public static IDrawerItem[] getMenuContent(final Context context, StudyCP studyCP, ConfigCP configCP, final ResponseCallBack responseCallBack) {
-        switch (configCP.getType().toUpperCase()) {
+    public static IDrawerItem[] getMenuContent(final Context context, final ResponseCallBack responseCallBack) {
+        if(ConfigCP.getDownloadFrom(MyApplication.getContext())==null){
+            return new MenuFreebie().getMenuContent(responseCallBack);
+        }
+
+        switch (ConfigCP.getDownloadFrom(MyApplication.getContext()).toUpperCase()) {
             case MCEREBRUM.CONFIG.TYPE_FREEBIE:
                 return new MenuFreebie().getMenuContent(responseCallBack);
             case MCEREBRUM.CONFIG.TYPE_CONFIGURED:
@@ -171,6 +178,5 @@ public abstract class AbstractMenu {
         }
         return null;
     }
-
 }
 

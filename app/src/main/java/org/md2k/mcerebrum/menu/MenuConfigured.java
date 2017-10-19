@@ -36,12 +36,14 @@ import com.mikepenz.materialdrawer.model.ProfileSettingDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
-import org.md2k.system.provider.StudyCP;
+import org.md2k.mcerebrum.MyApplication;
+import org.md2k.mcerebrum.core.access.studyinfo.StudyCP;
+
 
 class MenuConfigured extends AbstractMenu{
-    IProfile[] getHeaderContentType(Context context, String userName, StudyCP studyCP, final ResponseCallBack responseCallBack){
+    IProfile[] getHeaderContentType(Context context, String userName, final ResponseCallBack responseCallBack){
         IProfile[] iProfiles=new IProfile[2];
-        iProfiles[0]=new ProfileDrawerItem().withName(studyCP.getTitle()).withIcon(getIcon(context, studyCP.getIcon()));
+        iProfiles[0]=new ProfileDrawerItem().withName(StudyCP.getTitle(MyApplication.getContext())).withIcon(getIcon(context, StudyCP.getIcon(MyApplication.getContext())));
 /*
         iProfiles[1]=new ProfileSettingDrawerItem().withName("About Study").withIcon(FontAwesome.Icon.faw_info).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
             @Override

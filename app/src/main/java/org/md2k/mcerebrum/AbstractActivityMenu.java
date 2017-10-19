@@ -1,7 +1,8 @@
 package org.md2k.mcerebrum;
 
-import android.os.Bundle;
+import android.content.Intent;
 import android.support.v7.widget.Toolbar;
+import android.widget.Toast;
 
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
@@ -12,13 +13,26 @@ import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 
 import org.md2k.mcerebrum.UI.app_install_uninstall.FragmentAppInstall;
 import org.md2k.mcerebrum.UI.app_settings.FragmentAppSettings;
-import org.md2k.mcerebrum.UI.check_update.FragmentCheckUpdate;
+import org.md2k.mcerebrum.UI.check_update.ActivityCheckUpdate;
 import org.md2k.mcerebrum.UI.home.FragmentHome;
 import org.md2k.mcerebrum.UI.joinstudy.FragmentJoinStudy;
 import org.md2k.mcerebrum.commons.dialog.Dialog;
 import org.md2k.mcerebrum.commons.dialog.DialogCallback;
+import org.md2k.mcerebrum.core.access.appinfo.AppAccess;
+import org.md2k.mcerebrum.core.access.appinfo.AppBasicInfo;
+import org.md2k.mcerebrum.core.access.configinfo.ConfigCP;
+import org.md2k.mcerebrum.core.access.serverinfo.ServerCP;
+import org.md2k.mcerebrum.core.access.studyinfo.StudyCP;
+import org.md2k.mcerebrum.core.access.userinfo.UserCP;
+import org.md2k.mcerebrum.core.constant.MCEREBRUM;
+import org.md2k.mcerebrum.configuration.ConfigManager;
 import org.md2k.mcerebrum.menu.AbstractMenu;
 import org.md2k.mcerebrum.menu.ResponseCallBack;
+import org.md2k.mcerebrum.system.appinfo.AppInstall;
+
+import java.util.ArrayList;
+
+import es.dmoral.toasty.Toasty;
 
 public abstract class AbstractActivityMenu extends AbstractActivityBasics {
     private Drawer result = null;
@@ -36,16 +50,16 @@ public abstract class AbstractActivityMenu extends AbstractActivityBasics {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
-                .withHeaderBackground(AbstractMenu.getCoverImage(this, dataManager.getDataCPManager().getStudyCP().getCoverImage()))
+                .withHeaderBackground(AbstractMenu.getCoverImage(this, StudyCP.getCoverImage(MyApplication.getContext())))
                 .withCompactStyle(true)
-                .addProfiles(AbstractMenu.getHeaderContent(this, dataManager.getDataCPManager().getUserCP().getUserName(), dataManager.getDataCPManager().getStudyCP(), dataManager.getDataCPManager().getConfigCP(), responseCallBack))
+                .addProfiles(AbstractMenu.getHeaderContent(this, UserCP.getUserName(MyApplication.getContext()), responseCallBack))
                 .build();
 
         result = new DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(toolbar)
                 .withAccountHeader(headerResult) //set the AccountHeader we created earlier for the header
-                .addDrawerItems(AbstractMenu.getMenuContent(this, dataManager.getDataCPManager().getStudyCP(), dataManager.getDataCPManager().getConfigCP(), responseCallBack))
+                .addDrawerItems(AbstractMenu.getMenuContent(this, responseCallBack))
                 .build();
     }
 
@@ -58,32 +72,22 @@ public abstract class AbstractActivityMenu extends AbstractActivityBasics {
         } else {
             if (selectedMenu != AbstractMenu.MENU_HOME) {
                 responseCallBack.onResponse(null, AbstractMenu.MENU_HOME);
-            }else
+            } else
                 super.onBackPressed();
         }
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-/*
-        //add the values which need to be saved from the drawer to the bundle
-        outState = result.saveInstanceState(outState);
-        //add the values which need to be saved from the accountHeader to the bundle
-        outState = headerResult.saveInstanceState(outState);
-*/
-//        super.onSaveInstanceState(outState);
-    }
 
     public ResponseCallBack responseCallBack = new ResponseCallBack() {
         @Override
         public void onResponse(IDrawerItem drawerItem, int responseId) {
             selectedMenu = responseId;
             if (drawerItem != null)
-                toolbar.setTitle(dataManager.getDataCPManager().getStudyCP().getTitle() + ": " + ((Nameable) drawerItem).getName().getText(AbstractActivityMenu.this));
-            else toolbar.setTitle(dataManager.getDataCPManager().getStudyCP().getTitle());
+                toolbar.setTitle(StudyCP.getTitle(MyApplication.getContext()) + ": " + ((Nameable) drawerItem).getName().getText(AbstractActivityMenu.this));
+            else toolbar.setTitle(StudyCP.getTitle(MyApplication.getContext()));
             switch (responseId) {
                 case AbstractMenu.MENU_HOME:
-                    toolbar.setTitle(dataManager.getDataCPManager().getStudyCP().getTitle());
+                    toolbar.setTitle(StudyCP.getTitle(MyApplication.getContext()));
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentHome()).commitAllowingStateLoss();
                     break;
                 case AbstractMenu.MENU_APP_ADD_REMOVE:
@@ -96,7 +100,8 @@ public abstract class AbstractActivityMenu extends AbstractActivityBasics {
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentJoinStudy()).commitAllowingStateLoss();
                     break;
                 case AbstractMenu.MENU_CHECK_UPDATE:
-                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentCheckUpdate()).commitAllowingStateLoss();
+                    Intent intent =new Intent(AbstractActivityMenu.this, ActivityCheckUpdate.class);
+                    startActivity(intent);
                     break;
 
                 case AbstractMenu.MENU_LEAVE:
@@ -104,30 +109,23 @@ public abstract class AbstractActivityMenu extends AbstractActivityBasics {
                         @Override
                         public void onSelected(String value) {
                             if (value.equals("Yes")) {
-                                dataManager.getApplicationManager().stopMCerebrumService();
-                                dataManager.loadDefault();
-                                dataManager.getApplicationManager().startMCerebrumService();
+                                ServerCP.deleteTable(getApplicationContext());
+                                ConfigManager.loadFromAsset(getApplicationContext());
+                                ConfigCP.setDownloadFrom(getApplicationContext(), MCEREBRUM.CONFIG.TYPE_FREEBIE);
                                 updateUI();
-//                                prepareConfig();
                             }
                         }
                     }).show();
                     break;
-/*
-                case AbstractMenu.MENU_LOGIN:
-                    Intent intent = new Intent(AbstractActivityMenu.this, ActivityLogin.class);
-                    startActivityForResult(intent, REQUESTCODE_LOGIN);
-//                    getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, new FragmentLogin()).commitAllowingStateLoss();
-                    break;
-                case AbstractMenu.MENU_LOGOUT:
-//                ((UserServer) user).setLoggedIn(this,false);
-                    dataManager.getDataCPManager().getUserCP().setLoggedIn(false);
-                    Toasty.success(AbstractActivityMenu.this, "Logged out", Toast.LENGTH_SHORT, true).show();
-                    updateUI();
-                    break;
-*/
                 case AbstractMenu.MENU_STUDY_START:
-                    startStudy();
+                    ArrayList<String> packageNames = AppBasicInfo.getStudy(getApplicationContext());
+                    if (packageNames.size() == 0 || !AppInstall.isCoreInstalled(getApplicationContext())) {
+                        Toasty.error(getApplicationContext(), "Datakit/study is not installed", Toast.LENGTH_SHORT).show();
+                    } else {
+                        StudyCP.setStarted(getApplicationContext(), true);
+                        AppAccess.launch(getApplicationContext(), packageNames.get(0));
+                        finish();
+                    }
                     break;
 
                 default:
