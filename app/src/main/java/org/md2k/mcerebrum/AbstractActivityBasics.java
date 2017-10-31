@@ -19,6 +19,7 @@ import org.md2k.mcerebrum.core.access.appinfo.AppInfoColumns;
 import org.md2k.mcerebrum.core.access.studyinfo.StudyCP;
 import org.md2k.mcerebrum.core.access.appinfo.AppAccess;
 import org.md2k.mcerebrum.configuration.ConfigManager;
+import org.md2k.mcerebrum.menu.AbstractMenu;
 import org.md2k.mcerebrum.system.appinfo.AppCPObserver;
 import org.md2k.mcerebrum.system.appinfo.AppInstall;
 
@@ -28,13 +29,14 @@ import es.dmoral.toasty.Toasty;
 import rx.Subscription;
 
 public abstract class AbstractActivityBasics extends AppCompatActivity {
-    static final String TAG=AbstractActivityBasics.class.getSimpleName();
+    static final String TAG = AbstractActivityBasics.class.getSimpleName();
     Subscription subscription;
     MaterialDialog materialDialog;
     Toolbar toolbar;
     AppCPObserver appCPObserver;
 
     abstract void updateUI();
+    abstract void createUI();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,96 +46,57 @@ public abstract class AbstractActivityBasics extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(R.string.app_name);
+        if (Permission.hasPermission(this)) {
+            resetConfig();
+            appCPObserver = new AppCPObserver(AbstractActivityBasics.this, new Handler());
+            getContentResolver().
+                    registerContentObserver(
+                            Uri.parse(SampleProvider.CONTENT_URI_BASE + "/" + AppInfoColumns.TABLE_NAME),
+                            true,
+                            appCPObserver);
 
-        Permission.requestPermission(this, new PermissionCallback() {
-            @Override
-            public void OnResponse(boolean isGranted) {
-                if (!isGranted) {
-                    Toasty.error(getApplicationContext(), "!PERMISSION DENIED !!! Could not continue...", Toast.LENGTH_SHORT).show();
-                    System.exit(0);
-                    finish();
-                }else{
-                    resetConfig();
-                    appCPObserver=new AppCPObserver(AbstractActivityBasics.this, new Handler());
-                    getContentResolver().
-                            registerContentObserver(
-                                    Uri.parse(SampleProvider.CONTENT_URI_BASE+"/"+ AppInfoColumns.TABLE_NAME),
-                                    true,
-                                    appCPObserver);
+            createUI();
 
-                    updateUI();
+        } else {
+
+            Permission.requestPermission(this, new PermissionCallback() {
+                @Override
+                public void OnResponse(boolean isGranted) {
+                    if (!isGranted) {
+                        Toasty.error(getApplicationContext(), "!PERMISSION DENIED !!! Could not continue...", Toast.LENGTH_SHORT).show();
+                        System.exit(0);
+                        finish();
+                    } else {
+                        resetConfig();
+                        appCPObserver = new AppCPObserver(AbstractActivityBasics.this, new Handler());
+                        getContentResolver().
+                                registerContentObserver(
+                                        Uri.parse(SampleProvider.CONTENT_URI_BASE + "/" + AppInfoColumns.TABLE_NAME),
+                                        true,
+                                        appCPObserver);
+
+                        createUI();
 //                    prepareConfig();
+                    }
                 }
-            }
-        });
-    }
-
-/*
-    public boolean readConfig(){
-        if(configManager.read() && configManager.isConfigured()) {
-                userInfoController.set();
-                studyInfoController.set(configManager.getDataFile());
-                applicationManager.set(configManager.getDataFile().getApplications());
-                if (studyInfoController.getType().equalsIgnoreCase(STUDY.FREEBIE))
-                    userInfoController.setTitle("Default");
-                return true;
-        }else{
-            configManager.clear();
-            userInfoController.clear();
-            studyInfoController.clear();
-            applicationManager.stop();
-            return false;
+            });
         }
     }
-*/
-/*
-    public void prepareConfig(){
-        if(!readConfig()){
-            downloadConfigDefault();
-        }else
-            updateUI();
-    }
-*/
-/*
-    void downloadConfigDefault(){
-        materialDialog = Dialog.progressWithBar(this, "Loading configuration file...").show();
-        subscription = configManager.downloadAndExtractDefault(this)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<DownloadInfo>() {
-                    @Override
-                    public void onCompleted() {
-                        materialDialog.dismiss();
-                        readConfig();
-                        updateUI();
-                    }
-                    @Override
-                    public void onError(Throwable e) {
-                        configManager.readFromAsset(getBaseContext());
-                        materialDialog.dismiss();
-                        updateUI();
-                    }
 
-                    @Override
-                    public void onNext(DownloadInfo downloadInfo) {
-//                        materialDialog.setProgress((int) downloadInfo.getProgress());
-                    }
-                });
-
-    }
-*/
     @Override
-    public void onDestroy(){
+    public void onDestroy() {
         try {
             getContentResolver().unregisterContentObserver(appCPObserver);
-        }catch (Exception ignored){}
+        } catch (Exception ignored) {
+        }
 
-        if(materialDialog!=null)
+        if (materialDialog != null)
             materialDialog.dismiss();
-        if(subscription!=null && !subscription.isUnsubscribed())
+        if (subscription != null && !subscription.isUnsubscribed())
             subscription.unsubscribe();
         super.onDestroy();
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         //handle the click on the back arrow click
@@ -146,9 +109,10 @@ public abstract class AbstractActivityBasics extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-    void resetConfig(){
-        ConfigManager.load(getApplicationContext());
-        if(StudyCP.getStarted(MyApplication.getContext())) {
+
+    void resetConfig() {
+        ConfigManager.load(getApplicationContext(), ConfigManager.LOAD_TYPE.READ);
+        if (StudyCP.getStarted(MyApplication.getContext())) {
             ArrayList<String> packageNames = AppBasicInfo.getStudy(getApplicationContext());
             if (packageNames.size() == 0 || !AppInstall.isCoreInstalled(getApplicationContext())) {
                 Toasty.error(getApplicationContext(), "Datakit/study is not installed", Toast.LENGTH_SHORT).show();

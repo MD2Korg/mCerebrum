@@ -20,7 +20,7 @@ import org.md2k.mcerebrum.R;
 import org.md2k.mcerebrum.core.access.appinfo.AppAccess;
 import org.md2k.mcerebrum.core.access.appinfo.AppBasicInfo;
 import org.md2k.mcerebrum.core.constant.MCEREBRUM;
-import org.md2k.system.appinfo.AppInstall;
+import org.md2k.mcerebrum.system.appinfo.AppInstall;
 
 import java.util.HashSet;
 import java.util.List;

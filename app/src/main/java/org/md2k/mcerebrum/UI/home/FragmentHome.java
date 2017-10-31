@@ -26,8 +26,8 @@ import org.md2k.mcerebrum.core.access.studyinfo.StudyCP;
 import org.md2k.mcerebrum.core.access.appinfo.AppAccess;
 import org.md2k.mcerebrum.core.access.appinfo.AppBasicInfo;
 import org.md2k.mcerebrum.core.constant.MCEREBRUM;
-import org.md2k.system.appinfo.AppInstall;
-import org.md2k.system.appinfo.BroadCastMessage;
+import org.md2k.mcerebrum.system.appinfo.AppInstall;
+import org.md2k.mcerebrum.system.appinfo.BroadCastMessage;
 
 import java.util.ArrayList;
 
@@ -248,11 +248,13 @@ public class FragmentHome extends Fragment {
 
     BootstrapText getSummary() {
         String name=StudyCP.getTitle(getContext());
-        if(name.equalsIgnoreCase(MCEREBRUM.CONFIG.TYPE_FREEBIE))
-        return new BootstrapText.Builder(getContext()).addText("General Use")
+        String v = ConfigCP.getVersion(getActivity());
+        if(v==null) v="2.0.0";
+        if(name==null || name.equalsIgnoreCase(MCEREBRUM.CONFIG.TYPE_FREEBIE))
+        return new BootstrapText.Builder(MyApplication.getContext()).addText("General Use ("+v+")")
                 .build();
         else
-        return new BootstrapText.Builder(getContext()).addText(StudyCP.getTitle(MyApplication.getContext()))
+        return new BootstrapText.Builder(MyApplication.getContext()).addText(StudyCP.getTitle(getContext())+" ("+v+")")
                 .build();
     }
 

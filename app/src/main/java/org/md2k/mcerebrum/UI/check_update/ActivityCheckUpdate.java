@@ -22,8 +22,9 @@ import org.md2k.mcerebrum.core.access.appinfo.AppBasicInfo;
 import org.md2k.mcerebrum.core.constant.MCEREBRUM;
 import org.md2k.mcerebrum.core.internet.download.DownloadInfo;
 import org.md2k.mcerebrum.configuration.ConfigManager;
-import org.md2k.system.appinfo.AppInstall;
-import org.md2k.system.appinfo.BroadCastMessage;
+import org.md2k.mcerebrum.system.appinfo.AppInstall;
+import org.md2k.mcerebrum.system.appinfo.BroadCastMessage;
+import org.md2k.mcerebrum.system.update.Update;
 
 import java.util.ArrayList;
 
@@ -46,7 +47,6 @@ public class ActivityCheckUpdate extends AppCompatActivity {
     ArrayList<String> packageNames;
 
     MaterialDialog materialDialog;
-    ActivityMain activityMain;
     boolean hasUpdate;
     String studyPackageName;
 
@@ -62,7 +62,7 @@ public class ActivityCheckUpdate extends AppCompatActivity {
                 .content("Checking updates ...")
                 .progress(true, 100, false)
                 .show();
-        subscription = Observable.merge(ConfigManager.checkUpdate(this), AppInstall.checkUpdate(this))
+        subscription = Observable.merge(Update.checkUpdateServer(this), AppInstall.checkUpdate(this))
                 .filter(new Func1<Boolean, Boolean>() {
                     @Override
                     public Boolean call(Boolean aBoolean) {
@@ -82,21 +82,21 @@ public class ActivityCheckUpdate extends AppCompatActivity {
                                 @Override
                                 public void onSelected(String value) {
                                     if ("Yes".equals(value)) {
-                                        subscriptionUpdate = ConfigManager.checkUpdate(ActivityCheckUpdate.this).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
+                                        subscriptionUpdate = Update.checkUpdateServer(ActivityCheckUpdate.this).subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
                                                 .flatMap(new Func1<Boolean, Observable<Boolean>>() {
                                                     @Override
                                                     public Observable<Boolean> call(Boolean aBoolean) {
-                                                        if (aBoolean == true)
+                                                        if (aBoolean) {
                                                             return ConfigManager.updateConfigServer(MyApplication.getContext(), Constants.CONFIG_ROOT_DIR())
                                                                     .subscribeOn(Schedulers.newThread())
                                                                     .observeOn(AndroidSchedulers.mainThread()).map(new Func1<Boolean, Boolean>() {
                                                                         @Override
                                                                         public Boolean call(Boolean aBoolean) {
-                                                                            return null;
+                                                                            return true;
                                                                         }
                                                                     });
-
-                                                        return Observable.just(true);
+                                                        }
+                                                        else return Observable.just(true);
                                                     }
                                                 }).flatMap(new Func1<Boolean, Observable<Boolean>>() {
                                                     @Override
@@ -111,13 +111,13 @@ public class ActivityCheckUpdate extends AppCompatActivity {
                                                             downloadAndInstallAll();
 
                                                         }else{
-                                                            activityMain.responseCallBack.onResponse(null, MENU_APP_ADD_REMOVE);
+                                                            finish();
                                                         }
                                                     }
 
                                                     @Override
                                                     public void onError(Throwable e) {
-                                                        activityMain.responseCallBack.onResponse(null, MENU_APP_ADD_REMOVE);
+                                                        finish();
                                                     }
 
                                                     @Override
@@ -138,6 +138,7 @@ public class ActivityCheckUpdate extends AppCompatActivity {
                     public void onError(Throwable e) {
                         Toasty.error(ActivityCheckUpdate.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                         materialDialog.dismiss();
+                        finish();
                     }
 
                     @Override
@@ -179,6 +180,7 @@ public class ActivityCheckUpdate extends AppCompatActivity {
                     public void onError(Throwable e) {
                         Toasty.error(ActivityCheckUpdate.this, "Error: Download failed (e=" + e.toString() + ")").show();
                         materialDialog.dismiss();
+                        finish();
                     }
 
                     @Override

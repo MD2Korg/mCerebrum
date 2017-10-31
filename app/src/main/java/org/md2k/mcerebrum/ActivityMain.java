@@ -41,5 +41,10 @@ public class ActivityMain extends AbstractActivityMenu {
             subscriptionCheckUpdate .unsubscribe();
         super.onDestroy();
     }
+    @Override
+    public void onResume(){
+        super.onResume();
+        updateUI();
+    }
 }
 

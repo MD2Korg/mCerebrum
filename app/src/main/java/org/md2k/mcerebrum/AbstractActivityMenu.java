@@ -1,6 +1,7 @@
 package org.md2k.mcerebrum;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
@@ -8,6 +9,9 @@ import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.holder.BadgeStyle;
+import com.mikepenz.materialdrawer.holder.StringHolder;
+import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 
@@ -29,6 +33,7 @@ import org.md2k.mcerebrum.configuration.ConfigManager;
 import org.md2k.mcerebrum.menu.AbstractMenu;
 import org.md2k.mcerebrum.menu.ResponseCallBack;
 import org.md2k.mcerebrum.system.appinfo.AppInstall;
+import org.md2k.mcerebrum.system.update.Update;
 
 import java.util.ArrayList;
 
@@ -36,10 +41,36 @@ import es.dmoral.toasty.Toasty;
 
 public abstract class AbstractActivityMenu extends AbstractActivityBasics {
     private Drawer result = null;
-    int selectedMenu = AbstractMenu.MENU_HOME;
+    public int selectedMenu = AbstractMenu.MENU_HOME;
 
     @Override
     public void updateUI() {
+        if(result==null) {createUI();return;}
+        int index = selectedMenu;
+        if(index==-1) index = AbstractMenu.MENU_HOME;
+        int badgeValue=Update.hasUpdate(AbstractActivityMenu.this);
+        if(badgeValue>0){
+            StringHolder a = new StringHolder(String.valueOf(badgeValue));
+            result.updateBadge(AbstractMenu.MENU_CHECK_UPDATE, a);
+        }else{
+            StringHolder a = new StringHolder("");
+            result.updateBadge(AbstractMenu.MENU_CHECK_UPDATE, a);
+        }
+/*
+        if(menuContent[i].badgeValue>0){
+            ((PrimaryDrawerItem)(iDrawerItems[i])).withBadge(String.valueOf(menuContent[i].badgeValue)).withBadgeStyle(new BadgeStyle().withTextColor(Color.WHITE).withColorRes(R.color.md_red_700));;
+        }
+*/
+
+/*
+        createDrawer();
+        result.resetDrawerContent();
+        result.getHeader().refreshDrawableState();
+*/
+//        result.setSelection(index);
+    }
+    @Override
+    public void createUI() {
         createDrawer();
         result.resetDrawerContent();
         result.getHeader().refreshDrawableState();
@@ -102,6 +133,7 @@ public abstract class AbstractActivityMenu extends AbstractActivityBasics {
                 case AbstractMenu.MENU_CHECK_UPDATE:
                     Intent intent =new Intent(AbstractActivityMenu.this, ActivityCheckUpdate.class);
                     startActivity(intent);
+                    createUI();
                     break;
 
                 case AbstractMenu.MENU_LEAVE:
@@ -112,7 +144,7 @@ public abstract class AbstractActivityMenu extends AbstractActivityBasics {
                                 ServerCP.deleteTable(getApplicationContext());
                                 ConfigManager.loadFromAsset(getApplicationContext());
                                 ConfigCP.setDownloadFrom(getApplicationContext(), MCEREBRUM.CONFIG.TYPE_FREEBIE);
-                                updateUI();
+                                createUI();
                             }
                         }
                     }).show();

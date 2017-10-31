@@ -30,8 +30,8 @@ import org.md2k.mcerebrum.core.access.appinfo.AppAccess;
 import org.md2k.mcerebrum.core.access.appinfo.AppBasicInfo;
 import org.md2k.mcerebrum.core.constant.MCEREBRUM;
 import org.md2k.mcerebrum.core.internet.download.DownloadInfo;
-import org.md2k.system.appinfo.AppInstall;
-import org.md2k.system.appinfo.BroadCastMessage;
+import org.md2k.mcerebrum.system.appinfo.AppInstall;
+import org.md2k.mcerebrum.system.appinfo.BroadCastMessage;
 
 import java.util.ArrayList;
 import java.util.HashMap;

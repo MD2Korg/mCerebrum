@@ -22,8 +22,8 @@ import org.md2k.mcerebrum.R;
 import org.md2k.mcerebrum.core.access.appinfo.AppAccess;
 import org.md2k.mcerebrum.core.access.appinfo.AppBasicInfo;
 import org.md2k.mcerebrum.core.constant.MCEREBRUM;
-import org.md2k.system.appinfo.AppInstall;
-import org.md2k.system.appinfo.BroadCastMessage;
+import org.md2k.mcerebrum.system.appinfo.AppInstall;
+import org.md2k.mcerebrum.system.appinfo.BroadCastMessage;
 
 import java.util.ArrayList;
 
@@ -36,17 +36,20 @@ public class FragmentAppSettings extends Fragment {
     AwesomeTextView textViewNotConfigured;
     AwesomeTextView textViewStatus;
     ArrayList<String> packageNames;
+    boolean flag = false;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         // Defines the xml file for the fragment
         return inflater.inflate(R.layout.fragment_folding_ui_app_settings, parent, false);
     }
+
     @Override
-    public void onPause(){
+    public void onPause() {
         LocalBroadcastManager.getInstance(getActivity()).unregisterReceiver(mMessageReceiver);
         super.onPause();
     }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -54,9 +57,13 @@ public class FragmentAppSettings extends Fragment {
         AppAccess.set(getContext());
         LocalBroadcastManager.getInstance(getContext()).registerReceiver(mMessageReceiver,
                 new IntentFilter(MCEREBRUM.APP_ACCESS.APPCP_CHANGED));
-        BroadCastMessage.send(getActivity(), MCEREBRUM.APP_ACCESS.OP_DATAKIT_STOP);
+        if (flag == true) {
+            BroadCastMessage.send(getActivity(), MCEREBRUM.APP_ACCESS.OP_DATAKIT_STOP);
+            flag = false;
+        }
         adapter.notifyDataSetChanged();
     }
+
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -64,10 +71,11 @@ public class FragmentAppSettings extends Fragment {
             adapter.notifyDataSetChanged();
         }
     };
+
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
         ListView theListView = (ListView) view.findViewById(R.id.listview_folding_ui);
-        packageNames= AppBasicInfo.get(getContext());
+        packageNames = AppBasicInfo.get(getContext());
         textViewConfigured = (AwesomeTextView) view.findViewById(R.id.textview_configured);
         textViewNotConfigured = (AwesomeTextView) view.findViewById(R.id.textview_not_configured);
         textViewStatus = (AwesomeTextView) view.findViewById(R.id.textview_status);
@@ -87,15 +95,19 @@ public class FragmentAppSettings extends Fragment {
             }
         });
     }
-    private void createAdapter(){
+
+    private void createAdapter() {
         adapter = new CellAppSettings(getActivity(), packageNames, new ResponseCallBack() {
             @Override
             public void onResponse(int position, int operation) {
                 if (operation == CONFIGURE) {
+                    flag = true;
                     AppAccess.configure(getContext(), packageNames.get(position));
-                }else if (operation == LAUNCH) {
+                } else if (operation == LAUNCH) {
+                    flag = true;
                     AppAccess.launch(getContext(), packageNames.get(position));
-                } else if(operation == CLEAR){
+                } else if (operation == CLEAR) {
+                    flag = true;
                     AppAccess.clear(getContext(), packageNames.get(position));
                 }
             }
@@ -115,13 +127,13 @@ public class FragmentAppSettings extends Fragment {
         }
 */
 
-    void updateTextViewStatus(){
+    void updateTextViewStatus() {
         BootstrapText bootstrapTextS;
         BootstrapText bootstrapTextC = new BootstrapText.Builder(getContext()).addText("configured : " + String.valueOf(AppAccess.getRequiredAppConfigured(getContext()).size())).build();
         BootstrapText bootstrapTextN = new BootstrapText.Builder(getContext()).addText("not configured : " + String.valueOf(AppAccess.getRequiredAppNotConfigured(getContext()).size())).build();
         textViewConfigured.setBootstrapText(bootstrapTextC);
         textViewNotConfigured.setBootstrapText(bootstrapTextN);
-        if(AppAccess.getRequiredAppNotConfigured(getContext()).size()==0) {
+        if (AppAccess.getRequiredAppNotConfigured(getContext()).size() == 0) {
             bootstrapTextS = new BootstrapText.Builder(getContext()).addText("Status: ").addFontAwesomeIcon("fa_check").build();
             textViewStatus.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
             textViewStatus.setBootstrapText(bootstrapTextS);

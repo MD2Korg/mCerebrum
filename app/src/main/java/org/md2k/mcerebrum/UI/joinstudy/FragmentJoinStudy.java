@@ -23,9 +23,10 @@ import org.md2k.mcerebrum.core.access.serverinfo.ServerCP;
 import org.md2k.mcerebrum.core.access.userinfo.UserCP;
 import org.md2k.mcerebrum.core.constant.MCEREBRUM;
 import org.md2k.mcerebrum.configuration.ConfigManager;
-import org.md2k.system.cerebralcortexwebapi.ServerManager;
-import org.md2k.system.cerebralcortexwebapi.models.AuthResponse;
-import org.md2k.system.cerebralcortexwebapi.models.MinioObjectStats;
+import org.md2k.mcerebrum.menu.AbstractMenu;
+import org.md2k.mcerebrum.system.cerebralcortexwebapi.ServerManager;
+import org.md2k.mcerebrum.system.cerebralcortexwebapi.models.AuthResponse;
+import org.md2k.mcerebrum.system.cerebralcortexwebapi.models.MinioObjectStats;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -169,7 +170,7 @@ public class FragmentJoinStudy extends Fragment {
                         if (!unzipFile(a+"/config.zip", Constants.CONFIG_ROOT_DIR()))
                             return Observable.error(new Throwable("Failed to unzip"));
                         else {
-                            if(!ConfigManager.load(getContext())){
+                            if(!ConfigManager.load(getContext(), ConfigManager.LOAD_TYPE.NEW)){
                                 return Observable.error(new Throwable("Configuration file format error"));
                             }else {
                                 UserCP.set(getContext(), null, userName);
@@ -184,7 +185,7 @@ public class FragmentJoinStudy extends Fragment {
                     public void onCompleted() {
                         materialDialog.dismiss();
                         Toasty.success(getActivity(), "Configuration file downloaded", Toast.LENGTH_SHORT).show();
-                        activityMain.updateUI();
+                        activityMain.createUI();
                     }
 
                     @Override

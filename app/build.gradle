@@ -9,7 +9,7 @@ buildscript {
         classpath 'io.fabric.tools:gradle:1.24.2'
     }
 }
-version = '2.0.5'
+version = '2.0.9'
 apply from: 'versioning.gradle'
 
 apply plugin: 'com.android.application'
