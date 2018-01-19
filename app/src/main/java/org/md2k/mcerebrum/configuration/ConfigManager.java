@@ -78,7 +78,7 @@ public class ConfigManager {
             }
         }
         for (AppFile a : appFiles) {
-            AppBasicInfo.set(context, a.getPackage_name(), a.getType(), a.getTitle(), a.getSummary(), a.getDescription(), a.getUse_as(), a.getDownload_link(), a.getUpdate(), a.getExpected_version(), a.getIcon());
+      //      AppBasicInfo.set(context, a.getPackage_name(), a.getType(), a.getTitle(), a.getSummary(), a.getDescription(), a.getUse_as(), a.getDownload_link(), a.getUpdate(), a.getExpected_version(), a.getIcon());
         }
     }
     private static void resetAppInstall(Context context, AppFile[] appFiles){

@@ -81,7 +81,8 @@ public abstract class AbstractActivityMenu extends AbstractActivityBasics {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
-                .withHeaderBackground(AbstractMenu.getCoverImage(this, StudyCP.getCoverImage(MyApplication.getContext())))
+                .withHeaderBackground(R.drawable.cover_image4)
+                //     .withHeaderBackground(AbstractMenu.getCoverImage(this, StudyCP.getCoverImage(MyApplication.getContext())))
                 .withCompactStyle(true)
                 .addProfiles(AbstractMenu.getHeaderContent(this, UserCP.getUserName(MyApplication.getContext()), responseCallBack))
                 .build();
