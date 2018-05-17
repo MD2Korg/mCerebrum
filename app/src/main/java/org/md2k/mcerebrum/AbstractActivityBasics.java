@@ -1,10 +1,13 @@
 package org.md2k.mcerebrum;
 
+import android.content.ComponentName;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -22,11 +25,16 @@ import org.md2k.mcerebrum.configuration.ConfigManager;
 import org.md2k.mcerebrum.menu.AbstractMenu;
 import org.md2k.mcerebrum.system.appinfo.AppCPObserver;
 import org.md2k.mcerebrum.system.appinfo.AppInstall;
+import org.md2k.mcerebrum.system.appinfo.BroadCastMessage;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import es.dmoral.toasty.Toasty;
+import rx.Observable;
 import rx.Subscription;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
 
 public abstract class AbstractActivityBasics extends AppCompatActivity {
     static final String TAG = AbstractActivityBasics.class.getSimpleName();
@@ -54,7 +62,7 @@ public abstract class AbstractActivityBasics extends AppCompatActivity {
                             Uri.parse(SampleProvider.CONTENT_URI_BASE + "/" + AppInfoColumns.TABLE_NAME),
                             true,
                             appCPObserver);
-
+            initStart();
             createUI();
 
         } else {
@@ -74,7 +82,7 @@ public abstract class AbstractActivityBasics extends AppCompatActivity {
                                         Uri.parse(SampleProvider.CONTENT_URI_BASE + "/" + AppInfoColumns.TABLE_NAME),
                                         true,
                                         appCPObserver);
-
+                        initStart();
                         createUI();
 //                    prepareConfig();
                     }
@@ -116,6 +124,7 @@ public abstract class AbstractActivityBasics extends AppCompatActivity {
             ArrayList<String> packageNames = AppBasicInfo.getStudy(getApplicationContext());
             if (packageNames.size() == 0 || !AppInstall.isCoreInstalled(getApplicationContext())) {
                 Toasty.error(getApplicationContext(), "Datakit/study is not installed", Toast.LENGTH_SHORT).show();
+                StudyCP.setStarted(MyApplication.getContext(), false);
             } else {
                 StudyCP.setStarted(getApplicationContext(), true);
                 AppAccess.launch(getApplicationContext(), packageNames.get(0));
@@ -124,6 +133,25 @@ public abstract class AbstractActivityBasics extends AppCompatActivity {
         }
 
     }
-
+    public void initStart(){
+        Log.d("abc","initStart...");
+        ArrayList<String> packageNames=AppBasicInfo.get(this);
+        for(int in=0;in<packageNames.size();in++) {
+            String packageName =packageNames.get(in);
+            try {
+                Intent i = new Intent();
+                i.setComponent(new ComponentName(packageName, "org.md2k.mcerebrum.core.access.ActivityEmpty"));
+                startActivity(i);
+            } catch (Exception ignored) {
+            }
+        }
+        Observable.timer(2000, TimeUnit.MILLISECONDS).subscribeOn(Schedulers.newThread()).map(new Func1<Long, Boolean>() {
+            @Override
+            public Boolean call(Long aLong) {
+                BroadCastMessage.send(AbstractActivityBasics.this);
+                return true;
+            }
+        }).subscribe();
+    }
 }
 

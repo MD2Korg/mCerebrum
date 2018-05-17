@@ -17,6 +17,7 @@ import com.beardedhen.androidbootstrap.api.defaults.DefaultBootstrapBrand;
 import com.ramotion.foldingcell.FoldingCell;
 
 import org.md2k.mcerebrum.Constants;
+import org.md2k.mcerebrum.MyApplication;
 import org.md2k.mcerebrum.R;
 import org.md2k.mcerebrum.core.access.appinfo.AppBasicInfo;
 import org.md2k.mcerebrum.core.constant.MCEREBRUM;
@@ -53,7 +54,7 @@ class CellAppInstall extends ArrayAdapter<String> {
         ViewHolder viewHolder;
         if (cell == null) {
             viewHolder = new ViewHolder();
-            LayoutInflater vi = LayoutInflater.from(getContext());
+            LayoutInflater vi = LayoutInflater.from(MyApplication.getContext());
             cell = (FoldingCell) vi.inflate(R.layout.cell_app_install, parent, false);
             viewHolder.title = (TextView) cell.findViewById(R.id.textview_title);
             viewHolder.summary = (TextView) cell.findViewById(R.id.textview_description);
@@ -87,23 +88,23 @@ class CellAppInstall extends ArrayAdapter<String> {
             viewHolder = (ViewHolder) cell.getTag();
         }
         // bind data from selected element to view through view holder
-        String useAs=AppBasicInfo.getUseAs(getContext(), packageName);
+        String useAs=AppBasicInfo.getUseAs(MyApplication.getContext(), packageName);
         if(useAs!=null && useAs.equalsIgnoreCase(MCEREBRUM.APP.USE_AS_REQUIRED))
-            viewHolder.title.setText(AppBasicInfo.getTitle(getContext(), packageName)+" (Required)");
+            viewHolder.title.setText(AppBasicInfo.getTitle(MyApplication.getContext(), packageName)+" (Required)");
         else
-            viewHolder.title.setText(AppBasicInfo.getTitle(getContext(), packageName));
-        viewHolder.summary.setText(AppBasicInfo.getSummary(getContext(), packageName));
-        viewHolder.content_title.setText(AppBasicInfo.getTitle(getContext(), packageName));
-        viewHolder.content_summary.setText(AppBasicInfo.getSummary(getContext(), packageName));
-        viewHolder.description.setText(AppBasicInfo.getDescription(getContext(), packageName));
-        String versionName= AppInstall.getCurrentVersion(getContext(), packageName);
+            viewHolder.title.setText(AppBasicInfo.getTitle(MyApplication.getContext(), packageName));
+        viewHolder.summary.setText(AppBasicInfo.getSummary(MyApplication.getContext(), packageName));
+        viewHolder.content_title.setText(AppBasicInfo.getTitle(MyApplication.getContext(), packageName));
+        viewHolder.content_summary.setText(AppBasicInfo.getSummary(MyApplication.getContext(), packageName));
+        viewHolder.description.setText(AppBasicInfo.getDescription(MyApplication.getContext(), packageName));
+        String versionName= AppInstall.getCurrentVersion(MyApplication.getContext(), packageName);
         viewHolder.version.setText(versionName);
-        String lastVersionName= AppInstall.getLatestVersion(getContext(), packageName);
+        String lastVersionName= AppInstall.getLatestVersion(MyApplication.getContext(), packageName);
         viewHolder.updateVersion.setText(lastVersionName);
         Drawable d;
         if(f.icons.containsKey(packageName))
             d=f.icons.get(packageName);
-        else d = AppBasicInfo.getIcon(getContext(), packageName, Constants.CONFIG_MCEREBRUM_DIR());
+        else d = AppBasicInfo.getIcon(MyApplication.getContext(), packageName, Constants.CONFIG_MCEREBRUM_DIR());
         viewHolder.icon_short.setImageDrawable(d);
         viewHolder.icon_long.setImageDrawable(d);
 
@@ -126,12 +127,12 @@ class CellAppInstall extends ArrayAdapter<String> {
                 responseCallBack.onResponse(position, FragmentAppInstall.UPDATE);
             }
         };
-        boolean isInstalled = AppInstall.getInstalled(getContext(), packageName);
+        boolean isInstalled = AppInstall.getInstalled(MyApplication.getContext(), packageName);
         if(isInstalled && !f.icons.containsKey(packageName))
-            f.icons.put(packageName, AppBasicInfo.getIcon(getContext(), packageName, Constants.CONFIG_MCEREBRUM_DIR()));
-        boolean hasUpdate = AppInstall.hasUpdate(getContext(), packageName);
+            f.icons.put(packageName, AppBasicInfo.getIcon(MyApplication.getContext(), packageName, Constants.CONFIG_MCEREBRUM_DIR()));
+        boolean hasUpdate = AppInstall.hasUpdate(MyApplication.getContext(), packageName);
 
-        if(AppBasicInfo.getMCerebrum(getContext()).equals(packageName)){
+        if(AppBasicInfo.getMCerebrum(MyApplication.getContext()).equals(packageName)){
             set(viewHolder.buttonInstallLong, viewHolder.buttonInstallShort, false, DefaultBootstrapBrand.SECONDARY, true, onClickListenerInstall);
             set(viewHolder.buttonUninstallLong, viewHolder.buttonUninstallShort, false, DefaultBootstrapBrand.SECONDARY, true, onClickListenerUninstall);
         }

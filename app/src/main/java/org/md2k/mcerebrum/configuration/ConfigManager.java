@@ -78,7 +78,7 @@ public class ConfigManager {
             }
         }
         for (AppFile a : appFiles) {
-            AppBasicInfo.set(context, a.getPackage_name(), a.getType(), a.getTitle(), a.getSummary(), a.getDescription(), a.getUse_as(), a.getDownload_link(), a.getUpdate(), a.getExpected_version(), a.getIcon());
+            AppBasicInfo.set(context, a.getPackage_name(), a.getType(), a.getTitle(), a.getSummary(), a.getDescription(), a.getUse_as(), a.getDownload_link(), a.getUpdate(), a.getExpected_version(), a.getIcon(), true);
         }
     }
     private static void resetAppInstall(Context context, AppFile[] appFiles){
@@ -125,8 +125,10 @@ public class ConfigManager {
             resetStudyCP(context, dataFile.getStudy());
             resetAppCP(context, dataFile.getApps());
             resetAppInstall(context, dataFile.getApps());
-        }else
+        }else {
+            resetAppCP(context, dataFile.getApps());
             resetAppInstall(context, dataFile.getApps());
+        }
         return dataFile;
     }
     public static DataFile loadFromAsset(Context context) {
@@ -140,6 +142,7 @@ public class ConfigManager {
         } catch (IOException ignored) {
             Log.d("abc","error ->"+ignored.getMessage());
         }
+        ServerCP.deleteTable(context);
         resetConfigCP(context, dataFile.getConfig());
         ConfigCP.setDownloadFrom(context, MCEREBRUM.CONFIG.TYPE_FREEBIE);
 
@@ -152,7 +155,8 @@ public class ConfigManager {
         return Observable.just(true).flatMap(new Func1<Boolean, Observable<Boolean>>() {
             @Override
             public Observable<Boolean> call(Boolean aBoolean) {
-                if (!ServerManager.download(ServerCP.getServerAddress(context), ServerCP.getToken(context), ServerCP.getFileName(context)))
+
+                if (!ServerManager.download(ServerCP.getServerAddress(context), ServerCP.getUserName(context), ServerCP.getPasswordHash(context), ServerCP.getFileName(context)))
                     return Observable.error(new Throwable("Download failed"));
                 return Observable.just(true);
             }
@@ -167,7 +171,7 @@ public class ConfigManager {
                             if(!ConfigManager.load(context, LOAD_TYPE.UPDATE)){
                                 return Observable.error(new Throwable("Configuration file format error"));
                             }else {
-                                MinioObjectStats minioObject=ServerManager.getConfigFile(ServerCP.getServerAddress(context), ServerCP.getToken(context), ServerCP.getFileName(context));
+                                MinioObjectStats minioObject=ServerManager.getConfigFile(ServerCP.getServerAddress(context), ServerCP.getUserName(context), ServerCP.getPasswordHash(context), ServerCP.getFileName(context));
                                 ServerCP.setCurrentVersion(MyApplication.getContext(), minioObject.getLastModified());
                                 ServerCP.setLatestVersion(MyApplication.getContext(), minioObject.getLastModified());
                                 ConfigCP.setDownloadFrom(MyApplication.getContext(), MCEREBRUM.CONFIG.TYPE_SERVER);

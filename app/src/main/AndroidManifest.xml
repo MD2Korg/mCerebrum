@@ -17,7 +17,6 @@
         <activity
             android:name=".ActivityMain"
             android:screenOrientation="portrait"
-            android:launchMode="singleTop"
             android:theme="@style/MaterialDrawerTheme.TranslucentStatus">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

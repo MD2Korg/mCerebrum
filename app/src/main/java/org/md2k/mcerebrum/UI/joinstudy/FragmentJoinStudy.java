@@ -27,6 +27,7 @@ import org.md2k.mcerebrum.menu.AbstractMenu;
 import org.md2k.mcerebrum.system.cerebralcortexwebapi.ServerManager;
 import org.md2k.mcerebrum.system.cerebralcortexwebapi.models.AuthResponse;
 import org.md2k.mcerebrum.system.cerebralcortexwebapi.models.MinioObjectStats;
+import org.md2k.mcerebrum.system.update.Update;
 
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
@@ -107,7 +108,7 @@ public class FragmentJoinStudy extends Fragment {
                 if (editTextUserName.getText().toString().equals("") ||
                         editTextPassword.getText().toString().equals("") ||
                         editTextServer.getText().toString().equals("")) {
-                    Toasty.error(getContext(), "Error: Invalid Username and/or password and/or Server name", Toast.LENGTH_SHORT, true).show();
+                    Toasty.error(MyApplication.getContext(), "Error: Invalid Username and/or password and/or Server name", Toast.LENGTH_SHORT, true).show();
                 } else {
                     userName = editTextUserName.getText().toString();
                     password = convertSHA(editTextPassword.getText().toString());
@@ -144,7 +145,7 @@ public class FragmentJoinStudy extends Fragment {
                         authResponse = ServerManager.authenticate(serverName, userName, password);
                         if (authResponse == null)
                             return Observable.error(new Throwable("Invalid Username/password/server name"));
-                        return Observable.just(ServerManager.getConfigFiles(serverName, authResponse.getAccessToken()));
+                        return Observable.just(ServerManager.getConfigFiles(serverName, userName, password));
                     }
                 }).observeOn(AndroidSchedulers.mainThread())
                 .flatMap(new Func1<List<MinioObjectStats>, Observable<MinioObjectStats>>() {
@@ -158,7 +159,7 @@ public class FragmentJoinStudy extends Fragment {
                     @Override
                     public Observable<Boolean> call(MinioObjectStats minioObjectStats) {
                         minioObject=minioObjectStats;
-                        if(!ServerManager.download(serverName, authResponse.getAccessToken(), minioObjectStats.getObjectName()))
+                        if(!ServerManager.download(serverName, userName, password, minioObjectStats.getObjectName()))
                         return Observable.error(new Throwable("Download failed"));
                         return Observable.just(true);
                     }
@@ -170,13 +171,13 @@ public class FragmentJoinStudy extends Fragment {
                         if (!unzipFile(a+"/config.zip", Constants.CONFIG_ROOT_DIR()))
                             return Observable.error(new Throwable("Failed to unzip"));
                         else {
-                            if(!ConfigManager.load(getContext(), ConfigManager.LOAD_TYPE.NEW)){
+                            if(!ConfigManager.load(MyApplication.getContext(), ConfigManager.LOAD_TYPE.NEW)){
                                 return Observable.error(new Throwable("Configuration file format error"));
                             }else {
-                                UserCP.set(getContext(), null, userName);
+                                UserCP.set(MyApplication.getContext(), null, userName);
                                 ServerCP.set(MyApplication.getContext(), serverName, userName, authResponse.getUserUuid(), password, authResponse.getAccessToken(), minioObject.getObjectName(), minioObject.getLastModified(), minioObject.getLastModified());
-                                ConfigCP.setDownloadFrom(getContext(), MCEREBRUM.CONFIG.TYPE_SERVER);
-                                return Observable.just(true);
+                                ConfigCP.setDownloadFrom(MyApplication.getContext(), MCEREBRUM.CONFIG.TYPE_SERVER);
+                                return Update.checkUpdate(getActivity());
                             }
                         }
                     }
@@ -185,12 +186,13 @@ public class FragmentJoinStudy extends Fragment {
                     public void onCompleted() {
                         materialDialog.dismiss();
                         Toasty.success(getActivity(), "Configuration file downloaded", Toast.LENGTH_SHORT).show();
+                        activityMain.initStart();
                         activityMain.createUI();
                     }
 
                     @Override
                     public void onError(Throwable e) {
-                        Toasty.error(getContext(), e.getMessage()).show();
+                        Toasty.error(MyApplication.getContext(), e.getMessage()).show();
                         materialDialog.dismiss();
                     }
 
@@ -215,6 +217,22 @@ public class FragmentJoinStudy extends Fragment {
                     String[] fileName = new String[list.size()];
                     for (int i = 0; i < list.size(); i++)
                         fileName[i] = list.get(i).getObjectName();
+                    Dialog.singleChoiceConfirm(getActivity(), "Select Configuration File", fileName, -1, new DialogCallback() {
+                        @Override
+                        public void onSelected(String value) {
+                            for (int i = 0; i < list.size(); i++) {
+                                if (list.get(i).getObjectName().equals(value)) {
+                                    subscriber.onNext(list.get(i));
+                                    subscriber.onCompleted();
+                                    materialDialog = Dialog.progressIndeterminate(getActivity(), "Downloading configuration file...").show();
+
+                                }
+                            }
+                            subscriber.onError(new Throwable("File is not selected"));
+                        }
+                    }).show();
+
+/*
                     Dialog.singleChoice(getActivity(), "Select Configuration File", fileName, -1, new DialogCallback() {
                         @Override
                         public void onSelected(String value) {
@@ -229,6 +247,7 @@ public class FragmentJoinStudy extends Fragment {
                             subscriber.onError(new Throwable("File is not selected"));
                         }
                     }).show();
+*/
                 } catch (Exception e) {
                     subscriber.onError(e);        // Signal about the error to subscriber
                 }

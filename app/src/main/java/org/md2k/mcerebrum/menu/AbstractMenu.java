@@ -47,6 +47,7 @@ import org.md2k.mcerebrum.Constants;
 import org.md2k.mcerebrum.MyApplication;
 import org.md2k.mcerebrum.R;
 import org.md2k.mcerebrum.core.access.configinfo.ConfigCP;
+import org.md2k.mcerebrum.core.access.serverinfo.ServerCP;
 import org.md2k.mcerebrum.core.constant.MCEREBRUM;
 
 import java.io.IOException;
@@ -73,6 +74,9 @@ public abstract class AbstractMenu {
 //    abstract IProfile[] getHeaderContentType(final Context context, UserInfoManager userInfo, StudyInfo studyInfo, final ResponseCallBack responseCallBack);
 
     public static IProfile[] getHeaderContent(final Context context, String userName, final ResponseCallBack responseCallBack) {
+        if(ServerCP.getCurrentVersion(MyApplication.getContext())!=null)
+            return new MenuServer().getHeaderContentType(context, userName, responseCallBack);
+
         if(ConfigCP.getDownloadFrom(MyApplication.getContext())==null){
             return new MenuFreebie().getHeaderContentType(context, userName, responseCallBack);
         }
@@ -89,6 +93,8 @@ public abstract class AbstractMenu {
     }
 
     public static IDrawerItem[] getMenuContent(final Context context, final ResponseCallBack responseCallBack) {
+        if(ServerCP.getCurrentVersion(MyApplication.getContext())!=null)
+            return new MenuServer().getMenuContent(responseCallBack);
         if(ConfigCP.getDownloadFrom(MyApplication.getContext())==null){
             return new MenuFreebie().getMenuContent(responseCallBack);
         }
@@ -111,16 +117,18 @@ public abstract class AbstractMenu {
         for (int i = 0; i < menuContent.length; i++) {
             switch (menuContent[i].type) {
                 case MenuContent.PRIMARY_DRAWER_ITEM:
-                    iDrawerItems[i] = new PrimaryDrawerItem().withName(menuContent[i].name).withIcon(menuContent[i].icon).withIdentifier(menuContent[i].identifier).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
+                    iDrawerItems[i] = new PrimaryDrawerItem().withName(menuContent[i].name).withBadgeStyle(new BadgeStyle().withTextColor(Color.WHITE).withColorRes(R.color.md_red_700)).withIcon(menuContent[i].icon).withIdentifier(menuContent[i].identifier).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                         @Override
                         public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
                             responseCallBack.onResponse(drawerItem, (int) drawerItem.getIdentifier());
                             return false;
                         }
                     });
+/*
                     if(menuContent[i].badgeValue>0){
-                        ((PrimaryDrawerItem)(iDrawerItems[i])).withBadge(String.valueOf(menuContent[i].badgeValue)).withBadgeStyle(new BadgeStyle().withTextColor(Color.WHITE).withColorRes(R.color.md_red_700));;
+                        ((PrimaryDrawerItem)(iDrawerItems[i])).withBadge(String.valueOf(menuContent[i].badgeValue)).withBadgeStyle(new BadgeStyle().withTextColor(Color.WHITE).withColorRes(R.color.md_red_700));
                     }
+*/
                     break;
                 case MenuContent.SECONDARY_DRAWER_ITEM:
                     iDrawerItems[i] = new SecondaryDrawerItem().withName(menuContent[i].name).withIcon(menuContent[i].icon).withIdentifier(menuContent[i].identifier).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {

@@ -45,6 +45,9 @@ public abstract class AbstractActivityMenu extends AbstractActivityBasics {
 
     @Override
     public void updateUI() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
         if(result==null) {createUI();return;}
         int index = selectedMenu;
         if(index==-1) index = AbstractMenu.MENU_HOME;
@@ -53,8 +56,7 @@ public abstract class AbstractActivityMenu extends AbstractActivityBasics {
             StringHolder a = new StringHolder(String.valueOf(badgeValue));
             result.updateBadge(AbstractMenu.MENU_CHECK_UPDATE, a);
         }else{
-            StringHolder a = new StringHolder("");
-            result.updateBadge(AbstractMenu.MENU_CHECK_UPDATE, a);
+            result.updateBadge(AbstractMenu.MENU_CHECK_UPDATE, null);
         }
 /*
         if(menuContent[i].badgeValue>0){
@@ -68,6 +70,10 @@ public abstract class AbstractActivityMenu extends AbstractActivityBasics {
         result.getHeader().refreshDrawableState();
 */
 //        result.setSelection(index);
+
+            }
+        });
+
     }
     @Override
     public void createUI() {
@@ -75,15 +81,18 @@ public abstract class AbstractActivityMenu extends AbstractActivityBasics {
         result.resetDrawerContent();
         result.getHeader().refreshDrawableState();
         result.setSelection(AbstractMenu.MENU_HOME);
+        updateUI();
     }
 
     void createDrawer() {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        String userName=UserCP.getUserName(MyApplication.getContext());
+        if(userName==null) userName="Default User";
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
                 .withHeaderBackground(AbstractMenu.getCoverImage(this, StudyCP.getCoverImage(MyApplication.getContext())))
                 .withCompactStyle(true)
-                .addProfiles(AbstractMenu.getHeaderContent(this, UserCP.getUserName(MyApplication.getContext()), responseCallBack))
+                .addProfiles(AbstractMenu.getHeaderContent(this, userName, responseCallBack))
                 .build();
 
         result = new DrawerBuilder()
@@ -102,7 +111,8 @@ public abstract class AbstractActivityMenu extends AbstractActivityBasics {
             result.closeDrawer();
         } else {
             if (selectedMenu != AbstractMenu.MENU_HOME) {
-                responseCallBack.onResponse(null, AbstractMenu.MENU_HOME);
+                result.setSelection(AbstractMenu.MENU_HOME);
+//                responseCallBack.onResponse(null, AbstractMenu.MENU_HOME);
             } else
                 super.onBackPressed();
         }
@@ -144,6 +154,8 @@ public abstract class AbstractActivityMenu extends AbstractActivityBasics {
                                 ServerCP.deleteTable(getApplicationContext());
                                 ConfigManager.loadFromAsset(getApplicationContext());
                                 ConfigCP.setDownloadFrom(getApplicationContext(), MCEREBRUM.CONFIG.TYPE_FREEBIE);
+                                UserCP.set(MyApplication.getContext(), null, "Default User");
+                                initStart();
                                 createUI();
                             }
                         }
@@ -153,6 +165,7 @@ public abstract class AbstractActivityMenu extends AbstractActivityBasics {
                     ArrayList<String> packageNames = AppBasicInfo.getStudy(getApplicationContext());
                     if (packageNames.size() == 0 || !AppInstall.isCoreInstalled(getApplicationContext())) {
                         Toasty.error(getApplicationContext(), "Datakit/study is not installed", Toast.LENGTH_SHORT).show();
+                        StudyCP.setStarted(getApplicationContext(), false);
                     } else {
                         StudyCP.setStarted(getApplicationContext(), true);
                         AppAccess.launch(getApplicationContext(), packageNames.get(0));
