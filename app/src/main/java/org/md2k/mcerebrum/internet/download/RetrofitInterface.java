@@ -1,15 +1,4 @@
-package org.md2k.mcerebrum;
-
-import android.app.Application;
-import android.content.Context;
-
-import com.beardedhen.androidbootstrap.TypefaceProvider;
-
-import com.crashlytics.android.Crashlytics;
-import io.fabric.sdk.android.Fabric;
-import io.paperdb.Paper;
-import rx_activity_result2.RxActivityResult;
-
+package org.md2k.mcerebrum.internet.download;
 /*
  * Copyright (c) 2016, The University of Memphis, MD2K Center
  * - Syed Monowar Hossain <monowar.hossain@gmail.com>
@@ -37,18 +26,18 @@ import rx_activity_result2.RxActivityResult;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-public class MyApplication extends Application {
-    static Context context;
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        Fabric.with(this, new Crashlytics());
-        context=getApplicationContext();
-        TypefaceProvider.registerDefaultIconSets();
-        RxActivityResult.register(this);
-        Paper.init(context);
-    }
-    public static Context getContext(){
-        return context;
-    }
+import okhttp3.ResponseBody;
+import retrofit2.Response;
+import retrofit2.http.GET;
+import retrofit2.http.Streaming;
+import retrofit2.http.Url;
+import rx.Observable;
+
+public interface RetrofitInterface {
+
+    // Retrofit 2 GET request for rxjava
+    @Streaming
+    @GET
+    Observable<Response<ResponseBody>> downloadFileByUrlRx(@Url String fileUrl);
 }
+

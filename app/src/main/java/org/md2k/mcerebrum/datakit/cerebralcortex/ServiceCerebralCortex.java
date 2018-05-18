@@ -34,9 +34,9 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
-
-import org.md2k.mcerebrum.core.access.serverinfo.ServerCP;
 import android.util.Log;
+
+import org.md2k.mcerebrum.cerebral_cortex.serverinfo.CCInfo;
 
 import java.io.IOException;
 
@@ -69,7 +69,7 @@ public class ServiceCerebralCortex extends Service {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if(ServerCP.getServerAddress(this)==null) stopSelf();
+        if(CCInfo.getUrl()==null) stopSelf();
         else
             cerebralCortexManager.start();
     }

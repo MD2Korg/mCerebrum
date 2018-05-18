@@ -28,9 +28,9 @@ package org.md2k.mcerebrum.system.update;
 
 import android.content.Context;
 
-import org.md2k.mcerebrum.core.access.serverinfo.ServerCP;
+import org.md2k.mcerebrum.cerebral_cortex.cerebralcortexwebapi.ServerManager;
+import org.md2k.mcerebrum.cerebral_cortex.serverinfo.CCInfo;
 import org.md2k.mcerebrum.system.appinfo.AppInstall;
-import org.md2k.mcerebrum.system.cerebralcortexwebapi.ServerManager;
 
 import rx.Observable;
 import rx.functions.Func1;
@@ -39,7 +39,7 @@ import rx.schedulers.Schedulers;
 public class Update {
 
     public static Observable<Boolean> checkUpdate(Context context){
-        if(ServerCP.getUserName(context)!=null)
+        if(CCInfo.getUserName()!=null)
         return Observable.merge(checkUpdateServer(context), AppInstall.checkUpdate(context))
                 .filter(new Func1<Boolean, Boolean>() {
                     @Override
@@ -57,22 +57,23 @@ public class Update {
 
     }
     public static Observable<Boolean> checkUpdateServer(final Context context) {
-        ServerCP.setLatestVersion(context, ServerCP.getCurrentVersion(context));
+        CCInfo.setLatestVersion(CCInfo.getCurrentVersion());
         return Observable.just(true).subscribeOn(Schedulers.newThread()).map(new Func1<Boolean, Boolean>() {
             @Override
             public Boolean call(Boolean aBoolean) {
 
-                String latestVersion = ServerManager.getLastModified(ServerCP.getServerAddress(context), ServerCP.getUserName(context), ServerCP.getPasswordHash(context), ServerCP.getFileName(context));
+                String latestVersion = ServerManager.getLastModified(CCInfo.getUrl(), CCInfo.getUserName(), CCInfo.getPasswordHash(), CCInfo.getConfigFileName());
                 if(latestVersion==null) return false;
-                ServerCP.setLatestVersion(context, latestVersion);
-                if(ServerCP.getCurrentVersion(context).equals(latestVersion)) return false;
+                CCInfo.setLatestVersion(latestVersion);
+                if(CCInfo.getCurrentVersion().equals(latestVersion)) return false;
                 else return true;
             }
         });
     }
     public static int hasUpdate(Context context){
         int count=0;
-        if(ServerCP.hasUpdate(context)) count++;
+
+        if(CCInfo.hasUpdate()) count++;
         count+= AppInstall.hasUpdate(context);
         return count;
     }

@@ -31,23 +31,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
-import org.md2k.mcerebrum.datakit.configuration.Configuration;
-import org.md2k.mcerebrum.datakit.configuration.ConfigurationManager;
-import org.md2k.mcerebrum.datakit.logger.DatabaseLogger;
+import org.md2k.mcerebrum.cerebral_cortex.cerebralcortexwebapi.CCWebAPICalls;
+import org.md2k.mcerebrum.cerebral_cortex.cerebralcortexwebapi.interfaces.CerebralCortexWebApi;
+import org.md2k.mcerebrum.cerebral_cortex.cerebralcortexwebapi.metadata.MetadataBuilder;
+import org.md2k.mcerebrum.cerebral_cortex.cerebralcortexwebapi.models.AuthResponse;
+import org.md2k.mcerebrum.cerebral_cortex.cerebralcortexwebapi.models.stream.DataStream;
+import org.md2k.mcerebrum.cerebral_cortex.cerebralcortexwebapi.utils.ApiUtils;
+import org.md2k.mcerebrum.cerebral_cortex.serverinfo.CCInfo;
+import org.md2k.mcerebrum.commons.storage_old.FileManager;
 import org.md2k.mcerebrum.core.datakitapi.datatype.RowObject;
 import org.md2k.mcerebrum.core.datakitapi.source.datasource.DataSource;
 import org.md2k.mcerebrum.core.datakitapi.source.datasource.DataSourceBuilder;
 import org.md2k.mcerebrum.core.datakitapi.source.datasource.DataSourceClient;
-import org.md2k.mcerebrum.core.access.serverinfo.ServerCP;
-import org.md2k.mcerebrum.system.cerebralcortexwebapi.CCWebAPICalls;
-import org.md2k.mcerebrum.system.cerebralcortexwebapi.interfaces.CerebralCortexWebApi;
-import org.md2k.mcerebrum.system.cerebralcortexwebapi.metadata.MetadataBuilder;
-import org.md2k.mcerebrum.system.cerebralcortexwebapi.models.AuthResponse;
-import org.md2k.mcerebrum.system.cerebralcortexwebapi.models.stream.DataStream;
-import org.md2k.mcerebrum.system.cerebralcortexwebapi.utils.ApiUtils;
-import org.md2k.mcerebrum.commons.storage_old.FileManager;
-import android.util.Log;
+import org.md2k.mcerebrum.datakit.configuration.Configuration;
+import org.md2k.mcerebrum.datakit.configuration.ConfigurationManager;
+import org.md2k.mcerebrum.datakit.logger.DatabaseLogger;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -351,7 +351,7 @@ public class CerebralCortexWrapper extends Thread {
      * </p>
      */
     public void run() {
-        if (ServerCP.getServerAddress(context) == null) return;
+        if (CCInfo.getUrl() == null) return;
         Log.w("CerebralCortex", "Starting publishdataKitData");
 
         DatabaseLogger dbLogger = null;
@@ -367,10 +367,9 @@ public class CerebralCortexWrapper extends Thread {
         }
 
         messenger("Starting publish procedure");
-        String username = ServerCP.getUserName(context);
-        String passwordHash = ServerCP.getPasswordHash(context);
-        String token = ServerCP.getToken(context);
-        String serverURL = ServerCP.getServerAddress(context);
+        String username = CCInfo.getUserName();
+        String passwordHash = CCInfo.getPasswordHash();
+        String serverURL = CCInfo.getUrl();
         if (serverURL == null || serverURL.length() == 0 || username == null || username.length() == 0 || passwordHash == null || passwordHash.length() == 0) {
             messenger("username/password/server address empty");
             return;

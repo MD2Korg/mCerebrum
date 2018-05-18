@@ -32,10 +32,10 @@ import android.content.Intent;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 
+import org.md2k.mcerebrum.cerebral_cortex.serverinfo.CCInfo;
 import org.md2k.mcerebrum.datakit.configuration.Configuration;
 import org.md2k.mcerebrum.datakit.configuration.ConfigurationManager;
 import org.md2k.mcerebrum.core.access.appinfo.AppInfo;
-import org.md2k.mcerebrum.core.access.serverinfo.ServerCP;
 
 import java.io.IOException;
 
@@ -72,7 +72,7 @@ public class CerebralCortexManager {
          */
         @Override
         public void run() {
-            if(ServerCP.getServerAddress(context) == null) {
+            if(CCInfo.getUrl() == null) {
                 LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent("SERVER_ERROR"));
                 stop();
                 return;

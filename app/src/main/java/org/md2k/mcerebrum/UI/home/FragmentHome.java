@@ -21,11 +21,11 @@ import com.beardedhen.androidbootstrap.api.defaults.DefaultBootstrapBrand;
 import org.md2k.mcerebrum.ActivityMain;
 import org.md2k.mcerebrum.MyApplication;
 import org.md2k.mcerebrum.R;
-import org.md2k.mcerebrum.core.access.configinfo.ConfigCP;
-import org.md2k.mcerebrum.core.access.studyinfo.StudyCP;
+import org.md2k.mcerebrum.config_info.ConfigInfo;
 import org.md2k.mcerebrum.core.access.appinfo.AppAccess;
 import org.md2k.mcerebrum.core.access.appinfo.AppBasicInfo;
 import org.md2k.mcerebrum.core.constant.MCEREBRUM;
+import org.md2k.mcerebrum.study_info.StudyInfo;
 import org.md2k.mcerebrum.system.appinfo.AppInstall;
 import org.md2k.mcerebrum.system.appinfo.BroadCastMessage;
 
@@ -61,7 +61,7 @@ public class FragmentHome extends Fragment {
     View.OnClickListener onClickListernerJoin = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
-            if(ConfigCP.getType(MyApplication.getContext()).equalsIgnoreCase(MCEREBRUM.CONFIG.TYPE_FREEBIE))
+            if(ConfigInfo.getType().equalsIgnoreCase(MCEREBRUM.CONFIG.TYPE_FREEBIE))
                 ((ActivityMain) getActivity()).responseCallBack.onResponse(null, MENU_JOIN);
         }
     };
@@ -129,9 +129,9 @@ public class FragmentHome extends Fragment {
                 ArrayList<String> packageNames = AppBasicInfo.getStudy(MyApplication.getContext());
                 if (packageNames==null || packageNames.size() == 0 || !AppInstall.isCoreInstalled(MyApplication.getContext())) {
                     Toasty.error(MyApplication.getContext(), "Datakit/study is not installed", Toast.LENGTH_SHORT).show();
-                    StudyCP.setStarted(MyApplication.getContext(), true);
+                    StudyInfo.setStarted(false);
                 } else {
-                    StudyCP.setStarted(MyApplication.getContext(), true);
+                    StudyInfo.setStarted(true);
                     AppAccess.launch(MyApplication.getContext(), packageNames.get(0));
                     getActivity().finish();
                 }
@@ -190,7 +190,7 @@ public class FragmentHome extends Fragment {
 
     void updateSummary() {
         awesomeTextViewSummary.setBootstrapText(getSummary());
-        String type = ConfigCP.getType(MyApplication.getContext());
+        String type = ConfigInfo.getType();
         if(type==null || type.equalsIgnoreCase(MCEREBRUM.CONFIG.TYPE_FREEBIE)) {
             textViewClickJoin.setVisibility(View.VISIBLE);
             awesomeTextViewSummary.setBootstrapBrand(DefaultBootstrapBrand.WARNING);
@@ -247,14 +247,14 @@ public class FragmentHome extends Fragment {
     }
 
     BootstrapText getSummary() {
-        String name=StudyCP.getTitle(MyApplication.getContext());
-        String v = ConfigCP.getVersion(MyApplication.getContext());
+        String name=StudyInfo.getTitle();
+        String v = ConfigInfo.getVersion();
         if(v==null) v="2.0.0";
         if(name==null || name.equalsIgnoreCase(MCEREBRUM.CONFIG.TYPE_FREEBIE))
         return new BootstrapText.Builder(MyApplication.getContext()).addText("General Use ("+v+")")
                 .build();
         else
-        return new BootstrapText.Builder(MyApplication.getContext()).addText(StudyCP.getTitle(MyApplication.getContext())+" ("+v+")")
+        return new BootstrapText.Builder(MyApplication.getContext()).addText(StudyInfo.getTitle()+" ("+v+")")
                 .build();
     }
 

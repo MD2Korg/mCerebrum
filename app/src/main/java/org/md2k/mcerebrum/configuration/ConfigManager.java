@@ -32,17 +32,17 @@ import android.util.Log;
 
 import org.md2k.mcerebrum.Constants;
 import org.md2k.mcerebrum.MyApplication;
+import org.md2k.mcerebrum.cerebral_cortex.cerebralcortexwebapi.ServerManager;
+import org.md2k.mcerebrum.cerebral_cortex.cerebralcortexwebapi.models.MinioObjectStats;
+import org.md2k.mcerebrum.cerebral_cortex.serverinfo.CCInfo;
 import org.md2k.mcerebrum.commons.storage.Storage;
 import org.md2k.mcerebrum.commons.storage.StorageType;
-import org.md2k.mcerebrum.core.access.appinfo.AppCP;
-import org.md2k.mcerebrum.core.access.configinfo.ConfigCP;
-import org.md2k.mcerebrum.core.access.serverinfo.ServerCP;
-import org.md2k.mcerebrum.core.access.studyinfo.StudyCP;
+import org.md2k.mcerebrum.config_info.ConfigInfo;
 import org.md2k.mcerebrum.core.access.appinfo.AppBasicInfo;
+import org.md2k.mcerebrum.core.access.appinfo.AppCP;
 import org.md2k.mcerebrum.core.constant.MCEREBRUM;
+import org.md2k.mcerebrum.study_info.StudyInfo;
 import org.md2k.mcerebrum.system.appinfo.AppInstall;
-import org.md2k.mcerebrum.system.cerebralcortexwebapi.ServerManager;
-import org.md2k.mcerebrum.system.cerebralcortexwebapi.models.MinioObjectStats;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -87,25 +87,27 @@ public class ConfigManager {
         }
     }
 
-    private static void resetStudyCP(Context context, StudyFile s){
-        StudyCP.deleteTable(context);
-        StudyCP.set(context, s.getId(), s.getType(), s.getTitle(), s.getSummary(), s.getDescription(), s.getVersion(), s.getIcon(), s.getCover_image(), s.getStart_at_boot());
+    private static void resetStudyCP(StudyFile s){
+        StudyInfo.deleteAll();
+        StudyInfo studyInfo = new StudyInfo(s.getId(), s.getType(), s.getTitle(), s.getSummary(), s.getDescription(), s.getVersion(), s.getIcon(), s.getCover_image(), s.getStart_at_boot(), false);
+        StudyInfo.write(studyInfo);
     }
-    private static void resetConfigCP(Context context, ConfigFile c){
-        ConfigCP.deleteTable(context);
-        ConfigCP.set(context, c.getId(), c.getType(), c.getTitle(), c.getSummary(), c.getDescription(), c.getVersion(), c.getUpdate(), c.getExpected_version(), c.getDownload_link(), c.getFile_name());
+    private static void resetConfigCP(ConfigFile c){
+        ConfigInfo.deleteAll();
+        ConfigInfo info = new ConfigInfo(c.getId(), c.getType(), c.getTitle(), c.getSummary(), c.getDescription(), c.getVersion(), c.getUpdate(), c.getExpected_version(), null, c.getFile_name(), c.getDownload_link());
+        ConfigInfo.write(info);
     }
     private static boolean isNew(Context context, String type, String id){
-        String cid = ConfigCP.getCid(context);
-        String ctype=ConfigCP.getType(context);
+        String cid = ConfigInfo.getCid();
+        String ctype=ConfigInfo.getType();
         if(cid==null || ctype==null) return true;
         if(cid.equalsIgnoreCase(id) && ctype.equalsIgnoreCase(type)) return false;
         return true;
     }
     private static boolean hasUpdate(Context context, String type, String id, String version){
-        String cid = ConfigCP.getCid(context);
-        String ctype=ConfigCP.getType(context);
-        String cversion = ConfigCP.getVersion(context);
+        String cid = ConfigInfo.getCid();
+        String ctype=ConfigInfo.getType();
+        String cversion = ConfigInfo.getVersion();
         if(cid==null || ctype==null || cversion==null) return true;
         if(cid.equalsIgnoreCase(id) && ctype.equalsIgnoreCase(type) && cversion.equalsIgnoreCase(version)) return false;
         return true;
@@ -121,8 +123,8 @@ public class ConfigManager {
         if(l==LOAD_TYPE.NEW || l==LOAD_TYPE.UPDATE
                 || isNew(context, dataFile.getConfig().getType(), dataFile.getConfig().getId())
                 || hasUpdate(context, dataFile.getConfig().getType(), dataFile.getConfig().getId(), dataFile.getConfig().getVersion())){
-            resetConfigCP(context, dataFile.getConfig());
-            resetStudyCP(context, dataFile.getStudy());
+            resetConfigCP(dataFile.getConfig());
+            resetStudyCP(dataFile.getStudy());
             resetAppCP(context, dataFile.getApps());
             resetAppInstall(context, dataFile.getApps());
         }else {
@@ -142,11 +144,11 @@ public class ConfigManager {
         } catch (IOException ignored) {
             Log.d("abc","error ->"+ignored.getMessage());
         }
-        ServerCP.deleteTable(context);
-        resetConfigCP(context, dataFile.getConfig());
-        ConfigCP.setDownloadFrom(context, MCEREBRUM.CONFIG.TYPE_FREEBIE);
+        CCInfo.deleteAll();
+        resetConfigCP(dataFile.getConfig());
+        ConfigInfo.setDownloadFrom(MCEREBRUM.CONFIG.TYPE_FREEBIE);
 
-        resetStudyCP(context, dataFile.getStudy());
+        resetStudyCP(dataFile.getStudy());
         resetAppCP(context, dataFile.getApps());
         resetAppInstall(context, dataFile.getApps());
         return dataFile;
@@ -156,7 +158,7 @@ public class ConfigManager {
             @Override
             public Observable<Boolean> call(Boolean aBoolean) {
 
-                if (!ServerManager.download(ServerCP.getServerAddress(context), ServerCP.getUserName(context), ServerCP.getPasswordHash(context), ServerCP.getFileName(context)))
+                if (!ServerManager.download(CCInfo.getUrl(), CCInfo.getUserName(), CCInfo.getPasswordHash(), CCInfo.getConfigFileName()))
                     return Observable.error(new Throwable("Download failed"));
                 return Observable.just(true);
             }
@@ -171,10 +173,10 @@ public class ConfigManager {
                             if(!ConfigManager.load(context, LOAD_TYPE.UPDATE)){
                                 return Observable.error(new Throwable("Configuration file format error"));
                             }else {
-                                MinioObjectStats minioObject=ServerManager.getConfigFile(ServerCP.getServerAddress(context), ServerCP.getUserName(context), ServerCP.getPasswordHash(context), ServerCP.getFileName(context));
-                                ServerCP.setCurrentVersion(MyApplication.getContext(), minioObject.getLastModified());
-                                ServerCP.setLatestVersion(MyApplication.getContext(), minioObject.getLastModified());
-                                ConfigCP.setDownloadFrom(MyApplication.getContext(), MCEREBRUM.CONFIG.TYPE_SERVER);
+                                MinioObjectStats minioObject=ServerManager.getConfigFile(CCInfo.getUrl(), CCInfo.getUserName(), CCInfo.getPasswordHash(), CCInfo.getConfigFileName());
+                                CCInfo.setCurrentVersion(minioObject.getLastModified());
+                                CCInfo.setLatestVersion(minioObject.getLastModified());
+                                ConfigInfo.setDownloadFrom(MCEREBRUM.CONFIG.TYPE_SERVER);
                                 return Observable.just(true);
                             }
                         }

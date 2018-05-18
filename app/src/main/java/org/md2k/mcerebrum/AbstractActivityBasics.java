@@ -16,13 +16,12 @@ import com.blankj.utilcode.util.Utils;
 
 import org.md2k.mcerebrum.commons.permission.Permission;
 import org.md2k.mcerebrum.commons.permission.PermissionCallback;
+import org.md2k.mcerebrum.configuration.ConfigManager;
 import org.md2k.mcerebrum.core.access.SampleProvider;
+import org.md2k.mcerebrum.core.access.appinfo.AppAccess;
 import org.md2k.mcerebrum.core.access.appinfo.AppBasicInfo;
 import org.md2k.mcerebrum.core.access.appinfo.AppInfoColumns;
-import org.md2k.mcerebrum.core.access.studyinfo.StudyCP;
-import org.md2k.mcerebrum.core.access.appinfo.AppAccess;
-import org.md2k.mcerebrum.configuration.ConfigManager;
-import org.md2k.mcerebrum.menu.AbstractMenu;
+import org.md2k.mcerebrum.study_info.StudyInfo;
 import org.md2k.mcerebrum.system.appinfo.AppCPObserver;
 import org.md2k.mcerebrum.system.appinfo.AppInstall;
 import org.md2k.mcerebrum.system.appinfo.BroadCastMessage;
@@ -120,13 +119,13 @@ public abstract class AbstractActivityBasics extends AppCompatActivity {
 
     void resetConfig() {
         ConfigManager.load(getApplicationContext(), ConfigManager.LOAD_TYPE.READ);
-        if (StudyCP.getStarted(MyApplication.getContext())) {
+        if (StudyInfo.isStarted()) {
             ArrayList<String> packageNames = AppBasicInfo.getStudy(getApplicationContext());
             if (packageNames.size() == 0 || !AppInstall.isCoreInstalled(getApplicationContext())) {
                 Toasty.error(getApplicationContext(), "Datakit/study is not installed", Toast.LENGTH_SHORT).show();
-                StudyCP.setStarted(MyApplication.getContext(), false);
+                StudyInfo.setStarted(false);
             } else {
-                StudyCP.setStarted(getApplicationContext(), true);
+                StudyInfo.setStarted(true);
                 AppAccess.launch(getApplicationContext(), packageNames.get(0));
                 finish();
             }

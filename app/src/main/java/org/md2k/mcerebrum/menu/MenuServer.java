@@ -37,14 +37,14 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
 import org.md2k.mcerebrum.MyApplication;
-import org.md2k.mcerebrum.core.access.serverinfo.ServerCP;
-import org.md2k.mcerebrum.core.access.studyinfo.StudyCP;
+import org.md2k.mcerebrum.cerebral_cortex.serverinfo.CCInfo;
+import org.md2k.mcerebrum.study_info.StudyInfo;
 import org.md2k.mcerebrum.system.appinfo.AppInstall;
 
 class MenuServer extends AbstractMenu{
     IProfile[] getHeaderContentType(Context context, String userName, final ResponseCallBack responseCallBack){
         IProfile[] iProfiles=new IProfile[2];
-        iProfiles[0]=new ProfileDrawerItem().withName(userName).withIcon(getIcon(context, StudyCP.getIcon(MyApplication.getContext())));
+        iProfiles[0]=new ProfileDrawerItem().withName(userName).withIcon(getIcon(context, StudyInfo.getIcon()));
 /*
         iProfiles[1]=new ProfileSettingDrawerItem().withName("About Study").withIcon(FontAwesome.Icon.faw_info).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
             @Override
@@ -107,7 +107,7 @@ class MenuServer extends AbstractMenu{
     };
     public static int hasUpdate(Context context){
         int count=0;
-        if(ServerCP.hasUpdate(context)) count++;
+        if(CCInfo.hasUpdate()) count++;
         count+=AppInstall.hasUpdate(context);
         return count;
     }

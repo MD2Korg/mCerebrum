@@ -33,14 +33,13 @@ import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
-import org.md2k.mcerebrum.MyApplication;
-import org.md2k.mcerebrum.core.access.studyinfo.StudyCP;
+import org.md2k.mcerebrum.study_info.StudyInfo;
 
 
 class MenuFreebie extends AbstractMenu {
      IProfile[] getHeaderContentType(final Context context, String userName, final ResponseCallBack responseCallBack){
         IProfile[] iProfiles=new IProfile[1];
-        iProfiles[0]=new ProfileDrawerItem().withName(userName).withIcon(getIcon(context, StudyCP.getIcon(MyApplication.getContext())));
+        iProfiles[0]=new ProfileDrawerItem().withName(userName).withIcon(getIcon(context, StudyInfo.getIcon()));
 /*
         iProfiles[1]=new ProfileSettingDrawerItem().withName("Join Study").withIcon(FontAwesome.Icon.faw_link).withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
             @Override

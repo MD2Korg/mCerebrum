@@ -40,8 +40,8 @@ import org.md2k.mcerebrum.core.access.appinfo.AppBasicInfo;
 import org.md2k.mcerebrum.core.access.appinfo.AppCP;
 import org.md2k.mcerebrum.core.access.appinfo.AppInfo;
 import org.md2k.mcerebrum.core.constant.MCEREBRUM;
-import org.md2k.mcerebrum.core.internet.download.DownloadFile;
-import org.md2k.mcerebrum.core.internet.download.DownloadInfo;
+import org.md2k.mcerebrum.internet.download.DownloadFile;
+import org.md2k.mcerebrum.internet.download.DownloadInfo;
 
 import java.util.ArrayList;
 

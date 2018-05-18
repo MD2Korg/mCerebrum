@@ -1,15 +1,4 @@
-package org.md2k.mcerebrum;
-
-import android.app.Application;
-import android.content.Context;
-
-import com.beardedhen.androidbootstrap.TypefaceProvider;
-
-import com.crashlytics.android.Crashlytics;
-import io.fabric.sdk.android.Fabric;
-import io.paperdb.Paper;
-import rx_activity_result2.RxActivityResult;
-
+package org.md2k.mcerebrum.internet.github.model;
 /*
  * Copyright (c) 2016, The University of Memphis, MD2K Center
  * - Syed Monowar Hossain <monowar.hossain@gmail.com>
@@ -37,18 +26,45 @@ import rx_activity_result2.RxActivityResult;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-public class MyApplication extends Application {
-    static Context context;
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        Fabric.with(this, new Crashlytics());
-        context=getApplicationContext();
-        TypefaceProvider.registerDefaultIconSets();
-        RxActivityResult.register(this);
-        Paper.init(context);
+public class AssetInfo {
+    private String browser_download_url;
+    private String name;
+    private String label;
+    private String content_type;
+    private long size;
+    private int download_count;
+    private String created_at;
+    private String updated_at;
+
+    public String getBrowser_download_url() {
+        return browser_download_url;
     }
-    public static Context getContext(){
-        return context;
+
+    public String getName() {
+        return name;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public String getContent_type() {
+        return content_type;
+    }
+
+    public long getSize() {
+        return size;
+    }
+
+    public int getDownload_count() {
+        return download_count;
+    }
+
+    public String getCreated_at() {
+        return created_at;
+    }
+
+    public String getUpdated_at() {
+        return updated_at;
     }
 }

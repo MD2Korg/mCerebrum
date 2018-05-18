@@ -5,9 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import org.md2k.mcerebrum.core.access.studyinfo.StudyCP;
 import org.md2k.mcerebrum.core.access.appinfo.AppAccess;
 import org.md2k.mcerebrum.core.access.appinfo.AppBasicInfo;
+import org.md2k.mcerebrum.study_info.StudyInfo;
 import org.md2k.mcerebrum.system.appinfo.AppInstall;
 
 import java.util.ArrayList;
@@ -46,7 +46,7 @@ public class BootReceiver extends BroadcastReceiver
     @Override
     public void onReceive(Context context, Intent intent) {
         this.context=context;
-        if(StudyCP.getStartAtBoot(context) && StudyCP.getStarted(context)) {
+        if(StudyInfo.isStartAtBoot() && StudyInfo.isStarted()) {
             Log.d("abc","check core");
             if(!AppInstall.isCoreInstalled(context)) return;
             Log.d("abc","check core - success");

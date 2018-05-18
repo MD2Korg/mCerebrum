@@ -1,15 +1,4 @@
-package org.md2k.mcerebrum;
-
-import android.app.Application;
-import android.content.Context;
-
-import com.beardedhen.androidbootstrap.TypefaceProvider;
-
-import com.crashlytics.android.Crashlytics;
-import io.fabric.sdk.android.Fabric;
-import io.paperdb.Paper;
-import rx_activity_result2.RxActivityResult;
-
+package org.md2k.mcerebrum.internet.github.model;
 /*
  * Copyright (c) 2016, The University of Memphis, MD2K Center
  * - Syed Monowar Hossain <monowar.hossain@gmail.com>
@@ -37,18 +26,40 @@ import rx_activity_result2.RxActivityResult;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-public class MyApplication extends Application {
-    static Context context;
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        Fabric.with(this, new Crashlytics());
-        context=getApplicationContext();
-        TypefaceProvider.registerDefaultIconSets();
-        RxActivityResult.register(this);
-        Paper.init(context);
+public class ReleaseInfo {
+    private String tag_name;
+    private String name;
+    private String body;
+    private boolean prerelease;
+    private String created_at;
+    private String published_at;
+    private AssetInfo[] assets;
+
+    public String getTag_name() {
+        return tag_name;
     }
-    public static Context getContext(){
-        return context;
+
+    public String getName() {
+        return name;
+    }
+
+    public String getBody() {
+        return body;
+    }
+
+    public boolean isPrerelease() {
+        return prerelease;
+    }
+
+    public String getCreated_at() {
+        return created_at;
+    }
+
+    public String getPublished_at() {
+        return published_at;
+    }
+
+    public AssetInfo[] getAssets() {
+        return assets;
     }
 }

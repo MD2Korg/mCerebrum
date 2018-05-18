@@ -1,15 +1,4 @@
-package org.md2k.mcerebrum;
-
-import android.app.Application;
-import android.content.Context;
-
-import com.beardedhen.androidbootstrap.TypefaceProvider;
-
-import com.crashlytics.android.Crashlytics;
-import io.fabric.sdk.android.Fabric;
-import io.paperdb.Paper;
-import rx_activity_result2.RxActivityResult;
-
+package org.md2k.mcerebrum.internet.download;
 /*
  * Copyright (c) 2016, The University of Memphis, MD2K Center
  * - Syed Monowar Hossain <monowar.hossain@gmail.com>
@@ -37,18 +26,41 @@ import rx_activity_result2.RxActivityResult;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-public class MyApplication extends Application {
-    static Context context;
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        Fabric.with(this, new Crashlytics());
-        context=getApplicationContext();
-        TypefaceProvider.registerDefaultIconSets();
-        RxActivityResult.register(this);
-        Paper.init(context);
+public class DownloadInfo{
+    public DownloadInfo(long totalFileSize, long currentFileSize, boolean completed){
+        this.currentFileSize=currentFileSize;
+        this.totalFileSize=totalFileSize;
+        this.completed=completed;
+        if(currentFileSize==totalFileSize) progress=100;
+        else progress = (100.0*currentFileSize)/totalFileSize;
     }
-    public static Context getContext(){
-        return context;
+
+    private double progress;
+    private long currentFileSize;
+    private long totalFileSize;
+    private boolean completed;
+
+    public double getProgress() {
+        return progress;
+    }
+
+    public void setProgress(long progress) {
+        this.progress = progress;
+    }
+
+    public long getCurrentFileSize() {
+        return currentFileSize;
+    }
+
+    public void setCurrentFileSize(long currentFileSize) {
+        this.currentFileSize = currentFileSize;
+    }
+
+    public long getTotalFileSize() {
+        return totalFileSize;
+    }
+
+    public boolean isCompleted() {
+        return completed;
     }
 }

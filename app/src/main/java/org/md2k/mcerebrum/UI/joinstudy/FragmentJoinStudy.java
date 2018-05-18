@@ -16,17 +16,15 @@ import org.md2k.mcerebrum.ActivityMain;
 import org.md2k.mcerebrum.Constants;
 import org.md2k.mcerebrum.MyApplication;
 import org.md2k.mcerebrum.R;
+import org.md2k.mcerebrum.cerebral_cortex.cerebralcortexwebapi.ServerManager;
+import org.md2k.mcerebrum.cerebral_cortex.cerebralcortexwebapi.models.AuthResponse;
+import org.md2k.mcerebrum.cerebral_cortex.cerebralcortexwebapi.models.MinioObjectStats;
+import org.md2k.mcerebrum.cerebral_cortex.serverinfo.CCInfo;
 import org.md2k.mcerebrum.commons.dialog.Dialog;
 import org.md2k.mcerebrum.commons.dialog.DialogCallback;
-import org.md2k.mcerebrum.core.access.configinfo.ConfigCP;
-import org.md2k.mcerebrum.core.access.serverinfo.ServerCP;
-import org.md2k.mcerebrum.core.access.userinfo.UserCP;
-import org.md2k.mcerebrum.core.constant.MCEREBRUM;
+import org.md2k.mcerebrum.config_info.ConfigInfo;
 import org.md2k.mcerebrum.configuration.ConfigManager;
-import org.md2k.mcerebrum.menu.AbstractMenu;
-import org.md2k.mcerebrum.system.cerebralcortexwebapi.ServerManager;
-import org.md2k.mcerebrum.system.cerebralcortexwebapi.models.AuthResponse;
-import org.md2k.mcerebrum.system.cerebralcortexwebapi.models.MinioObjectStats;
+import org.md2k.mcerebrum.core.constant.MCEREBRUM;
 import org.md2k.mcerebrum.system.update.Update;
 
 import java.io.UnsupportedEncodingException;
@@ -174,9 +172,9 @@ public class FragmentJoinStudy extends Fragment {
                             if(!ConfigManager.load(MyApplication.getContext(), ConfigManager.LOAD_TYPE.NEW)){
                                 return Observable.error(new Throwable("Configuration file format error"));
                             }else {
-                                UserCP.set(MyApplication.getContext(), null, userName);
-                                ServerCP.set(MyApplication.getContext(), serverName, userName, authResponse.getUserUuid(), password, authResponse.getAccessToken(), minioObject.getObjectName(), minioObject.getLastModified(), minioObject.getLastModified());
-                                ConfigCP.setDownloadFrom(MyApplication.getContext(), MCEREBRUM.CONFIG.TYPE_SERVER);
+                                CCInfo ccInfo = new CCInfo(serverName, userName, password, minioObject.getObjectName(), minioObject.getLastModified(), minioObject.getLastModified());
+                                CCInfo.write(ccInfo);
+                                ConfigInfo.setDownloadFrom(MCEREBRUM.CONFIG.TYPE_SERVER);
                                 return Update.checkUpdate(getActivity());
                             }
                         }

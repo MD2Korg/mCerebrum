@@ -1,7 +1,6 @@
 package org.md2k.mcerebrum;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.support.v7.widget.Toolbar;
 import android.widget.Toast;
 
@@ -9,9 +8,7 @@ import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
-import com.mikepenz.materialdrawer.holder.BadgeStyle;
 import com.mikepenz.materialdrawer.holder.StringHolder;
-import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 
@@ -20,18 +17,17 @@ import org.md2k.mcerebrum.UI.app_settings.FragmentAppSettings;
 import org.md2k.mcerebrum.UI.check_update.ActivityCheckUpdate;
 import org.md2k.mcerebrum.UI.home.FragmentHome;
 import org.md2k.mcerebrum.UI.joinstudy.FragmentJoinStudy;
+import org.md2k.mcerebrum.cerebral_cortex.serverinfo.CCInfo;
 import org.md2k.mcerebrum.commons.dialog.Dialog;
 import org.md2k.mcerebrum.commons.dialog.DialogCallback;
+import org.md2k.mcerebrum.config_info.ConfigInfo;
+import org.md2k.mcerebrum.configuration.ConfigManager;
 import org.md2k.mcerebrum.core.access.appinfo.AppAccess;
 import org.md2k.mcerebrum.core.access.appinfo.AppBasicInfo;
-import org.md2k.mcerebrum.core.access.configinfo.ConfigCP;
-import org.md2k.mcerebrum.core.access.serverinfo.ServerCP;
-import org.md2k.mcerebrum.core.access.studyinfo.StudyCP;
-import org.md2k.mcerebrum.core.access.userinfo.UserCP;
 import org.md2k.mcerebrum.core.constant.MCEREBRUM;
-import org.md2k.mcerebrum.configuration.ConfigManager;
 import org.md2k.mcerebrum.menu.AbstractMenu;
 import org.md2k.mcerebrum.menu.ResponseCallBack;
+import org.md2k.mcerebrum.study_info.StudyInfo;
 import org.md2k.mcerebrum.system.appinfo.AppInstall;
 import org.md2k.mcerebrum.system.update.Update;
 
@@ -86,11 +82,11 @@ public abstract class AbstractActivityMenu extends AbstractActivityBasics {
 
     void createDrawer() {
         final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        String userName=UserCP.getUserName(MyApplication.getContext());
+        String userName=CCInfo.getUserName();
         if(userName==null) userName="Default User";
         AccountHeader headerResult = new AccountHeaderBuilder()
                 .withActivity(this)
-                .withHeaderBackground(AbstractMenu.getCoverImage(this, StudyCP.getCoverImage(MyApplication.getContext())))
+                .withHeaderBackground(AbstractMenu.getCoverImage(this, StudyInfo.getCoverImage()))
                 .withCompactStyle(true)
                 .addProfiles(AbstractMenu.getHeaderContent(this, userName, responseCallBack))
                 .build();
@@ -124,11 +120,11 @@ public abstract class AbstractActivityMenu extends AbstractActivityBasics {
         public void onResponse(IDrawerItem drawerItem, int responseId) {
             selectedMenu = responseId;
             if (drawerItem != null)
-                toolbar.setTitle(StudyCP.getTitle(MyApplication.getContext()) + ": " + ((Nameable) drawerItem).getName().getText(AbstractActivityMenu.this));
-            else toolbar.setTitle(StudyCP.getTitle(MyApplication.getContext()));
+                toolbar.setTitle(StudyInfo.getTitle() + ": " + ((Nameable) drawerItem).getName().getText(AbstractActivityMenu.this));
+            else toolbar.setTitle(StudyInfo.getTitle());
             switch (responseId) {
                 case AbstractMenu.MENU_HOME:
-                    toolbar.setTitle(StudyCP.getTitle(MyApplication.getContext()));
+                    toolbar.setTitle(StudyInfo.getTitle());
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new FragmentHome()).commitAllowingStateLoss();
                     break;
                 case AbstractMenu.MENU_APP_ADD_REMOVE:
@@ -151,10 +147,9 @@ public abstract class AbstractActivityMenu extends AbstractActivityBasics {
                         @Override
                         public void onSelected(String value) {
                             if (value.equals("Yes")) {
-                                ServerCP.deleteTable(getApplicationContext());
+                                CCInfo.deleteAll();
                                 ConfigManager.loadFromAsset(getApplicationContext());
-                                ConfigCP.setDownloadFrom(getApplicationContext(), MCEREBRUM.CONFIG.TYPE_FREEBIE);
-                                UserCP.set(MyApplication.getContext(), null, "Default User");
+                                ConfigInfo.setDownloadFrom(MCEREBRUM.CONFIG.TYPE_FREEBIE);
                                 initStart();
                                 createUI();
                             }
@@ -165,9 +160,9 @@ public abstract class AbstractActivityMenu extends AbstractActivityBasics {
                     ArrayList<String> packageNames = AppBasicInfo.getStudy(getApplicationContext());
                     if (packageNames.size() == 0 || !AppInstall.isCoreInstalled(getApplicationContext())) {
                         Toasty.error(getApplicationContext(), "Datakit/study is not installed", Toast.LENGTH_SHORT).show();
-                        StudyCP.setStarted(getApplicationContext(), false);
+                        StudyInfo.setStarted(false);
                     } else {
-                        StudyCP.setStarted(getApplicationContext(), true);
+                        StudyInfo.setStarted(true);
                         AppAccess.launch(getApplicationContext(), packageNames.get(0));
                         finish();
                     }
