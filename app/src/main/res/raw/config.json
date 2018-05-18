@@ -1,0 +1,124 @@
+{
+  "database":{
+    "enabled":true,
+    "location":"INTERNAL_SDCARD"
+  },
+  "archive":{
+    "enabled":false,
+    "location":"EXTERNAL_SDCARD_PREFERRED",
+    "interval":86400000
+  },
+  "upload":{
+    "enabled":false,
+    "interval": 900000,
+    "url": "https://cerebralcortex.md2k.org/",
+    "restricted_datasource": [
+      {
+        "platform": {
+          "type": "PHONE"
+        },
+        "type": "LOCATION"
+      }
+    ]
+  },
+  "privacy":{
+    "duration_options": [
+      {
+        "id": "300000",
+        "title": "5 Minutes",
+        "value": 300000
+      },
+      {
+        "id": "600000",
+        "title": "10 Minutes",
+        "value": 600000
+      },
+      {
+        "id": "900000",
+        "title": "15 Minutes",
+        "value": 900000
+      },
+      {
+        "id": "1800000",
+        "title": "30 Minutes",
+        "value": 1800000
+      }
+    ],
+    "privacy_type_options": [
+      {
+        "id": "location",
+        "title": "Location",
+        "summary": "",
+        "source": [
+          {
+            "datasource_type": "LOCATION"
+          }
+        ]
+      },
+      {
+        "id": "activity",
+        "title": "Activity",
+        "summary": "",
+        "source": [
+          {
+            "datasource_type": "LOCATION"
+          },
+          {
+            "datasource_type": "ACCELEROMETER"
+          },
+          {
+            "datasource_type": "GYROSCOPE"
+          },
+          {
+            "datasource_type": "ACCELEROMETER_X"
+          },
+          {
+            "datasource_type": "ACCELEROMETER_Y"
+          },
+          {
+            "datasource_type": "ACCELEROMETER_Z"
+          },
+          {
+            "datasource_type": "GYROSCOPE_X"
+          },
+          {
+            "datasource_type": "GYROSCOPE_Y"
+          },
+          {
+            "datasource_type": "GYROSCOPE_Z"
+          }
+        ]
+      },
+      {
+        "id": "chest_sensor",
+        "title": "Chest Sensor",
+        "summary": "",
+        "source": [
+          {
+            "platform_type": "AUTOSENSE_CHEST"
+          }
+        ]
+      },
+      {
+        "id": "wrist_sensor",
+        "title": "Wrist Sensors",
+        "summary": "",
+        "source": [
+          {
+            "platform_type": "AUTOSENSE_WRIST"
+          }
+        ]
+      },
+      {
+        "id": "ema_intervention",
+        "title": "Surveys",
+        "summary": "",
+        "source": [
+          {
+            "datasource_type": "SURVEY"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -168,7 +168,7 @@ public class FragmentJoinStudy extends Fragment {
                     @Override
                     public Observable<Boolean> call(Boolean aBoolean) {
                         String a = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
-                        if (!unzipFile(a+"/config.zip", Constants.CONFIG_ROOT_DIR()))
+                        if (unzipFile(a+"/config.zip", Constants.CONFIG_ROOT_DIR())==null)
                             return Observable.error(new Throwable("Failed to unzip"));
                         else {
                             if(!ConfigManager.load(MyApplication.getContext(), ConfigManager.LOAD_TYPE.NEW)){

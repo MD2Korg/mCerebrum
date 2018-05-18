@@ -1,0 +1,41 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="Settings">
+        <SwitchPreference
+            android:key="key_enabled"
+            android:title="Enable"
+            android:defaultValue="true" />
+        <ListPreference
+            android:entries="@array/sdcard_text"
+            android:entryValues="@array/sdcard_values"
+            android:key="key_storage"
+            android:dependency="key_enabled"
+            android:title="Storage Option" />
+        <ListPreference
+            android:entries="@array/upload_interval_text"
+            android:entryValues="@array/upload_interval_values"
+            android:key="key_interval"
+            android:summary="%s"
+            android:dependency="key_enabled"
+            android:title="Upload Interval"/>
+
+        <Preference
+            android:enabled="false"
+            android:key="key_sdcard_size"
+            android:title="Selected Storage" />
+        <Preference
+            android:enabled="false"
+            android:key="key_file_size"
+            android:title="Used Space" />
+        <Preference
+            android:enabled="false"
+            android:key="key_directory"
+            android:title="File Path" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Reset">
+        <Preference
+            android:icon="@drawable/ic_delete_red_48dp"
+            android:key="key_delete"
+            android:summary="Clear all data from archive"
+            android:title="Delete Archive Files" />
+    </PreferenceCategory>
+</PreferenceScreen>

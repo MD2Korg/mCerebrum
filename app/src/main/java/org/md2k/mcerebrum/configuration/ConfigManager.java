@@ -165,7 +165,7 @@ public class ConfigManager {
                     @Override
                     public Observable<Boolean> call(Boolean aBoolean) {
                         String a = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getAbsolutePath();
-                        if (!unzipFile(a + "/config.zip", dir))
+                        if (unzipFile(a + "/config.zip", dir)==null)
                             return Observable.error(new Throwable("Failed to unzip"));
                         else {
                             if(!ConfigManager.load(context, LOAD_TYPE.UPDATE)){

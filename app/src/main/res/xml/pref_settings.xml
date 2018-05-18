@@ -1,0 +1,16 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="Settings">
+        <Preference
+            android:icon="@drawable/ic_database_teal_48dp"
+            android:key="key_database"
+            android:title="Database" />
+        <Preference
+            android:icon="@drawable/ic_download_teal_48dp"
+            android:key="key_archive"
+            android:title="Archive Data" />
+        <Preference
+            android:icon="@drawable/ic_cloud_upload_teal_48dp"
+            android:key="key_upload"
+            android:title="Upload Data" />
+    </PreferenceCategory>
+</PreferenceScreen>

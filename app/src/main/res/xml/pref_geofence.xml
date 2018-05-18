@@ -1,0 +1,11 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="Configured Location"
+        android:key="key_configured_location">
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Add new location">
+        <Preference android:title="Add Current Location"
+            android:key="key_add"
+            android:icon="@drawable/ic_add"
+            />
+    </PreferenceCategory>
+</PreferenceScreen>

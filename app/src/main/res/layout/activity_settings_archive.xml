@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <include
+        android:id="@+id/layout_two_button"
+        layout="@layout/layout_two_button" />
+
+
+    <LinearLayout
+        android:id="@+id/layout_preference_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@id/layout_two_button"
+        android:orientation="vertical" />
+</RelativeLayout>

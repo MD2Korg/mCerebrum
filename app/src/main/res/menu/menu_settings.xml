@@ -1,0 +1,22 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+
+    xmlns:serviceApp="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".AutoSenseActivity">
+    <item
+        android:id="@+id/action_settings"
+        android:icon="@drawable/ic_settings"
+        serviceApp:showAsAction="ifRoom"
+        android:title="Settings" />
+    <item
+        android:id="@+id/action_plot"
+        android:icon="@drawable/ic_plot"
+        serviceApp:showAsAction="ifRoom"
+        android:title="Plot" />
+    <item
+        android:id="@+id/action_location"
+        android:icon="@drawable/ic_location"
+        serviceApp:showAsAction="ifRoom"
+        android:title="Location" />
+
+</menu>
