@@ -1,0 +1,39 @@
+{
+  "name": "mCerebrum",
+  "version": "3.0.0",
+  "private": true,
+  "scripts": {
+    "postinstall": "node ./scripts/postinstall.js",
+    "start": "watchman watch-del-all && (adb reverse tcp:8081 tcp:8081 || true) && node node_modules/react-native/local-cli/cli.js start --reset-cache",
+    "android": "cd android && ./gradlew installDebug",
+    "xcode": "open ios/example.xcodeproj",
+    "e2e": "detox test --configuration ios.sim.debug",
+    "e2e-release": "detox test --configuration ios.sim.release"
+  },
+  "dependencies": {
+    "native-base": "^2.4.5",
+    "react": "^16.3.2",
+    "react-native": "^0.55.4",
+    "react-native-animatable": "^1.2.4",
+    "react-native-navigation": "^1.1.462"
+  },
+  "devDependencies": {
+    "detox": "^5.0.0",
+    "mocha": "^3.4.2"
+  },
+  "detox": {
+    "specs": "test/e2e",
+    "configurations": {
+      "ios.sim.debug": {
+        "binaryPath": "ios/DerivedData/example/Build/Products/Debug-iphonesimulator/example.app",
+        "type": "ios.simulator",
+        "name": "iPhone 6s"
+      },
+      "ios.sim.release": {
+        "binaryPath": "ios/DerivedData/example/Build/Products/Release-iphonesimulator/example.app",
+        "type": "ios.simulator",
+        "name": "iPhone 6s"
+      }
+    }
+  }
+}

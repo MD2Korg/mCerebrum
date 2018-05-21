@@ -1,4 +1,0 @@
-include ':app'
-include ':commons', ":core"
-project(':commons').projectDir=new File('../mCerebrum-Library/commons')
-project(':core').projectDir=new File('../mCerebrum-Library/core')

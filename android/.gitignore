@@ -41,6 +41,3 @@ output.json
 #NDK
 obj/
 .externalNativeBuild
-
-#react native
-node_modules/
