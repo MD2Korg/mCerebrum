@@ -6,9 +6,9 @@ class Home extends React.Component {
 
   constructor(props) {
     super(props);
+    this.props.navigator.setTitle({title: 'mCerebrum'});
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
   }
-
   onNavigatorEvent(event) {
     if (event.type === 'DeepLink') {
       const parts = event.link.split('/');

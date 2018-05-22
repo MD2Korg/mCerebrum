@@ -19,8 +19,8 @@ const tabs = [{
 {
   label: 'Report',
   screen: 'mc.Report',
-  icon: require('../img/settings.png'),
-  title: 'Settings',
+  icon: require('../img/summary.png'),
+  title: 'Report',
 },
 {
   label: 'Settings',
@@ -29,10 +29,10 @@ const tabs = [{
   title: 'Settings',
 },
 {
-  label: 'About',
-  screen: 'mc.About',
-  icon: require('../img/transform.png'),
-  title: 'About',
+  label: 'Sensor/Marker',
+  screen: 'mc.Plugins',
+  icon: require('../img/list.png'),
+  title: 'Sensor/Marker',
 }];
 
 // this will start our app
@@ -56,10 +56,5 @@ Navigation.startTabBasedApp({
     navBarBackgroundColor: '#011D33',
     statusBarColor: '#002b4c',
     tabFontFamily: 'BioRhyme-Bold',
-  },
-  drawer: {
-    left: {
-      screen: 'mc.About'
-    }
   }
 });

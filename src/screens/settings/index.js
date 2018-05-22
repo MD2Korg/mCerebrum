@@ -7,6 +7,7 @@ class Settings extends React.Component {
  constructor(props)
  {
    super(props);
+   this.props.navigator.setTitle({title: 'mCerebrum'});
 
    this.state = { GridViewItems: [
      {key: 'study', title: 'Study',icon: 'test-tube', icon_type: 'MaterialCommunityIcons'},
