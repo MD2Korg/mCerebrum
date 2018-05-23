@@ -16,6 +16,9 @@ import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
+
+import org.md2k.mcerebrum.configuration.ConfigManager;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -63,6 +66,8 @@ public class MyApplication extends NavigationApplication implements ReactApplica
         Paper.init(context);
         Utils.init(this);
         SoLoader.init(this, /* native exopackage */ false);
+        ConfigManager.load(getApplicationContext(), ConfigManager.LOAD_TYPE.READ);
+
     }
     public static Context getContext(){
         return context;

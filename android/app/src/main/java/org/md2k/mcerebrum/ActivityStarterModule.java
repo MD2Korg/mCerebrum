@@ -29,6 +29,7 @@ package org.md2k.mcerebrum;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.widget.Toast;
 
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
@@ -42,6 +43,7 @@ import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.bridge.WritableNativeArray;
 import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
+import com.facebook.react.uimanager.IllegalViewOperationException;
 
 import org.md2k.mcerebrum.phonesensor.ActivitySettings;
 
@@ -127,6 +129,7 @@ class ActivityStarterModule extends ReactContextBaseJavaModule {
             ReactNativeHost reactNativeHost = application.getReactNativeHost();
             ReactInstanceManager reactInstanceManager = reactNativeHost.getReactInstanceManager();
             ReactContext reactContext = reactInstanceManager.getCurrentReactContext();
+            Toast.makeText(activity,"callJavaScript"+reactContext, Toast.LENGTH_SHORT).show();
 
             if (reactContext != null) {
                 CatalystInstance catalystInstance = reactContext.getCatalystInstance();
@@ -142,5 +145,17 @@ class ActivityStarterModule extends ReactContextBaseJavaModule {
      */
     static void triggerAlert(@Nonnull String message) {
         eventEmitter.emit("MyEventValue", message);
+    }
+    @ReactMethod
+    public void getPackageList(
+            int tag,
+            int ancestorTag,
+            Callback errorCallback,
+            Callback successCallback) {
+        try {
+            successCallback.invoke(1, 2, 3, 4);
+        } catch (IllegalViewOperationException e) {
+            errorCallback.invoke(e.getMessage());
+        }
     }
 }

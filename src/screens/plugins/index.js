@@ -1,10 +1,23 @@
 import React, {Component} from 'react';
 import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body, Right, Fab, Title} from 'native-base';
 
-import { StyleSheet,  View, TouchableOpacity, Image, Alert, AppRegistry, NativeModules } from 'react-native';
+import { StyleSheet,  View, TouchableOpacity, Image, Alert, AppRegistry, NativeModules,  NativeEventEmitter } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import Collapsible from 'react-native-collapsible';
 import Accordion from 'react-native-collapsible/Accordion';
+
+import BatchedBridge from "react-native/Libraries/BatchedBridge/BatchedBridge";
+
+export class ExposedToJava {
+  alert(message) {
+      alert(message);
+  }
+}
+
+const exposedToJava = new ExposedToJava();
+BatchedBridge.registerCallableModule("JavaScriptVisibleToJava", exposedToJava);
+
+
 const BACON_IPSUM =
   'Bacon ipsum dolor amet chuck turducken landjaeger tongue spare ribs. Picanha beef prosciutto meatball turkey shoulder shank salami cupim doner jowl pork belly cow. Chicken shankle rump swine tail frankfurter meatloaf ground round flank ham hock tongue shank andouille boudin brisket. ';
   const CONTENT = [
@@ -127,7 +140,13 @@ class Plugins extends React.Component {
                                     </Button>
                                   </Left>
                                   <Body>
-                                    <Button transparent onPress={() =>alert('Add payment')}>
+                                    <Button transparent onPress={() => NativeModules.ActivityStarter.getPackageList(100,100,(msg) => {
+    console.log(msg);
+  },
+  (x, y, width, height) => {
+    console.log(x + ':' + y + ':' + width + ':' + height);
+  }
+)}>
                                       <Icon active name="ios-remove-circle-outline" type="Ionicons"/>
                                       <Text>Remove</Text>
                                     </Button>
@@ -160,19 +179,12 @@ class Plugins extends React.Component {
     }
     constructor(props){
       super(props);
-      this.props.navigator.setTitle({title: 'mCerebrum'});
+      this.props.navigator.setTitle({title: 'mCerebrum->Plugins'});
     }
 
     render() {
       return (
         <Container>
-        <Header>
-                  <Left/>
-                  <Body>
-                    <Title>List of Plugins</Title>
-                  </Body>
-                  <Right />
-                </Header>
                 <Content>
  <Accordion
             activeSection={this.state.activeSection}
@@ -184,26 +196,9 @@ class Plugins extends React.Component {
             onChange={this._setSection.bind(this)}
           />
           </Content>
-                    <Fab
-                      active={this.state.active}
-                      direction="up"
-                      containerStyle={{ }}
-                      style={{ backgroundColor: '#5067FF' }}
-                      position="bottomRight"
-                      onPress={() => this.setState({ active: !this.state.active })}>
-                      <Icon name="share" />
-                      <Button style={{ backgroundColor: '#34A34F' }}>
-                        <Icon name="qrcode-scan" type="MaterialCommunityIcons"/>
-                      </Button>
-                      <Button style={{ backgroundColor: '#3B5998' }}>
-                        <Icon name="http" type="MaterialIcons"/>
-                      </Button>
-                      <Button style={{ backgroundColor: '#DD5144' }}>
-                        <Icon ios='ios-appstore' android="md-appstore" />
-                      </Button>
-                    </Fab>
-
                 </Container>                );
     }
   }
+  const eventEmitter = new NativeEventEmitter(NativeModules.ActivityStarter);
+  eventEmitter.addListener(NativeModules.ActivityStarter.MyEventName, (params) => alert(params));
 export default Plugins;
