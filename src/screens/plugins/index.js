@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body, Right, Fab, Title} from 'native-base';
 
-import { StyleSheet,  View, TouchableOpacity, Image, Alert, AppRegistry } from 'react-native';
+import { StyleSheet,  View, TouchableOpacity, Image, Alert, AppRegistry, NativeModules } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import Collapsible from 'react-native-collapsible';
 import Accordion from 'react-native-collapsible/Accordion';
@@ -103,13 +103,6 @@ class Plugins extends React.Component {
     _setSection(section) {
       this.setState({ activeSection: section });
     }
-    TestFunction(section) {
-      this.setState({
-        textValue: "abc"
-      })
-//        Alert.alert(section.title);
-
-      }
     _renderHeader=(section, i, isActive) => {
       return (
         <Animatable.View
@@ -128,9 +121,9 @@ class Plugins extends React.Component {
                     </CardItem>
                     <CardItem>
                                   <Left>
-                                    <Button transparent onPress={ this.TestFunction.bind(this, section) } >
+                                    <Button transparent >
                                     <Icon active name="ios-add-circle-outline" type="Ionicons"/>
-                                      <Text>{this.state.textValue}</Text>
+                                      <Text>Add</Text>
                                     </Button>
                                   </Left>
                                   <Body>
@@ -140,7 +133,7 @@ class Plugins extends React.Component {
                                     </Button>
                                   </Body>
                                   <Right>
-                                  <Button transparent>
+                                  <Button transparent onPress={() => NativeModules.ActivityStarter.navigateToExample()}>
                                     <Icon active name="ios-settings-outline" type="Ionicons"/>
                                     <Text>Settings</Text>
                                   </Button>
@@ -168,10 +161,7 @@ class Plugins extends React.Component {
     constructor(props){
       super(props);
       this.props.navigator.setTitle({title: 'mCerebrum'});
-      this.state = {
-                  textValue:'Change me'
-              }
-                }
+    }
 
     render() {
       return (
