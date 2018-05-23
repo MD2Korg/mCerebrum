@@ -1,6 +1,8 @@
 import React from 'react';
+import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body, Right, Fab, Title} from 'native-base';
 import {StyleSheet, ScrollView} from 'react-native';
 import Row from '../../components/Row';
+
 
 class Home extends React.Component {
 
@@ -22,9 +24,30 @@ class Home extends React.Component {
 
   render() {
     return (
-      <ScrollView style={styles.container}>
 
-      </ScrollView>
+     <Container>
+        <Header/>
+
+        <Content>
+          <Card>
+           <CardItem header>
+             <Text>Data Collection</Text>
+           </CardItem>
+           <CardItem>
+             <Body>
+
+                 <Left>
+                <Icon ios='ios-menu' android="md-menu" style={{fontSize: 20, color: 'red'}}/>
+                 </Left>
+
+             </Body>
+           </CardItem>
+           <CardItem footer>
+             <Text>GeekyAnts</Text>
+           </CardItem>
+          </Card>
+        </Content>
+      </Container>
     );
   }
 }

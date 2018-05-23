@@ -48,7 +48,7 @@ class Settings extends React.Component {
          data={ this.state.GridViewItems }
 
          renderItem={({item}) =><View style={styles.GridViewBlockStyle}>
-<Icon type={item.icon_type} name={item.icon} style={{fontSize: 40, color: '#80DEEA', active: false}} onPress={this.GetGridViewItem.bind(this, item.key)}/>
+<Icon type={item.icon_type} name={item.icon} style={{fontSize: 40, color: '#80DEEA'}} onPress={this.GetGridViewItem.bind(this, item.key)}/>
             <Text style={styles.GridViewInsideTextItemStyle} onPress={this.GetGridViewItem.bind(this, item.key)} > {item.title} </Text>
             </View>
           }

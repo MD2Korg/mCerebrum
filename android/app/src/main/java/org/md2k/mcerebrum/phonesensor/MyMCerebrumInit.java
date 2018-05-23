@@ -32,6 +32,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
 
+import org.md2k.mcerebrum.MyApplication;
 import org.md2k.mcerebrum.core.access.MCerebrum;
 import org.md2k.mcerebrum.core.access.MCerebrumInfo;
 import org.md2k.mcerebrum.phonesensor.plot.ActivityPlotChoice;

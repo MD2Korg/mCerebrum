@@ -43,21 +43,6 @@ class Report extends React.Component {
 
 <View style={styles.MainContainer}>
 
-      <FlatList
-
-         data={ this.state.GridViewItems }
-
-         renderItem={({item}) =><View style={styles.GridViewBlockStyle}>
-<Icon type={item.icon_type} name={item.icon} style={{fontSize: 40, color: '#80DEEA', active: false}} onPress={this.GetGridViewItem.bind(this, item.key)}/>
-            <Text style={styles.GridViewInsideTextItemStyle} onPress={this.GetGridViewItem.bind(this, item.key)} > {item.title} </Text>
-            </View>
-          }
-
-         numColumns={3}
-
-        />
-
-
 </View>
 
    );
