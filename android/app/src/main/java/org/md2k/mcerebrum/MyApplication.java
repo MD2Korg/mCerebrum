@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.beardedhen.androidbootstrap.TypefaceProvider;
 
+import com.blankj.utilcode.util.Utils;
 import com.crashlytics.android.Crashlytics;
 import io.fabric.sdk.android.Fabric;
 import io.paperdb.Paper;
@@ -11,7 +12,10 @@ import rx_activity_result2.RxActivityResult;
 
 import com.facebook.react.ReactPackage;
 import com.reactnativenavigation.NavigationApplication;
-
+import com.facebook.react.ReactApplication;
+import com.facebook.react.ReactNativeHost;
+import com.facebook.react.shell.MainReactPackage;
+import com.facebook.soloader.SoLoader;
 import java.util.Arrays;
 import java.util.List;
 
@@ -42,7 +46,7 @@ import java.util.List;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-public class MyApplication extends NavigationApplication {
+public class MyApplication extends NavigationApplication implements ReactApplication {
     static Context context;
     @Override
     public boolean isDebug() {
@@ -57,6 +61,8 @@ public class MyApplication extends NavigationApplication {
         TypefaceProvider.registerDefaultIconSets();
         RxActivityResult.register(this);
         Paper.init(context);
+        Utils.init(this);
+        SoLoader.init(this, /* native exopackage */ false);
     }
     public static Context getContext(){
         return context;
@@ -65,7 +71,8 @@ public class MyApplication extends NavigationApplication {
         // Add additional packages you require here
         // No need to add RnnPackage and MainReactPackage
         return Arrays.<ReactPackage>asList(
-                // eg. new VectorIconsPackage()
+                new ActivityStarterReactPackage(),
+                new MainReactPackage()                // eg. new VectorIconsPackage()
         );
     }
 
@@ -77,4 +84,23 @@ public class MyApplication extends NavigationApplication {
     public String getJSMainModuleName() {
         return "index";
     }
+    private final ReactNativeHost mReactNativeHost = new ReactNativeHost(this) {
+        @Override
+        public boolean getUseDeveloperSupport() {
+            return BuildConfig.DEBUG;
+        }
+
+        @Override
+        protected List<ReactPackage> getPackages() {
+            return Arrays.asList(
+                    new ActivityStarterReactPackage(),
+                    new MainReactPackage()
+            );
+        }
+    };
+    @Override
+    public ReactNativeHost getReactNativeHost() {
+        return mReactNativeHost;
+    }
+
 }

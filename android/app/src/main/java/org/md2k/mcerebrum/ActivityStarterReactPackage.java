@@ -1,13 +1,4 @@
-package org.md2k.mcerebrum.phonesensor;
-
-import android.app.Application;
-import android.content.Context;
-
-import com.blankj.utilcode.util.Utils;
-
-import org.md2k.mcerebrum.core.access.MCerebrum;
-
-
+package org.md2k.mcerebrum;
 /*
  * Copyright (c) 2016, The University of Memphis, MD2K Center
  * - Syed Monowar Hossain <monowar.hossain@gmail.com>
@@ -35,16 +26,28 @@ import org.md2k.mcerebrum.core.access.MCerebrum;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-public class MyApplication extends Application {
-    static Context context;
+import com.facebook.react.ReactPackage;
+import com.facebook.react.bridge.NativeModule;
+import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.uimanager.ViewManager;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+/**
+ * Exposes {@link ActivityStarterModule} to JavaScript.
+ */
+class ActivityStarterReactPackage implements ReactPackage {
     @Override
-    public void onCreate() {
-        super.onCreate();
-        context=getApplicationContext();
-        Utils.init(this);
-        MCerebrum.init(getApplicationContext(), MyMCerebrumInit.class);
+    public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
+        List<NativeModule> modules = new ArrayList<>();
+        modules.add(new ActivityStarterModule(reactContext));
+        return modules;
     }
-    public static Context getContext(){
-        return context;
+
+    @Override
+    public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
+        return Collections.emptyList();
     }
 }

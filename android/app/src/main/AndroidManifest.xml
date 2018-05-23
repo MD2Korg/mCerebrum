@@ -182,6 +182,10 @@
             android:enabled="true"
             android:exported="true"
             />
+        <activity android:name=".ExampleActivity"
+            android:enabled="true"
+            android:exported="true"
+            />
 <!--
         <activity
             android:name=".MyReactActivity"

@@ -1,0 +1,661 @@
+[
+  {
+    "application": {
+      "id": "org.md2k.phonesensor",
+      "metadata": {
+        "NAME": "PhoneSensor",
+        "DESCRIPTION": "Collects data from the phone sensors."
+      }
+    },
+    "dataDescriptors": [
+      {
+        "DATA_TYPE": "float",
+        "NAME": "Level",
+        "DESCRIPTION": "current battery charge",
+        "FREQUENCY": "1.0",
+        "MAX_VALUE": "100",
+        "MIN_VALUE": "0",
+        "UNIT": "percentage"
+      },
+      {
+        "DATA_TYPE": "float",
+        "NAME": "Voltage",
+        "DESCRIPTION": "current battery voltage level",
+        "FREQUENCY": "1.0",
+        "MAX_VALUE": "5000",
+        "MIN_VALUE": "0",
+        "UNIT": "voltage"
+      },
+      {
+        "DATA_TYPE": "float",
+        "NAME": "Temperature",
+        "DESCRIPTION": "current battery temperature",
+        "FREQUENCY": "1.0",
+        "MAX_VALUE": "100",
+        "MIN_VALUE": "-50",
+        "UNIT": "celsius"
+      }
+    ],
+    "persistent": true,
+    "platform": {
+      "metadata": {
+        "NAME": "Phone"
+      },
+      "type": "PHONE"
+    },
+    "metadata": {
+      "DATA_TYPE": "org.md2k.datakitapi.datatype.DataTypeFloatArray",
+      "NAME": "Battery",
+      "DESCRIPTION": "measures the current status of the battery",
+      "FREQUENCY": "1.0"
+    },
+    "type": "BATTERY"
+  },
+  {
+    "application": {
+      "id": "org.md2k.phonesensor",
+      "metadata": {
+        "NAME": "PhoneSensor",
+        "DESCRIPTION": "Collects data from the phone sensors."
+      }
+    },
+    "dataDescriptors": [
+      {
+        "DATA_TYPE": "double",
+        "NAME": "Latitude",
+        "DESCRIPTION": "latitude, in degrees",
+        "FREQUENCY": "1.0",
+        "MAX_VALUE": "90",
+        "MIN_VALUE": "-90",
+        "UNIT": "degree"
+      },
+      {
+        "DATA_TYPE": "double",
+        "NAME": "Longitude",
+        "DESCRIPTION": "Longitude, in degrees",
+        "FREQUENCY": "1.0",
+        "MAX_VALUE": "180",
+        "MIN_VALUE": "-180",
+        "UNIT": "degree"
+      },
+      {
+        "DATA_TYPE": "double",
+        "NAME": "Altitude",
+        "DESCRIPTION": "Get the altitude if available, in meters above the WGS 84 reference ellipsoid",
+        "FREQUENCY": "1.0",
+        "MAX_VALUE": "1000",
+        "MIN_VALUE": "0",
+        "UNIT": "meters"
+      },
+      {
+        "DATA_TYPE": "double",
+        "NAME": "Speed",
+        "DESCRIPTION": "speed over ground",
+        "FREQUENCY": "1.0",
+        "MAX_VALUE": "500",
+        "MIN_VALUE": "0",
+        "UNIT": "meter/second"
+      },
+      {
+        "DATA_TYPE": "double",
+        "NAME": "Bearing",
+        "DESCRIPTION": "Bearing is the horizontal direction of travel of this device, and is not related to the device orientation",
+        "FREQUENCY": "1.0",
+        "MAX_VALUE": "360",
+        "MIN_VALUE": "0",
+        "UNIT": "degree"
+      },
+      {
+        "DATA_TYPE": "double",
+        "NAME": "Accuracy",
+        "DESCRIPTION": "Get the estimated accuracy of this location, in meters",
+        "FREQUENCY": "1.0",
+        "MAX_VALUE": "100",
+        "MIN_VALUE": "0",
+        "UNIT": "radius"
+      }
+    ],
+    "persistent": true,
+    "platform": {
+      "metadata": {
+        "NAME": "Phone"
+      },
+      "type": "PHONE"
+    },
+    "metadata": {
+      "DATA_TYPE": "org.md2k.datakitapi.datatype.DataTypeDoubleArray",
+      "NAME": "Location",
+      "DESCRIPTION": "Represents a geographic location",
+      "FREQUENCY": "1.0"
+    },
+    "type": "LOCATION"
+  },
+  {
+    "application": {
+      "id": "org.md2k.phonesensor",
+      "metadata": {
+        "NAME": "PhoneSensor",
+        "DESCRIPTION": "Collects data from the phone sensors."
+      }
+    },
+    "dataDescriptors": [
+      {
+        "DATA_TYPE": "double",
+        "NAME": "Activity Type",
+        "DESCRIPTION": "Represents types of activity (0: STILL,1: ON_FOOT, 2:TILTING, 3: WALKING, 4: RUNNING, 5: ON_BICYCLE, 6: IN_VEHICLE, 7: UNKNOWN",
+        "FREQUENCY": "1.0",
+        "MAX_VALUE": "7",
+        "MIN_VALUE": "0",
+        "UNIT": "value"
+      }
+    ],
+    "persistent": true,
+    "platform": {
+      "metadata": {
+        "NAME": "Phone"
+      },
+      "type": "PHONE"
+    },
+    "metadata": {
+      "DATA_TYPE": "org.md2k.datakitapi.datatype.DataTypeDoubleArray",
+      "NAME": "Activity Type",
+      "DESCRIPTION": "Represents types of activity (0: STILL,1: ON_FOOT, 2:TILTING, 3: WALKING, 4: RUNNING, 5: ON_BICYCLE, 6: IN_VEHICLE, 7: UNKNOWN",
+      "FREQUENCY": "1.0"
+    },
+    "type": "ACTIVITY_TYPE"
+  },
+  {
+    "application": {
+      "id": "org.md2k.phonesensor",
+      "metadata": {
+        "NAME": "PhoneSensor",
+        "DESCRIPTION": "Collects data from the phone sensors."
+      }
+    },
+    "dataDescriptors": [
+      {
+        "DATA_TYPE": "float",
+        "NAME": "Accelerometer X",
+        "DESCRIPTION": "Acceleration minus Gx on the x-axis",
+        "FREQUENCY": "16",
+        "MAX_VALUE": "+5",
+        "MIN_VALUE": "-5",
+        "UNIT": "g"
+      },
+      {
+        "DATA_TYPE": "float",
+        "NAME": "Accelerometer Y",
+        "DESCRIPTION": "Acceleration minus Gy on the y-axis",
+        "FREQUENCY": "16",
+        "MAX_VALUE": "+5",
+        "MIN_VALUE": "-5",
+        "UNIT": "g"
+      },
+      {
+        "DATA_TYPE": "float",
+        "NAME": "Accelerometer Z",
+        "DESCRIPTION": "Acceleration minus Gz on the z-axis",
+        "FREQUENCY": "16",
+        "MAX_VALUE": "+5",
+        "MIN_VALUE": "-5",
+        "UNIT": "g"
+      }
+    ],
+    "persistent": true,
+    "platform": {
+      "metadata": {
+        "NAME": "Phone"
+      },
+      "type": "PHONE"
+    },
+    "metadata": {
+      "DATA_TYPE": "org.md2k.datakitapi.datatype.DataTypeFloatArray",
+      "NAME": "Accelerometer",
+      "DESCRIPTION": "measures the acceleration applied to the device",
+      "FREQUENCY": "16",
+      "UNIT": "g"
+    },
+    "type": "ACCELEROMETER"
+  },
+  {
+    "application": {
+      "id": "org.md2k.phonesensor",
+      "metadata": {
+        "NAME": "PhoneSensor",
+        "DESCRIPTION": "Collects data from the phone sensors."
+      }
+    },
+    "dataDescriptors": [
+      {
+        "DATA_TYPE": "float",
+        "NAME": "Gyroscope X",
+        "DESCRIPTION": "Angular speed around the x-axis",
+        "FREQUENCY": "16",
+        "MAX_VALUE": "5",
+        "MIN_VALUE": "-5",
+        "UNIT": "radians/second"
+      },
+      {
+        "DATA_TYPE": "float",
+        "NAME": "Gyroscope Y",
+        "DESCRIPTION": "Angular speed around the y-axis",
+        "FREQUENCY": "16",
+        "MAX_VALUE": "5",
+        "MIN_VALUE": "-5",
+        "UNIT": "radians/second"
+      },
+      {
+        "DATA_TYPE": "float",
+        "NAME": "Gyroscope Z",
+        "DESCRIPTION": "Angular speed around the z-axis",
+        "FREQUENCY": "16",
+        "MAX_VALUE": "5",
+        "MIN_VALUE": "-5",
+        "UNIT": "radians/second"
+      }
+    ],
+    "persistent": true,
+    "platform": {
+      "metadata": {
+        "NAME": "Phone"
+      },
+      "type": "PHONE"
+    },
+    "metadata": {
+      "DATA_TYPE": "org.md2k.datakitapi.datatype.DataTypeFloatArray",
+      "NAME": "Gyroscope",
+      "DESCRIPTION": "measure the rate of rotation around the device\u0027s local X, Y and Z axis",
+      "FREQUENCY": "16",
+      "UNIT": "radians/second"
+    },
+    "type": "GYROSCOPE"
+  },
+  {
+    "application": {
+      "id": "org.md2k.phonesensor",
+      "metadata": {
+        "NAME": "PhoneSensor",
+        "DESCRIPTION": "Collects data from the phone sensors."
+      }
+    },
+    "dataDescriptors": [
+      {
+        "DATA_TYPE": "float",
+        "NAME": "Compass X",
+        "DESCRIPTION": "Azimuth, angle between the magnetic north direction and the y-axis, around the z-axis (0 to 359). 0\u003dNorth, 90\u003dEast, 180\u003dSouth, 270\u003dWest",
+        "FREQUENCY": "16",
+        "MAX_VALUE": "359",
+        "MIN_VALUE": "0",
+        "UNIT": "degree"
+      },
+      {
+        "DATA_TYPE": "float",
+        "NAME": "Compass Y",
+        "DESCRIPTION": "Pitch, rotation around x-axis (-180 to 180), with positive values when the z-axis moves toward the y-axis",
+        "FREQUENCY": "16",
+        "MAX_VALUE": "180",
+        "MIN_VALUE": "-180",
+        "UNIT": "degree"
+      },
+      {
+        "DATA_TYPE": "float",
+        "NAME": "Compass Z",
+        "DESCRIPTION": "Roll, rotation around the y-axis (-90 to 90) increasing as the device moves clockwise",
+        "FREQUENCY": "16",
+        "MAX_VALUE": "90",
+        "MIN_VALUE": "-90",
+        "UNIT": "degree"
+      }
+    ],
+    "persistent": true,
+    "platform": {
+      "metadata": {
+        "NAME": "Phone"
+      },
+      "type": "PHONE"
+    },
+    "metadata": {
+      "DATA_TYPE": "org.md2k.datakitapi.datatype.DataTypeFloatArray",
+      "NAME": "Compass",
+      "DESCRIPTION": "measures the angles between x, y, and z axis",
+      "FREQUENCY": "16",
+      "UNIT": "degree"
+    },
+    "type": "COMPASS"
+  },
+  {
+    "application": {
+      "id": "org.md2k.phonesensor",
+      "metadata": {
+        "NAME": "PhoneSensor",
+        "DESCRIPTION": "Collects data from the phone sensors."
+      }
+    },
+    "dataDescriptors": [
+      {
+        "DATA_TYPE": "float",
+        "NAME": "Ambient light",
+        "DESCRIPTION": "Ambient light level in SI lux units",
+        "FREQUENCY": "16",
+        "MAX_VALUE": "250",
+        "MIN_VALUE": "0",
+        "UNIT": "lux"
+      }
+    ],
+    "persistent": true,
+    "platform": {
+      "metadata": {
+        "NAME": "Phone"
+      },
+      "type": "PHONE"
+    },
+    "metadata": {
+      "DATA_TYPE": "org.md2k.datakitapi.datatype.DataTypeFloat",
+      "NAME": "Ambient Light",
+      "FREQUENCY": "16",
+      "DESCRIPTION": "Ambient light level in SI lux units",
+      "UNIT": "lux"
+    },
+    "type": "AMBIENT_LIGHT"
+  },
+  {
+    "application": {
+      "id": "org.md2k.phonesensor",
+      "metadata": {
+        "NAME": "PhoneSensor",
+        "DESCRIPTION": "Collects data from the phone sensors."
+      }
+    },
+    "dataDescriptors": [
+      {
+        "DATA_TYPE": "float",
+        "NAME": "Pressure",
+        "DESCRIPTION": "Atmospheric pressure in hPa (millibar)",
+        "FREQUENCY": "6.0",
+        "MAX_VALUE": "2000",
+        "MIN_VALUE": "0",
+        "UNIT": "hPa"
+      }
+    ],
+    "persistent": true,
+    "platform": {
+      "metadata": {
+        "NAME": "Phone"
+      },
+      "type": "PHONE"
+    },
+    "metadata": {
+      "DATA_TYPE": "org.md2k.datakitapi.datatype.DataTypeFloat",
+      "NAME": "Pressure",
+      "DESCRIPTION": "Atmospheric pressure in hPa (millibar)s",
+      "FREQUENCY": "6.0",
+      "UNIT": "hPa"
+    },
+    "type": "PRESSURE"
+  },
+  {
+    "application": {
+      "id": "org.md2k.phonesensor",
+      "metadata": {
+        "NAME": "PhoneSensor",
+        "DESCRIPTION": "Collects data from the phone sensors."
+      }
+    },
+    "dataDescriptors": [
+      {
+        "DATA_TYPE": "float",
+        "NAME": "Proximity",
+        "DESCRIPTION": "Proximity sensor distance measured in centimeters",
+        "FREQUENCY": "ON_CHANGE",
+        "MAX_VALUE": "10",
+        "MIN_VALUE": "0",
+        "UNIT": "centimeter"
+      }
+    ],
+    "persistent": true,
+    "platform": {
+      "metadata": {
+        "NAME": "Phone"
+      },
+      "type": "PHONE"
+    },
+    "metadata": {
+      "DATA_TYPE": "org.md2k.datakitapi.datatype.DataTypeFloat",
+      "NAME": "Proximity",
+      "DESCRIPTION": "Proximity sensor distance measured in centimeters",
+      "FREQUENCY": "ON_CHANGE",
+      "UNIT": "centimeter"
+    },
+    "type": "PROXIMITY"
+  },
+  {
+    "application": {
+      "id": "org.md2k.phonesensor",
+      "metadata": {
+        "NAME": "PhoneSensor",
+        "DESCRIPTION": "Collects data from the phone sensors."
+      }
+    },
+    "dataDescriptors": [
+      {
+        "DATA_TYPE": "float",
+        "NAME": "CPU usage",
+        "DESCRIPTION": "CPU usage from the last record",
+        "FREQUENCY": "1.0",
+        "MAX_VALUE": "1",
+        "MIN_VALUE": "0",
+        "UNIT": ""
+      }
+    ],
+    "persistent": true,
+    "platform": {
+      "metadata": {
+        "NAME": "Phone"
+      },
+      "type": "PHONE"
+    },
+    "metadata": {
+      "DATA_TYPE": "org.md2k.datakitapi.datatype.DataTypeFloat",
+      "NAME": "CPU",
+      "DESCRIPTION": "measures CPU usage from the last entry",
+      "FREQUENCY": "1.0"
+    },
+    "type": "CPU"
+  },
+  {
+    "application": {
+      "id": "org.md2k.phonesensor",
+      "metadata": {
+        "NAME": "PhoneSensor",
+        "DESCRIPTION": "Collects data from the phone sensors."
+      }
+    },
+    "dataDescriptors": [
+      {
+        "DATA_TYPE": "float",
+        "NAME": "Size",
+        "DESCRIPTION": "Size of the memory",
+        "FREQUENCY": "1.0",
+        "MAX_VALUE": "2048",
+        "MIN_VALUE": "0",
+        "UNIT": "megabyte"
+      },
+      {
+        "DATA_TYPE": "float",
+        "NAME": "Available",
+        "DESCRIPTION": "Available memory",
+        "FREQUENCY": "1.0",
+        "MAX_VALUE": "2048",
+        "MIN_VALUE": "0",
+        "UNIT": "megabyte"
+      }
+    ],
+    "persistent": true,
+    "platform": {
+      "metadata": {
+        "NAME": "Phone"
+      },
+      "type": "PHONE"
+    },
+    "metadata": {
+      "DATA_TYPE": "org.md2k.datakitapi.datatype.DataTypeFloatArray",
+      "NAME": "Memory",
+      "DESCRIPTION": "measures usage of memory",
+      "FREQUENCY": "1.0"
+    },
+    "type": "MEMORY"
+  },
+  {
+    "application": {
+      "id": "org.md2k.phonesensor",
+      "metadata": {
+        "NAME": "PhoneSensor",
+        "DESCRIPTION": "Collects data from the phone sensors."
+      }
+    },
+    "dataDescriptors": [
+      {
+        "DATA_TYPE": "float",
+        "NAME": "Ambient Temperature",
+        "DESCRIPTION": "ambient (room) temperature in degree Celsius",
+        "FREQUENCY": "1.0",
+        "MAX_VALUE": "100",
+        "MIN_VALUE": "-50",
+        "UNIT": "degree celsius"
+      }
+    ],
+    "persistent": true,
+    "platform": {
+      "metadata": {
+        "NAME": "Phone"
+      },
+      "type": "PHONE"
+    },
+    "metadata": {
+      "DATA_TYPE": "org.md2k.datakitapi.datatype.DataTypeFloat",
+      "NAME": "Ambient Temperature",
+      "DESCRIPTION": "ambient (room) temperature in degree Celsius",
+      "FREQUENCY": "1.0",
+      "UNIT": "degree celsius"
+    },
+    "type": "AMBIENT_TEMPERATURE"
+  },
+  {
+    "application": {
+      "id": "org.md2k.phonesensor",
+      "metadata": {
+        "NAME": "PhoneSensor",
+        "DESCRIPTION": "Collects data from the phone sensors."
+      }
+    },
+    "dataDescriptors": [
+      {
+        "DATA_TYPE": "int",
+        "NAME": "Step Count",
+        "DESCRIPTION": "Step count of the user",
+        "FREQUENCY": "1.0",
+        "MAX_VALUE": "50",
+        "MIN_VALUE": "0",
+        "UNIT": "number"
+      }
+    ],
+    "persistent": true,
+    "platform": {
+      "metadata": {
+        "NAME": "Phone"
+      },
+      "type": "PHONE"
+    },
+    "metadata": {
+      "DATA_TYPE": "org.md2k.datakitapi.datatype.DataTypeInt",
+      "NAME": "Step Count",
+      "DESCRIPTION": "Step count of the user",
+      "FREQUENCY": "1.0",
+      "UNIT": "number"
+    },
+    "type": "STEP_COUNT"
+  },
+  {
+    "application": {
+      "id": "org.md2k.phonesensor",
+      "metadata": {
+        "NAME": "PhoneSensor",
+        "DESCRIPTION": "Collects data from the phone sensors."
+      }
+    },
+    "dataDescriptors": [
+      {
+        "DATA_TYPE": "String",
+        "NAME": "Location Name",
+        "DESCRIPTION": "Name of the location",
+        "UNIT": "string"
+      },
+      {
+        "DATA_TYPE": "String",
+        "NAME": "Location Latitude",
+        "DESCRIPTION": "Latitude of the location",
+        "UNIT": "string"
+      },
+      {
+        "DATA_TYPE": "String",
+        "NAME": "Location Longitude",
+        "DESCRIPTION": "Longitude of the location",
+        "UNIT": "string"
+      }
+    ],
+    "persistent": true,
+    "platform": {
+      "metadata": {
+        "NAME": "Phone"
+      },
+      "type": "PHONE"
+    },
+    "metadata": {
+      "DATA_TYPE": "org.md2k.datakitapi.datatype.DataTypeStringArray",
+      "NAME": "Geofence",
+      "DESCRIPTION": "Location information of the user",
+      "FREQUENCY": "1.0",
+      "UNIT": "number"
+    },
+    "type": "GEOFENCE",
+    "id": "LIST"
+  },
+  {
+    "application": {
+      "id": "org.md2k.phonesensor",
+      "metadata": {
+        "NAME": "PhoneSensor",
+        "DESCRIPTION": "Collects data from the phone sensors."
+      }
+    },
+    "dataDescriptors": [
+      {
+        "DATA_TYPE": "String",
+        "NAME": "Screen Touch",
+        "DESCRIPTION": "Timestamp of when user touches screen",
+        "UNIT": "timestamp"
+      },
+      {
+        "DATA_TYPE": "DoubleArray",
+        "NAME": "Touch Screen",
+        "DESCRIPTION": "Timestamp of when user touches screen",
+        "UNIT": "timestamp"
+      }
+    ],
+    "persistent": true,
+    "platform": {
+      "metadata": {
+        "NAME": "Phone"
+      },
+      "type": "PHONE"
+    },
+    "metadata": {
+      "DATA_TYPE": "org.md2k.datakitapi.datatype.DataTypeDoubleArray",
+      "NAME": "Touch Screen",
+      "DESCRIPTION": "Timestamp of when user touches screen",
+      "UNIT": "timestamp",
+      "FREQUENCY": "ON_CHANGE"
+    },
+    "type": "TOUCH_SCREEN"
+  }
+]
