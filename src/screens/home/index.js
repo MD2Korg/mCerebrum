@@ -25,27 +25,57 @@ class Home extends React.Component {
   render() {
     return (
 
-     <Container>
-        <Header/>
-
+     <Container style={{backgroundColor: '#131325'}}>
         <Content>
-          <Card>
-           <CardItem header>
-             <Text>Data Collection</Text>
-           </CardItem>
-           <CardItem>
-             <Body>
-
-                 <Left>
-                <Icon ios='ios-menu' android="md-menu" style={{fontSize: 20, color: 'red'}}/>
-                 </Left>
-
+          <Card style={{backgroundColor: '#1e2c3c'}}>
+           <CardItem header  style={{ backgroundColor: '#00838F'
+            }}>
+           <Left/>
+           <Body>
+             <Text style={{color: 'white'}}>Data Colletion</Text>
              </Body>
+             <Right/>
            </CardItem>
-           <CardItem footer>
-             <Text>GeekyAnts</Text>
+           <CardItem style={{ backgroundColor: '#1e2c3c'}}>
+
+<Left>
+             <Button transparent>
+          <Icon active name="controller-play" type="Entypo" style={{fontSize: 60, color: 'red'}}/>
+      </Button>
+      </Left>
+
+ <Body>
+ <Text style={{color: 'white'}}>00:00:00</Text>
+ </Body>
+ <Right>
+ <Button transparent>
+  <Icon active name="controller-stop" type="Entypo" style={{fontSize: 60, color: 'green'}}/>
+</Button>
+             </Right>
            </CardItem>
-          </Card>
+                    </Card>
+
+                    <Card style={{backgroundColor: '#1e2c3c'}}>
+                     <CardItem header style={{ backgroundColor: '#00838F'
+                      }}>
+
+                     <Body>
+                       <Text style={{ color: 'white', textAlign: 'center'}}>Pause and Resume Data Collection</Text>
+                       </Body>
+
+                     </CardItem>
+                     <CardItem style={{ backgroundColor: '#1e2c3c'}}>
+
+           <Body>
+           <Text style={{ color: 'white'}}>Data Collection Active</Text>
+           </Body>
+           <Right>
+           <Button transparent>
+            <Icon active name="controller-paus" type="Entypo" style={{fontSize: 30, color: 'green'}}/>
+          </Button>
+                       </Right>
+                     </CardItem>
+                              </Card>
         </Content>
       </Container>
     );
@@ -63,7 +93,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     borderBottomWidth: 1,
-    borderBottomColor: 'rgba(0, 0, 0, 0.054)',
+    borderBottomColor: 'rgba(0, 0, 0, 0.054)'
   },
   text: {
     fontSize: 16,
