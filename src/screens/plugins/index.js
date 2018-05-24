@@ -1,21 +1,10 @@
 import React, {Component} from 'react';
 import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body, Right, Fab, Title} from 'native-base';
 
-import { StyleSheet,  View, TouchableOpacity, Image, Alert, AppRegistry, NativeModules,  NativeEventEmitter } from 'react-native';
+import { StyleSheet,  View, TouchableOpacity, Image, Alert, AppRegistry, NativeModules } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import Collapsible from 'react-native-collapsible';
 import Accordion from 'react-native-collapsible/Accordion';
-
-import BatchedBridge from "react-native/Libraries/BatchedBridge/BatchedBridge";
-
-export class ExposedToJava {
-  alert(message) {
-      alert(message);
-  }
-}
-
-const exposedToJava = new ExposedToJava();
-BatchedBridge.registerCallableModule("JavaScriptVisibleToJava", exposedToJava);
 
 
 const BACON_IPSUM =
@@ -25,29 +14,19 @@ const BACON_IPSUM =
       title: 'Phone Sensor',
       summary: 'Captures phone sensor data',
       pre_requisite: '',
-      tag: ['phon-accelerometer','phone-gyroscope','phone-compass','activity','gps','location'],
+      package_name: 'org.md2k.mcerebrum',
+      tag: ['phone-accelerometer','phone-gyroscope','phone-compass','activity','gps','location'],
       current_version:'3.0.0',
       latest_version: '3.0.1',
+      button_add: true,
       content: BACON_IPSUM
     },
     {
       title: 'Motion Sense',
       summary: 'Captures motion sense wrist sensor data',
-      content: BACON_IPSUM
-    },
-    {
-      title: 'AutoSense',
-      summary: 'Captures autosense chest sensor data',
-      content: BACON_IPSUM
-    },
-    {
-      title: 'EasySense',
-      summary: 'Captures easysense sensor data',
-      content: BACON_IPSUM
-    },
-    {
-      title: 'Stream Processor',
-      summary: 'Infer stress and smoking events',
+      package_name: 'org.md2k.motionsense',
+      download_link: 'https://raw.githubusercontent.com/MD2Korg/mCerebrum-releases/master/2.0/org.md2k.motionsense/motionsense2.0.17-RC1.apk',
+      button_add: false,
       content: BACON_IPSUM
     }
   ];
@@ -134,25 +113,20 @@ class Plugins extends React.Component {
                     </CardItem>
                     <CardItem>
                                   <Left>
-                                    <Button transparent >
+
+                                    <Button transparent disabled={section.button_add}>
                                     <Icon active name="ios-add-circle-outline" type="Ionicons"/>
                                       <Text>Add</Text>
                                     </Button>
                                   </Left>
                                   <Body>
-                                    <Button transparent onPress={() => NativeModules.ActivityStarter.getPackageList(100,100,(msg) => {
-    console.log(msg);
-  },
-  (x, y, width, height) => {
-    console.log(x + ':' + y + ':' + width + ':' + height);
-  }
-)}>
+                                    <Button transparent onPress={() => NativeModules.ActivityStarter.pluginInstall(section.package_name)}>
                                       <Icon active name="ios-remove-circle-outline" type="Ionicons"/>
                                       <Text>Remove</Text>
                                     </Button>
                                   </Body>
                                   <Right>
-                                  <Button transparent onPress={() => NativeModules.ActivityStarter.navigateToExample()}>
+                                  <Button transparent onPress={() => NativeModules.ActivityStarter.pluginSettings(section.package_name)}>
                                     <Icon active name="ios-settings-outline" type="Ionicons"/>
                                     <Text>Settings</Text>
                                   </Button>
@@ -199,6 +173,5 @@ class Plugins extends React.Component {
                 </Container>                );
     }
   }
-  const eventEmitter = new NativeEventEmitter(NativeModules.ActivityStarter);
-  eventEmitter.addListener(NativeModules.ActivityStarter.MyEventName, (params) => alert(params));
+
 export default Plugins;

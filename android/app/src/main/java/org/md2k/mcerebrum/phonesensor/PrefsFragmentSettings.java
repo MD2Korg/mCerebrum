@@ -78,7 +78,6 @@ import rx.Subscription;
 public class PrefsFragmentSettings extends PreferenceFragment {
     public static final int REQUEST_CHECK_SETTINGS = 1000;
     PhoneSensorDataSources phoneSensorDataSources;
-    ArrayList<DataSource> defaultConfig;
     Preference.OnPreferenceChangeListener onPreferenceChangeListener = new Preference.OnPreferenceChangeListener() {
         @Override
         public boolean onPreferenceChange(Preference preference, Object newValue) {
@@ -97,7 +96,6 @@ public class PrefsFragmentSettings extends PreferenceFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         readConfiguration();
-        readDefaultConfiguration();
         enableGPS();
         addPreferencesFromResource(R.xml.pref_phonesensor_platform);
         createPreferenceScreen();
@@ -161,15 +159,6 @@ public class PrefsFragmentSettings extends PreferenceFragment {
     }
 
 
-
-    void readDefaultConfiguration() {
-        try {
-            defaultConfig = Configuration.readDefault(getActivity());
-        } catch (FileNotFoundException e) {
-            defaultConfig = null;
-        }
-    }
-
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
@@ -203,51 +192,7 @@ public class PrefsFragmentSettings extends PreferenceFragment {
         return v;
     }
 
-    void updateDefaultConfig() {
-        for (int i = 0; i < phoneSensorDataSources.getPhoneSensorDataSources().size(); i++) {
-            phoneSensorDataSources.getPhoneSensorDataSources().get(i).setEnabled(false);
-        }
-        assert defaultConfig != null;
-        for (int i = 0; i < defaultConfig.size(); i++) {
-            String type = defaultConfig.get(i).getType();
-            String freq = defaultConfig.get(i).getMetadata().get(METADATA.FREQUENCY);
-            phoneSensorDataSources.find(type).setEnabled(true);
-            phoneSensorDataSources.find(type).setFrequency(freq);
-        }
-    }
-
-    void setDefaultSettings() {
-        final CheckBoxPreference checkBoxPreference = (CheckBoxPreference) findPreference("key_default_settings");
-        if (defaultConfig == null) {
-            checkBoxPreference.setEnabled(false);
-            checkBoxPreference.setChecked(false);
-            checkBoxPreference.setSummary("not available");
-        } else {
-            checkBoxPreference.setEnabled(true);
-            checkBoxPreference.setChecked(false);
-            checkBoxPreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
-                @Override
-                public boolean onPreferenceClick(Preference preference) {
-                    boolean checked = ((CheckBoxPreference) preference).isChecked();
-                    if (checked) {
-                        PreferenceCategory preferenceCategory = (PreferenceCategory) findPreference("dataSourceType");
-                        preferenceCategory.setEnabled(false);
-                        updateDefaultConfig();
-                        saveConfigurationFile();
-                        updatePreferenceScreen();
-
-                    } else {
-                        PreferenceCategory preferenceCategory = (PreferenceCategory) findPreference("dataSourceType");
-                        preferenceCategory.setEnabled(true);
-                    }
-                    return false;
-                }
-            });
-        }
-    }
-
     void createPreferenceScreen() {
-        setDefaultSettings();
         addPreferenceScreenSensors();
         updatePreferenceScreen();
     }

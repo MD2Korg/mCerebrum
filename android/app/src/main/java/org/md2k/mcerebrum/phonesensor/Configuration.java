@@ -3,7 +3,7 @@ package org.md2k.mcerebrum.phonesensor;
 import android.content.Context;
 import android.os.Environment;
 
-import org.md2k.mcerebrum.MyApplication;
+import org.md2k.mcerebrum.MainApplication;
 import org.md2k.mcerebrum.commons.storage.Storage;
 import org.md2k.mcerebrum.commons.storage.StorageType;
 import org.md2k.mcerebrum.core.datakitapi.source.AbstractObject;
@@ -54,7 +54,7 @@ public class Configuration {
     }
     private static ArrayList<DataSource> readMetaData(){
         try {
-            return Storage.readJsonArrayFromAsset(MyApplication.getContext(), Constants.FILENAME_ASSET_METADATA, DataSource.class);
+            return Storage.readJsonArrayFromAsset(MainApplication.getContext(), Constants.FILENAME_ASSET_METADATA, DataSource.class);
         } catch (FileNotFoundException e) {
             return null;
         }
@@ -148,7 +148,7 @@ public class Configuration {
     public static boolean isConfigured(){
         ArrayList<DataSource> dataSources;
         try {
-            dataSources = read(MyApplication.getContext());
+            dataSources = read(MainApplication.getContext());
         } catch (FileNotFoundException e) {
             return false;
         }

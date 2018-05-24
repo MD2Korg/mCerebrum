@@ -16,6 +16,7 @@ import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
+import com.rnfs.RNFSPackage;
 
 import org.md2k.mcerebrum.configuration.ConfigManager;
 
@@ -49,7 +50,7 @@ import java.util.List;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-public class MyApplication extends NavigationApplication implements ReactApplication {
+public class MainApplication extends NavigationApplication implements ReactApplication {
     static Context context;
     @Override
     public boolean isDebug() {
@@ -77,7 +78,8 @@ public class MyApplication extends NavigationApplication implements ReactApplica
         // No need to add RnnPackage and MainReactPackage
         return Arrays.<ReactPackage>asList(
                 new ActivityStarterReactPackage(),
-                new MainReactPackage()                // eg. new VectorIconsPackage()
+                new MainReactPackage() ,               // eg. new VectorIconsPackage()
+                new RNFSPackage() // <---------- add package
         );
     }
 
@@ -99,7 +101,8 @@ public class MyApplication extends NavigationApplication implements ReactApplica
         protected List<ReactPackage> getPackages() {
             return Arrays.asList(
                     new ActivityStarterReactPackage(),
-                    new MainReactPackage()
+                    new MainReactPackage(),
+                    new RNFSPackage() // <---------- add package
             );
         }
     };

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body, Right, Fab, Title} from 'native-base';
-import {StyleSheet, ScrollView} from 'react-native';
+import {StyleSheet, ScrollView, NativeModules} from 'react-native';
 import Row from '../../components/Row';
 
 
@@ -10,6 +10,8 @@ class Home extends React.Component {
     super(props);
     this.props.navigator.setTitle({title: 'mCerebrum'});
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
+//    NativeModules.ActivityStarter.pluginListener(true);
+
   }
   onNavigatorEvent(event) {
     if (event.type === 'DeepLink') {

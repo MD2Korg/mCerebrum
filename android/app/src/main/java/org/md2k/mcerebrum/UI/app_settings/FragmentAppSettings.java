@@ -18,7 +18,7 @@ import com.beardedhen.androidbootstrap.BootstrapText;
 import com.beardedhen.androidbootstrap.api.defaults.DefaultBootstrapBrand;
 import com.ramotion.foldingcell.FoldingCell;
 
-import org.md2k.mcerebrum.MyApplication;
+import org.md2k.mcerebrum.MainApplication;
 import org.md2k.mcerebrum.R;
 import org.md2k.mcerebrum.core.access.appinfo.AppAccess;
 import org.md2k.mcerebrum.core.access.appinfo.AppBasicInfo;
@@ -54,9 +54,9 @@ public class FragmentAppSettings extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        AppInstall.set(MyApplication.getContext());
-        AppAccess.set(MyApplication.getContext());
-        LocalBroadcastManager.getInstance(MyApplication.getContext()).registerReceiver(mMessageReceiver,
+        AppInstall.set(MainApplication.getContext());
+        AppAccess.set(MainApplication.getContext());
+        LocalBroadcastManager.getInstance(MainApplication.getContext()).registerReceiver(mMessageReceiver,
                 new IntentFilter(MCEREBRUM.APP_ACCESS.APPCP_CHANGED));
         if (flag == true) {
             BroadCastMessage.send(getActivity(), MCEREBRUM.APP_ACCESS.OP_DATAKIT_STOP);
@@ -76,7 +76,7 @@ public class FragmentAppSettings extends Fragment {
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
         ListView theListView = (ListView) view.findViewById(R.id.listview_folding_ui);
-        packageNames = AppBasicInfo.get(MyApplication.getContext());
+        packageNames = AppBasicInfo.get(MainApplication.getContext());
         textViewConfigured = (AwesomeTextView) view.findViewById(R.id.textview_configured);
         textViewNotConfigured = (AwesomeTextView) view.findViewById(R.id.textview_not_configured);
         textViewStatus = (AwesomeTextView) view.findViewById(R.id.textview_status);
@@ -103,13 +103,13 @@ public class FragmentAppSettings extends Fragment {
             public void onResponse(int position, int operation) {
                 if (operation == CONFIGURE) {
                     flag = true;
-                    AppAccess.configure(MyApplication.getContext(), packageNames.get(position));
+                    AppAccess.configure(MainApplication.getContext(), packageNames.get(position));
                 } else if (operation == LAUNCH) {
                     flag = true;
-                    AppAccess.launch(MyApplication.getContext(), packageNames.get(position));
+                    AppAccess.launch(MainApplication.getContext(), packageNames.get(position));
                 } else if (operation == CLEAR) {
                     flag = true;
-                    AppAccess.clear(MyApplication.getContext(), packageNames.get(position));
+                    AppAccess.clear(MainApplication.getContext(), packageNames.get(position));
                 }
             }
         });
@@ -130,12 +130,12 @@ public class FragmentAppSettings extends Fragment {
 
     void updateTextViewStatus() {
         BootstrapText bootstrapTextS;
-        BootstrapText bootstrapTextC = new BootstrapText.Builder(MyApplication.getContext()).addText("configured : " + String.valueOf(AppAccess.getRequiredAppConfigured(MyApplication.getContext()).size())).build();
-        BootstrapText bootstrapTextN = new BootstrapText.Builder(MyApplication.getContext()).addText("not configured : " + String.valueOf(AppAccess.getRequiredAppNotConfigured(MyApplication.getContext()).size())).build();
+        BootstrapText bootstrapTextC = new BootstrapText.Builder(MainApplication.getContext()).addText("configured : " + String.valueOf(AppAccess.getRequiredAppConfigured(MainApplication.getContext()).size())).build();
+        BootstrapText bootstrapTextN = new BootstrapText.Builder(MainApplication.getContext()).addText("not configured : " + String.valueOf(AppAccess.getRequiredAppNotConfigured(MainApplication.getContext()).size())).build();
         textViewConfigured.setBootstrapText(bootstrapTextC);
         textViewNotConfigured.setBootstrapText(bootstrapTextN);
-        if (AppAccess.getRequiredAppNotConfigured(MyApplication.getContext()).size() == 0) {
-            bootstrapTextS = new BootstrapText.Builder(MyApplication.getContext()).addText("Status: ").addFontAwesomeIcon("fa_check").build();
+        if (AppAccess.getRequiredAppNotConfigured(MainApplication.getContext()).size() == 0) {
+            bootstrapTextS = new BootstrapText.Builder(MainApplication.getContext()).addText("Status: ").addFontAwesomeIcon("fa_check").build();
             textViewStatus.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
             textViewStatus.setBootstrapText(bootstrapTextS);
 
@@ -146,7 +146,7 @@ public class FragmentAppSettings extends Fragment {
 */
 
         } else {
-            bootstrapTextS = new BootstrapText.Builder(MyApplication.getContext()).addText("Status: ").addFontAwesomeIcon("fa_times").build();
+            bootstrapTextS = new BootstrapText.Builder(MainApplication.getContext()).addText("Status: ").addFontAwesomeIcon("fa_times").build();
             textViewStatus.setBootstrapBrand(DefaultBootstrapBrand.DANGER);
             textViewStatus.setBootstrapText(bootstrapTextS);
 

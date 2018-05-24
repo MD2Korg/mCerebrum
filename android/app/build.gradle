@@ -30,7 +30,7 @@ android {
     defaultConfig {
         applicationId "org.md2k.mcerebrum"
         minSdkVersion 19
-        targetSdkVersion 23
+        targetSdkVersion 22
         versionCode buildVersionCode()
         versionName version
         multiDexEnabled true
@@ -66,6 +66,7 @@ android {
     }
 }
 dependencies {
+    compile project(':react-native-fetch-blob')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
@@ -113,4 +114,6 @@ dependencies {
     compile 'io.paperdb:paperdb:2.6'
     compile "com.facebook.react:react-native:0.20.1"
     compile project(':react-native-navigation')
+    compile project(':react-native-fs')
+
 }

@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
@@ -15,9 +14,8 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 
-import org.md2k.mcerebrum.ActivityMain;
 import org.md2k.mcerebrum.Constants;
-import org.md2k.mcerebrum.MyApplication;
+import org.md2k.mcerebrum.MainApplication;
 import org.md2k.mcerebrum.R;
 import org.md2k.mcerebrum.commons.dialog.Dialog;
 import org.md2k.mcerebrum.commons.dialog.DialogCallback;
@@ -39,8 +37,6 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-
-import static org.md2k.mcerebrum.menu.AbstractMenu.MENU_APP_ADD_REMOVE;
 
 public class ActivityCheckUpdate extends AppCompatActivity {
     Subscription subscription;
@@ -94,7 +90,7 @@ public class ActivityCheckUpdate extends AppCompatActivity {
                                                     @Override
                                                     public Observable<Boolean> call(Boolean aBoolean) {
                                                         if (aBoolean) {
-                                                            return ConfigManager.updateConfigServer(MyApplication.getContext(), Constants.CONFIG_ROOT_DIR())
+                                                            return ConfigManager.updateConfigServer(MainApplication.getContext(), Constants.CONFIG_ROOT_DIR())
                                                                     .subscribeOn(Schedulers.newThread())
                                                                     .observeOn(AndroidSchedulers.mainThread()).map(new Func1<Boolean, Boolean>() {
                                                                         @Override

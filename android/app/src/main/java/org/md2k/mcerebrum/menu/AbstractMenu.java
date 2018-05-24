@@ -44,7 +44,7 @@ import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
 import org.md2k.mcerebrum.Constants;
-import org.md2k.mcerebrum.MyApplication;
+import org.md2k.mcerebrum.MainApplication;
 import org.md2k.mcerebrum.R;
 import org.md2k.mcerebrum.cerebral_cortex.serverinfo.CCInfo;
 import org.md2k.mcerebrum.config_info.ConfigInfo;
@@ -77,10 +77,10 @@ public abstract class AbstractMenu {
         if(CCInfo.getCurrentVersion()!=null)
             return new MenuServer().getHeaderContentType(context, userName, responseCallBack);
 
-        if(ConfigInfo.getDownloadFrom(MyApplication.getContext())==null){
+        if(ConfigInfo.getDownloadFrom(MainApplication.getContext())==null){
             return new MenuFreebie().getHeaderContentType(context, userName, responseCallBack);
         }
-        switch (ConfigInfo.getDownloadFrom(MyApplication.getContext()).toUpperCase()) {
+        switch (ConfigInfo.getDownloadFrom(MainApplication.getContext()).toUpperCase()) {
             case MCEREBRUM.CONFIG.TYPE_FREEBIE:
                 return new MenuFreebie().getHeaderContentType(context, userName, responseCallBack);
             case MCEREBRUM.CONFIG.TYPE_CONFIGURED:
@@ -95,11 +95,11 @@ public abstract class AbstractMenu {
     public static IDrawerItem[] getMenuContent(final Context context, final ResponseCallBack responseCallBack) {
         if(CCInfo.getCurrentVersion()!=null)
             return new MenuServer().getMenuContent(responseCallBack);
-        if(ConfigInfo.getDownloadFrom(MyApplication.getContext())==null){
+        if(ConfigInfo.getDownloadFrom(MainApplication.getContext())==null){
             return new MenuFreebie().getMenuContent(responseCallBack);
         }
 
-        switch (ConfigInfo.getDownloadFrom(MyApplication.getContext()).toUpperCase()) {
+        switch (ConfigInfo.getDownloadFrom(MainApplication.getContext()).toUpperCase()) {
             case MCEREBRUM.CONFIG.TYPE_FREEBIE:
                 return new MenuFreebie().getMenuContent(responseCallBack);
             case MCEREBRUM.CONFIG.TYPE_CONFIGURED:

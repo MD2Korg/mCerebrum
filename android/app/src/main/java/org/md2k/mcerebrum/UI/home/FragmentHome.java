@@ -19,7 +19,7 @@ import com.beardedhen.androidbootstrap.BootstrapText;
 import com.beardedhen.androidbootstrap.api.defaults.DefaultBootstrapBrand;
 
 import org.md2k.mcerebrum.ActivityMain;
-import org.md2k.mcerebrum.MyApplication;
+import org.md2k.mcerebrum.MainApplication;
 import org.md2k.mcerebrum.R;
 import org.md2k.mcerebrum.config_info.ConfigInfo;
 import org.md2k.mcerebrum.core.access.appinfo.AppAccess;
@@ -126,13 +126,13 @@ public class FragmentHome extends Fragment {
         bootstrapButtonStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ArrayList<String> packageNames = AppBasicInfo.getStudy(MyApplication.getContext());
-                if (packageNames==null || packageNames.size() == 0 || !AppInstall.isCoreInstalled(MyApplication.getContext())) {
-                    Toasty.error(MyApplication.getContext(), "Datakit/study is not installed", Toast.LENGTH_SHORT).show();
+                ArrayList<String> packageNames = AppBasicInfo.getStudy(MainApplication.getContext());
+                if (packageNames==null || packageNames.size() == 0 || !AppInstall.isCoreInstalled(MainApplication.getContext())) {
+                    Toasty.error(MainApplication.getContext(), "Datakit/study is not installed", Toast.LENGTH_SHORT).show();
                     StudyInfo.setStarted(false);
                 } else {
                     StudyInfo.setStarted(true);
-                    AppAccess.launch(MyApplication.getContext(), packageNames.get(0));
+                    AppAccess.launch(MainApplication.getContext(), packageNames.get(0));
                     getActivity().finish();
                 }
             }
@@ -147,12 +147,12 @@ public class FragmentHome extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        AppInstall.set(MyApplication.getContext());
-        AppAccess.set(MyApplication.getContext());
-        LocalBroadcastManager.getInstance(MyApplication.getContext()).registerReceiver(mMessageReceiver,
+        AppInstall.set(MainApplication.getContext());
+        AppAccess.set(MainApplication.getContext());
+        LocalBroadcastManager.getInstance(MainApplication.getContext()).registerReceiver(mMessageReceiver,
                 new IntentFilter(MCEREBRUM.APP_ACCESS.APPCP_CHANGED));
 
-        BroadCastMessage.send(MyApplication.getContext(), MCEREBRUM.APP_ACCESS.OP_DATAKIT_STOP);
+        BroadCastMessage.send(MainApplication.getContext(), MCEREBRUM.APP_ACCESS.OP_DATAKIT_STOP);
         updateSummary();
         updateInstall();
         updateSetup();
@@ -161,7 +161,7 @@ public class FragmentHome extends Fragment {
     @Override
     public void onPause(){
         super.onPause();
-        LocalBroadcastManager.getInstance(MyApplication.getContext()).unregisterReceiver(mMessageReceiver);
+        LocalBroadcastManager.getInstance(MainApplication.getContext()).unregisterReceiver(mMessageReceiver);
     }
     private BroadcastReceiver mMessageReceiver = new BroadcastReceiver() {
         @Override
@@ -174,15 +174,15 @@ public class FragmentHome extends Fragment {
     };
 
     void updateButton(){
-        if (!AppInstall.isCoreInstalled(MyApplication.getContext())) {
+        if (!AppInstall.isCoreInstalled(MainApplication.getContext())) {
             bootstrapButtonStart.setEnabled(false);
             bootstrapButtonStart.setBootstrapBrand(DefaultBootstrapBrand.DANGER);
-            bootstrapButtonStart.setBootstrapText(new BootstrapText.Builder(MyApplication.getContext()).addFontAwesomeIcon("fa-ban").addText("  Start Study").build());
+            bootstrapButtonStart.setBootstrapText(new BootstrapText.Builder(MainApplication.getContext()).addFontAwesomeIcon("fa-ban").addText("  Start Study").build());
             bootstrapButtonStart.setShowOutline(true);
         } else {
             bootstrapButtonStart.setEnabled(true);
             bootstrapButtonStart.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
-            bootstrapButtonStart.setBootstrapText(new BootstrapText.Builder(MyApplication.getContext()).addFontAwesomeIcon("fa-play-circle-o").addText("  Start Study").build());
+            bootstrapButtonStart.setBootstrapText(new BootstrapText.Builder(MainApplication.getContext()).addFontAwesomeIcon("fa-play-circle-o").addText("  Start Study").build());
             bootstrapButtonStart.setShowOutline(false);
         }
 
@@ -203,18 +203,18 @@ public class FragmentHome extends Fragment {
     }
 
     void updateInstall() {
-        ArrayList<String> appInfos = AppInstall.getRequiredAppNotInstalled(MyApplication.getContext());
+        ArrayList<String> appInfos = AppInstall.getRequiredAppNotInstalled(MainApplication.getContext());
 //        String notInstalledApp = getRequiredAppNotInstalled();
         BootstrapText bt;
         if (appInfos.size()==0) {
-            bt = new BootstrapText.Builder(MyApplication.getContext()).addText("Installation Successful")
+            bt = new BootstrapText.Builder(MainApplication.getContext()).addText("Installation Successful")
                     .build();
             awesomeTextViewInstall.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
             awesomeTextViewInstallStatus.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
             awesomeTextViewInstallStatus.setBootstrapText(getStatusText(true));
             awesomeTextViewInstall.setBootstrapText(bt);
         } else {
-            bt = new BootstrapText.Builder(MyApplication.getContext()).addText("Not installed: " + appInfos.size()+" apps")
+            bt = new BootstrapText.Builder(MainApplication.getContext()).addText("Not installed: " + appInfos.size()+" apps")
                     .build();
             awesomeTextViewInstall.setBootstrapBrand(DefaultBootstrapBrand.DANGER);
             awesomeTextViewInstallStatus.setBootstrapBrand(DefaultBootstrapBrand.DANGER);
@@ -224,11 +224,11 @@ public class FragmentHome extends Fragment {
     }
 
     boolean updateSetup() {
-        ArrayList<String> appInfos = AppAccess.getRequiredAppNotConfigured(MyApplication.getContext());
+        ArrayList<String> appInfos = AppAccess.getRequiredAppNotConfigured(MainApplication.getContext());
 //        String notConfiguredApp = getRequiredAppNotSetup();
         BootstrapText bt;
         if (appInfos.size() == 0) {
-            bt = new BootstrapText.Builder(MyApplication.getContext()).addText("Application Setup Successful")
+            bt = new BootstrapText.Builder(MainApplication.getContext()).addText("Application Setup Successful")
                     .build();
             awesomeTextViewSetup.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
             awesomeTextViewSetupStatus.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
@@ -236,7 +236,7 @@ public class FragmentHome extends Fragment {
             awesomeTextViewSetup.setBootstrapText(bt);
             return true;
         } else {
-            bt = new BootstrapText.Builder(MyApplication.getContext()).addText("Not Configured: " + appInfos.size()+" apps")
+            bt = new BootstrapText.Builder(MainApplication.getContext()).addText("Not Configured: " + appInfos.size()+" apps")
                     .build();
             awesomeTextViewSetup.setBootstrapBrand(DefaultBootstrapBrand.DANGER);
             awesomeTextViewSetupStatus.setBootstrapBrand(DefaultBootstrapBrand.DANGER);
@@ -251,22 +251,22 @@ public class FragmentHome extends Fragment {
         String v = ConfigInfo.getVersion();
         if(v==null) v="2.0.0";
         if(name==null || name.equalsIgnoreCase(MCEREBRUM.CONFIG.TYPE_FREEBIE))
-        return new BootstrapText.Builder(MyApplication.getContext()).addText("General Use ("+v+")")
+        return new BootstrapText.Builder(MainApplication.getContext()).addText("General Use ("+v+")")
                 .build();
         else
-        return new BootstrapText.Builder(MyApplication.getContext()).addText(StudyInfo.getTitle()+" ("+v+")")
+        return new BootstrapText.Builder(MainApplication.getContext()).addText(StudyInfo.getTitle()+" ("+v+")")
                 .build();
     }
 
     String getRequiredAppNotInstalled() {
         String notInstalledAppList = "";
-        ArrayList<String> appInfos = AppInstall.getRequiredAppNotInstalled(MyApplication.getContext());
+        ArrayList<String> appInfos = AppInstall.getRequiredAppNotInstalled(MainApplication.getContext());
         if (appInfos.size() == 0) return null;
         for (int i = 0; i < appInfos.size(); i++) {
             if (i == 0)
-                notInstalledAppList = AppBasicInfo.getTitle(MyApplication.getContext(), appInfos.get(i));
+                notInstalledAppList = AppBasicInfo.getTitle(MainApplication.getContext(), appInfos.get(i));
             else
-                notInstalledAppList += ", " + AppBasicInfo.getTitle(MyApplication.getContext(), appInfos.get(i));
+                notInstalledAppList += ", " + AppBasicInfo.getTitle(MainApplication.getContext(), appInfos.get(i));
         }
         return notInstalledAppList;
     }
@@ -274,13 +274,13 @@ public class FragmentHome extends Fragment {
     String getRequiredAppNotSetup() {
         String notInstalledAppList = "";
 
-        ArrayList<String> appInfos = AppAccess.getRequiredAppNotConfigured(MyApplication.getContext());
+        ArrayList<String> appInfos = AppAccess.getRequiredAppNotConfigured(MainApplication.getContext());
         if (appInfos.size() == 0) return null;
         for (int i = 0; i < appInfos.size(); i++) {
             if (i == 0)
-                notInstalledAppList = AppBasicInfo.getTitle(MyApplication.getContext(), appInfos.get(i));
+                notInstalledAppList = AppBasicInfo.getTitle(MainApplication.getContext(), appInfos.get(i));
             else
-                notInstalledAppList += ", " + AppBasicInfo.getTitle(MyApplication.getContext(), appInfos.get(i));
+                notInstalledAppList += ", " + AppBasicInfo.getTitle(MainApplication.getContext(), appInfos.get(i));
         }
         return notInstalledAppList;
     }
@@ -314,10 +314,10 @@ public class FragmentHome extends Fragment {
 
     BootstrapText getStatusText(boolean status) {
         if (status)
-            return new BootstrapText.Builder(MyApplication.getContext()).addText("Status:   ").addFontAwesomeIcon("fa_check_circle")
+            return new BootstrapText.Builder(MainApplication.getContext()).addText("Status:   ").addFontAwesomeIcon("fa_check_circle")
                     .build();
         else
-            return new BootstrapText.Builder(MyApplication.getContext()).addText("Status:   ").addFontAwesomeIcon("fa_times")
+            return new BootstrapText.Builder(MainApplication.getContext()).addText("Status:   ").addFontAwesomeIcon("fa_times")
                     .build();
     }
 

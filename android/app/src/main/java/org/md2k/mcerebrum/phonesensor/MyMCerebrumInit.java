@@ -32,7 +32,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
 
-import org.md2k.mcerebrum.MyApplication;
+import org.md2k.mcerebrum.MainApplication;
 import org.md2k.mcerebrum.core.access.MCerebrum;
 import org.md2k.mcerebrum.core.access.MCerebrumInfo;
 import org.md2k.mcerebrum.phonesensor.plot.ActivityPlotChoice;
@@ -45,7 +45,7 @@ public class MyMCerebrumInit extends MCerebrumInfo {
         MCerebrum.setConfigureActivity(context, ActivitySettings.class);
         MCerebrum.setPermissionActivity(context, ActivityPermission.class);
         MCerebrum.setConfigured(context, Configuration.isConfigured());
-        MCerebrum.setConfigureExact(context, Configuration.isEqualDefault(MyApplication.getContext()));
+        MCerebrum.setConfigureExact(context, Configuration.isEqualDefault(MainApplication.getContext()));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!Settings.canDrawOverlays(context)) {

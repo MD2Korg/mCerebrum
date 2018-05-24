@@ -31,7 +31,6 @@ import android.os.Environment;
 import android.util.Log;
 
 import org.md2k.mcerebrum.Constants;
-import org.md2k.mcerebrum.MyApplication;
 import org.md2k.mcerebrum.cerebral_cortex.cerebralcortexwebapi.ServerManager;
 import org.md2k.mcerebrum.cerebral_cortex.cerebralcortexwebapi.models.MinioObjectStats;
 import org.md2k.mcerebrum.cerebral_cortex.serverinfo.CCInfo;

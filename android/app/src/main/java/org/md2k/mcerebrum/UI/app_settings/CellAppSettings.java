@@ -16,7 +16,7 @@ import com.beardedhen.androidbootstrap.api.defaults.DefaultBootstrapBrand;
 import com.ramotion.foldingcell.FoldingCell;
 
 import org.md2k.mcerebrum.Constants;
-import org.md2k.mcerebrum.MyApplication;
+import org.md2k.mcerebrum.MainApplication;
 import org.md2k.mcerebrum.R;
 import org.md2k.mcerebrum.core.access.appinfo.AppAccess;
 import org.md2k.mcerebrum.core.access.appinfo.AppBasicInfo;
@@ -52,7 +52,7 @@ public class CellAppSettings extends ArrayAdapter<String> {
         ViewHolder viewHolder;
         if (cell == null) {
             viewHolder = new ViewHolder();
-            LayoutInflater vi = LayoutInflater.from(MyApplication.getContext());
+            LayoutInflater vi = LayoutInflater.from(MainApplication.getContext());
             cell = (FoldingCell) vi.inflate(R.layout.cell_app_settings, parent, false);
             viewHolder.title = (TextView) cell.findViewById(R.id.textview_title);
             viewHolder.summary = (TextView) cell.findViewById(R.id.textview_description);
@@ -85,18 +85,18 @@ public class CellAppSettings extends ArrayAdapter<String> {
             viewHolder = (ViewHolder) cell.getTag();
         }
         // bind data from selected element to view through view holder
-        viewHolder.title.setText(AppBasicInfo.getTitle(MyApplication.getContext(), packageName));
-        viewHolder.summary.setText(AppBasicInfo.getSummary(MyApplication.getContext(), packageName));
-        viewHolder.content_title.setText(AppBasicInfo.getTitle(MyApplication.getContext(), packageName));
-        viewHolder.content_summary.setText(AppBasicInfo.getSummary(MyApplication.getContext(), packageName));
-        viewHolder.description.setText(AppBasicInfo.getDescription(MyApplication.getContext(), packageName));
-        String versionName= AppInstall.getCurrentVersion(MyApplication.getContext(), packageName);
+        viewHolder.title.setText(AppBasicInfo.getTitle(MainApplication.getContext(), packageName));
+        viewHolder.summary.setText(AppBasicInfo.getSummary(MainApplication.getContext(), packageName));
+        viewHolder.content_title.setText(AppBasicInfo.getTitle(MainApplication.getContext(), packageName));
+        viewHolder.content_summary.setText(AppBasicInfo.getSummary(MainApplication.getContext(), packageName));
+        viewHolder.description.setText(AppBasicInfo.getDescription(MainApplication.getContext(), packageName));
+        String versionName= AppInstall.getCurrentVersion(MainApplication.getContext(), packageName);
         viewHolder.version.setText(versionName);
-        String lastVersionName= AppInstall.getLatestVersion(MyApplication.getContext(), packageName);
+        String lastVersionName= AppInstall.getLatestVersion(MainApplication.getContext(), packageName);
         viewHolder.updateVersion.setText(lastVersionName);
 
-        viewHolder.icon_short.setImageDrawable(AppBasicInfo.getIcon(MyApplication.getContext(), packageName, Constants.CONFIG_MCEREBRUM_DIR()));
-        viewHolder.icon_long.setImageDrawable(AppBasicInfo.getIcon(MyApplication.getContext(), packageName, Constants.CONFIG_MCEREBRUM_DIR()));
+        viewHolder.icon_short.setImageDrawable(AppBasicInfo.getIcon(MainApplication.getContext(), packageName, Constants.CONFIG_MCEREBRUM_DIR()));
+        viewHolder.icon_long.setImageDrawable(AppBasicInfo.getIcon(MainApplication.getContext(), packageName, Constants.CONFIG_MCEREBRUM_DIR()));
 
         View.OnClickListener onClickListenerRun = new View.OnClickListener() {
             @Override
@@ -117,12 +117,12 @@ public class CellAppSettings extends ArrayAdapter<String> {
             }
         };
 
-        boolean ismCerebrumSupported= AppAccess.getMCerebrumSupported(MyApplication.getContext(), packageName);
-        boolean isConfigurable = AppAccess.getFuncConfigure(MyApplication.getContext(), packageName)!=null;
-        boolean isConfigured = AppAccess.getConfigured(MyApplication.getContext(), packageName);
-        boolean hasClear = AppAccess.getFuncClear(MyApplication.getContext(), packageName)!=null;
-        boolean isEqualDefault = AppAccess.getConfigureMatch(MyApplication.getContext(), packageName);
-        boolean isInstalled = AppInstall.getInstalled(MyApplication.getContext(), packageName);
+        boolean ismCerebrumSupported= AppAccess.getMCerebrumSupported(MainApplication.getContext(), packageName);
+        boolean isConfigurable = AppAccess.getFuncConfigure(MainApplication.getContext(), packageName)!=null;
+        boolean isConfigured = AppAccess.getConfigured(MainApplication.getContext(), packageName);
+        boolean hasClear = AppAccess.getFuncClear(MainApplication.getContext(), packageName)!=null;
+        boolean isEqualDefault = AppAccess.getConfigureMatch(MainApplication.getContext(), packageName);
+        boolean isInstalled = AppInstall.getInstalled(MainApplication.getContext(), packageName);
         if(!ismCerebrumSupported || !isConfigurable)
             set(viewHolder.buttonSettingsLong, viewHolder.buttonSettingsShort, false, DefaultBootstrapBrand.SECONDARY, true, onClickListenerSettings);
         else if(isConfigured)
@@ -134,7 +134,7 @@ public class CellAppSettings extends ArrayAdapter<String> {
             set(viewHolder.buttonClearLong, viewHolder.buttonClearShort, false, DefaultBootstrapBrand.SECONDARY, true, onClickListenerClear);
         else
             set(viewHolder.buttonClearLong, viewHolder.buttonClearShort, true, DefaultBootstrapBrand.DANGER, true, onClickListenerClear);
-        if(!isInstalled || packageName.equals(AppBasicInfo.getMCerebrum(MyApplication.getContext())))
+        if(!isInstalled || packageName.equals(AppBasicInfo.getMCerebrum(MainApplication.getContext())))
             set(viewHolder.buttonLaunchLong, viewHolder.buttonLaunchShort, false, DefaultBootstrapBrand.SECONDARY, true, onClickListenerRun);
         else
         set(viewHolder.buttonLaunchLong, viewHolder.buttonLaunchShort, true, DefaultBootstrapBrand.SUCCESS, true, onClickListenerRun);
@@ -145,11 +145,11 @@ public class CellAppSettings extends ArrayAdapter<String> {
         }else if(ismCerebrumSupported  && isConfigurable && isConfigured && isEqualDefault){
             viewHolder.status.setBootstrapBrand(DefaultBootstrapBrand.SUCCESS);
             viewHolder.status.setText("configured");
-        }else if(ismCerebrumSupported && isConfigurable && isConfigured && !isEqualDefault &&AppBasicInfo.getUseAs(MyApplication.getContext(), packageName).equalsIgnoreCase(MCEREBRUM.APP.USE_AS_REQUIRED)){
+        }else if(ismCerebrumSupported && isConfigurable && isConfigured && !isEqualDefault &&AppBasicInfo.getUseAs(MainApplication.getContext(), packageName).equalsIgnoreCase(MCEREBRUM.APP.USE_AS_REQUIRED)){
             viewHolder.status.setBootstrapBrand(DefaultBootstrapBrand.WARNING);
             viewHolder.status.setText("partially configured");
         }
-        else if(ismCerebrumSupported  && isConfigurable && AppBasicInfo.getUseAs(MyApplication.getContext(), packageName).equalsIgnoreCase(MCEREBRUM.APP.USE_AS_REQUIRED)){
+        else if(ismCerebrumSupported  && isConfigurable && AppBasicInfo.getUseAs(MainApplication.getContext(), packageName).equalsIgnoreCase(MCEREBRUM.APP.USE_AS_REQUIRED)){
             viewHolder.status.setBootstrapBrand(DefaultBootstrapBrand.DANGER);
             viewHolder.status.setText("not configured");
         }else{

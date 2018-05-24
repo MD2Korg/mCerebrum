@@ -9,7 +9,6 @@ import {registerScreens, registerScreenVisibilityListener} from './screens';
 // screen related book keeping
 registerScreens();
 registerScreenVisibilityListener();
-
 const tabs = [{
   label: 'Home',
   screen: 'mc.Home',

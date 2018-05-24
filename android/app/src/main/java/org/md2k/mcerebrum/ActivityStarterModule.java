@@ -31,6 +31,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.widget.Toast;
 
+import com.blankj.utilcode.util.ServiceUtils;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.bridge.Callback;
@@ -45,6 +46,8 @@ import com.facebook.react.bridge.WritableNativeMap;
 import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.react.uimanager.IllegalViewOperationException;
 
+import org.md2k.mcerebrum.UI.app_install_uninstall.ActivityAppInstall;
+import org.md2k.mcerebrum.core.access.appinfo.AppAccess;
 import org.md2k.mcerebrum.phonesensor.ActivitySettings;
 
 import java.util.HashMap;
@@ -88,10 +91,54 @@ class ActivityStarterModule extends ReactContextBaseJavaModule {
     }
 
     @ReactMethod
-    void navigateToExample() {
+    void pluginSettings(String packageName) {
+        if(packageName.equals("org.md2k.mcerebrum")) {
+            Activity activity = getCurrentActivity();
+            if (activity != null) {
+                Intent intent = new Intent(activity, ActivitySettings.class);
+                activity.startActivity(intent);
+            }
+        }else{
+            AppAccess.configure(MainApplication.getContext(), packageName);
+        }
+    }
+    @ReactMethod
+    void dataCollection(boolean status) {
+        Activity activity = getCurrentActivity();
+        if(activity==null) return;
+        if(status){
+            if(!ServiceUtils.isServiceRunning(ServiceDataCollection.class)) {
+                Intent intent = new Intent(activity, ServiceDataCollection.class);
+                activity.startService(intent);
+            }
+        }else{
+            Intent intent = new Intent(activity, ServiceDataCollection.class);
+            activity.stopService(intent);
+
+        }
+    }
+    @ReactMethod
+    void pluginListener(boolean status) {
+        Activity activity = getCurrentActivity();
+        if(activity==null) return;
+        if(status){
+            if(!ServiceUtils.isServiceRunning(ServicePluginListener.class)) {
+                Intent intent = new Intent(activity, ServicePluginListener.class);
+                activity.startService(intent);
+            }
+        }else{
+            Intent intent = new Intent(activity, ServicePluginListener.class);
+            activity.stopService(intent);
+
+        }
+    }
+
+    @ReactMethod
+    void pluginInstall(String packageName) {
         Activity activity = getCurrentActivity();
         if (activity != null) {
-            Intent intent = new Intent(activity, ActivitySettings.class);
+            Intent intent = new Intent(activity, ActivityAppInstall.class);
+            intent.putExtra("package_name",packageName);
             activity.startActivity(intent);
         }
     }
@@ -125,7 +172,7 @@ class ActivityStarterModule extends ReactContextBaseJavaModule {
     void callJavaScript() {
         Activity activity = getCurrentActivity();
         if (activity != null) {
-            MyApplication application = (MyApplication) activity.getApplication();
+            MainApplication application = (MainApplication) activity.getApplication();
             ReactNativeHost reactNativeHost = application.getReactNativeHost();
             ReactInstanceManager reactInstanceManager = reactNativeHost.getReactInstanceManager();
             ReactContext reactContext = reactInstanceManager.getCurrentReactContext();
@@ -147,15 +194,11 @@ class ActivityStarterModule extends ReactContextBaseJavaModule {
         eventEmitter.emit("MyEventValue", message);
     }
     @ReactMethod
-    public void getPackageList(
-            int tag,
-            int ancestorTag,
-            Callback errorCallback,
-            Callback successCallback) {
+    public void getPackageList(Callback successCallback) {
         try {
             successCallback.invoke(1, 2, 3, 4);
         } catch (IllegalViewOperationException e) {
-            errorCallback.invoke(e.getMessage());
+
         }
     }
 }

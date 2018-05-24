@@ -14,7 +14,7 @@ import com.rengwuxian.materialedittext.MaterialEditText;
 
 import org.md2k.mcerebrum.ActivityMain;
 import org.md2k.mcerebrum.Constants;
-import org.md2k.mcerebrum.MyApplication;
+import org.md2k.mcerebrum.MainApplication;
 import org.md2k.mcerebrum.R;
 import org.md2k.mcerebrum.cerebral_cortex.cerebralcortexwebapi.ServerManager;
 import org.md2k.mcerebrum.cerebral_cortex.cerebralcortexwebapi.models.AuthResponse;
@@ -106,7 +106,7 @@ public class FragmentJoinStudy extends Fragment {
                 if (editTextUserName.getText().toString().equals("") ||
                         editTextPassword.getText().toString().equals("") ||
                         editTextServer.getText().toString().equals("")) {
-                    Toasty.error(MyApplication.getContext(), "Error: Invalid Username and/or password and/or Server name", Toast.LENGTH_SHORT, true).show();
+                    Toasty.error(MainApplication.getContext(), "Error: Invalid Username and/or password and/or Server name", Toast.LENGTH_SHORT, true).show();
                 } else {
                     userName = editTextUserName.getText().toString();
                     password = convertSHA(editTextPassword.getText().toString());
@@ -169,7 +169,7 @@ public class FragmentJoinStudy extends Fragment {
                         if (unzipFile(a+"/config.zip", Constants.CONFIG_ROOT_DIR())==null)
                             return Observable.error(new Throwable("Failed to unzip"));
                         else {
-                            if(!ConfigManager.load(MyApplication.getContext(), ConfigManager.LOAD_TYPE.NEW)){
+                            if(!ConfigManager.load(MainApplication.getContext(), ConfigManager.LOAD_TYPE.NEW)){
                                 return Observable.error(new Throwable("Configuration file format error"));
                             }else {
                                 CCInfo ccInfo = new CCInfo(serverName, userName, password, minioObject.getObjectName(), minioObject.getLastModified(), minioObject.getLastModified());
@@ -190,7 +190,7 @@ public class FragmentJoinStudy extends Fragment {
 
                     @Override
                     public void onError(Throwable e) {
-                        Toasty.error(MyApplication.getContext(), e.getMessage()).show();
+                        Toasty.error(MainApplication.getContext(), e.getMessage()).show();
                         materialDialog.dismiss();
                     }
 

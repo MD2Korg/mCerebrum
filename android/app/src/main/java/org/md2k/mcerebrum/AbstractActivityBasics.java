@@ -53,41 +53,6 @@ public abstract class AbstractActivityBasics extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(R.string.app_name);
-        if (Permission.hasPermission(this)) {
-            resetConfig();
-            appCPObserver = new AppCPObserver(AbstractActivityBasics.this, new Handler());
-            getContentResolver().
-                    registerContentObserver(
-                            Uri.parse(SampleProvider.CONTENT_URI_BASE + "/" + AppInfoColumns.TABLE_NAME),
-                            true,
-                            appCPObserver);
-            initStart();
-            createUI();
-
-        } else {
-
-            Permission.requestPermission(this, new PermissionCallback() {
-                @Override
-                public void OnResponse(boolean isGranted) {
-                    if (!isGranted) {
-                        Toasty.error(getApplicationContext(), "!PERMISSION DENIED !!! Could not continue...", Toast.LENGTH_SHORT).show();
-                        System.exit(0);
-                        finish();
-                    } else {
-                        resetConfig();
-                        appCPObserver = new AppCPObserver(AbstractActivityBasics.this, new Handler());
-                        getContentResolver().
-                                registerContentObserver(
-                                        Uri.parse(SampleProvider.CONTENT_URI_BASE + "/" + AppInfoColumns.TABLE_NAME),
-                                        true,
-                                        appCPObserver);
-                        initStart();
-                        createUI();
-//                    prepareConfig();
-                    }
-                }
-            });
-        }
     }
 
     @Override
