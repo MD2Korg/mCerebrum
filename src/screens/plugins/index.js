@@ -77,7 +77,11 @@ const BACON_IPSUM =
       fontSize: 14,
       fontWeight: '500',
       padding: 10
-    }
+    },
+    card_button_text: {
+      padding: 0,
+      fontSize: 10,
+    },
   });
 
 class Plugins extends React.Component {
@@ -99,36 +103,35 @@ class Plugins extends React.Component {
       return (
         <Animatable.View
           duration={400}
-          style={[styles.header, isActive ? styles.active : styles.inactive]}
+          style={{backgroundColor: '#131325'}}
           transition="backgroundColor"
         >
-        <Card>
-                    <CardItem>
+        <Card style={{backgroundColor: '#131325'}}>
+                    <CardItem bordered style={{backgroundColor: '#1e2c3c'}}>
                       <Left>
                         <Body>
-                          <Text >{section.title}</Text>
+                          <Text style={{color: 'white'}}>{section.title}</Text>
                           <Text note>{section.summary}</Text>
                         </Body>
                       </Left>
                     </CardItem>
-                    <CardItem>
+                    <CardItem boardered style={{backgroundColor: '#1e2c3c'}}>
                                   <Left>
-
-                                    <Button transparent disabled={section.button_add}>
+                                    <Button transparent small warning disabled={this.addButtonStatus(section.package_name)}  onPress={() => NativeModules.ActivityStarter.pluginInstall(section.package_name)}>
                                     <Icon active name="ios-add-circle-outline" type="Ionicons"/>
-                                      <Text>Add</Text>
+                                      <Text style={styles.card_button_text}>Add</Text>
                                     </Button>
                                   </Left>
                                   <Body>
-                                    <Button transparent onPress={() => NativeModules.ActivityStarter.pluginInstall(section.package_name)}>
+                                    <Button transparent small warning disabled={this.addButtonStatus(section.package_name)} onPress={() => NativeModules.ActivityStarter.pluginUnInstall(section.package_name)}>
                                       <Icon active name="ios-remove-circle-outline" type="Ionicons"/>
-                                      <Text>Remove</Text>
+                                      <Text style={styles.card_button_text}>Remove</Text>
                                     </Button>
                                   </Body>
                                   <Right>
-                                  <Button transparent onPress={() => NativeModules.ActivityStarter.pluginSettings(section.package_name)}>
+                                  <Button transparent small warning onPress={() => NativeModules.ActivityStarter.pluginSettings(section.package_name)}>
                                     <Icon active name="ios-settings-outline" type="Ionicons"/>
-                                    <Text>Settings</Text>
+                                    <Text style={styles.card_button_text}>Settings</Text>
                                   </Button>
                                   </Right>
                                 </CardItem>
@@ -136,6 +139,16 @@ class Plugins extends React.Component {
                           </Animatable.View>
 
       );
+    }
+    addButtonStatus=(packageName)=>{
+      if (packageName=='org.md2k.mcerebrum')
+        return true;
+        else return false;
+    }
+    removeButtonStatus=(packageName)=>{
+      if (packageName=='org.md2k.mcerebrum')
+        return true;
+        else return false;
     }
 
     _renderContent(section, i, isActive) {
@@ -153,12 +166,12 @@ class Plugins extends React.Component {
     }
     constructor(props){
       super(props);
-      this.props.navigator.setTitle({title: 'mCerebrum->Plugins'});
+      this.props.navigator.setTitle({title: 'mCerebrum : Plugins'});
     }
 
     render() {
       return (
-        <Container>
+        <Container style={{backgroundColor: '#131325'}}>
                 <Content>
  <Accordion
             activeSection={this.state.activeSection}

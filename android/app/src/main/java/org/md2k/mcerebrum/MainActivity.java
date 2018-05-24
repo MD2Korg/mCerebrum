@@ -27,8 +27,36 @@ package org.md2k.mcerebrum;
  */
 
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.provider.Settings;
+
 import com.reactnativenavigation.controllers.SplashActivity;
 
+import org.md2k.mcerebrum.commons.permission.ActivityPermission;
+import org.md2k.mcerebrum.commons.permission.PermissionInfo;
+import org.md2k.mcerebrum.configuration.ConfigManager;
+
 public class MainActivity extends SplashActivity {
+
+    @Override
+    public void onCreate(Bundle b){
+        super.onCreate(b);
+        Intent intent = new Intent(this, ActivityPermission.class);
+        startActivityForResult(intent, 1212);
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1212) {
+            if(data.getBooleanExtra(PermissionInfo.INTENT_RESULT, false)){
+                ConfigManager.load(getApplicationContext(), ConfigManager.LOAD_TYPE.READ);
+                Intent intent = new Intent(MainActivity.this, ServicePluginListener.class);
+                startService(intent);
+            }else{
+                finish();
+            }
+        }
+    }
 
 }

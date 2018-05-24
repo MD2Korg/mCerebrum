@@ -31,6 +31,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.widget.Toast;
 
+import com.blankj.utilcode.util.AppUtils;
 import com.blankj.utilcode.util.ServiceUtils;
 import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
@@ -47,7 +48,9 @@ import com.facebook.react.modules.core.DeviceEventManagerModule;
 import com.facebook.react.uimanager.IllegalViewOperationException;
 
 import org.md2k.mcerebrum.UI.app_install_uninstall.ActivityAppInstall;
+import org.md2k.mcerebrum.commons.permission.ActivityPermission;
 import org.md2k.mcerebrum.core.access.appinfo.AppAccess;
+import org.md2k.mcerebrum.datakit.ActivityClear;
 import org.md2k.mcerebrum.phonesensor.ActivitySettings;
 
 import java.util.HashMap;
@@ -103,6 +106,15 @@ class ActivityStarterModule extends ReactContextBaseJavaModule {
         }
     }
     @ReactMethod
+    void permission() {
+            Activity activity = getCurrentActivity();
+            if (activity != null) {
+                Intent intent = new Intent(activity, ActivityPermission.class);
+                activity.startActivity(intent);
+            }
+    }
+
+    @ReactMethod
     void dataCollection(boolean status) {
         Activity activity = getCurrentActivity();
         if(activity==null) return;
@@ -139,6 +151,18 @@ class ActivityStarterModule extends ReactContextBaseJavaModule {
         if (activity != null) {
             Intent intent = new Intent(activity, ActivityAppInstall.class);
             intent.putExtra("package_name",packageName);
+            activity.startActivity(intent);
+        }
+    }
+    @ReactMethod
+    void pluginUnInstall(String packageName) {
+        AppUtils.uninstallApp(packageName);
+    }
+    @ReactMethod
+    void clearData() {
+        Activity activity = getCurrentActivity();
+        if (activity != null) {
+            Intent intent = new Intent(activity, ActivityClear.class);
             activity.startActivity(intent);
         }
     }

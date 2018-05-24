@@ -28,10 +28,10 @@ const tabs = [{
   title: 'Settings',
 },
 {
-  label: 'Sensor/Marker',
+  label: 'Plugins',
   screen: 'mc.Plugins',
   icon: require('../img/list.png'),
-  title: 'Sensor/Marker',
+  title: 'Plugins',
 }];
 
 // this will start our app

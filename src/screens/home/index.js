@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body, Right, Fab, Title} from 'native-base';
+import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body, Right, Fab, Title, Switch} from 'native-base';
 import {StyleSheet, ScrollView, NativeModules} from 'react-native';
 import Row from '../../components/Row';
 
@@ -10,9 +10,14 @@ class Home extends React.Component {
     super(props);
     this.props.navigator.setTitle({title: 'mCerebrum'});
     this.props.navigator.setOnNavigatorEvent(this.onNavigatorEvent.bind(this));
-//    NativeModules.ActivityStarter.pluginListener(true);
-
+    this.state = {
+             switch1Value: false,
+          }
   }
+       toggleSwitch1 = (value) => {
+          this.setState({switch1Value: value})
+          console.log('Switch 1 is: ' + value)
+       }
   onNavigatorEvent(event) {
     if (event.type === 'DeepLink') {
       const parts = event.link.split('/');
@@ -30,8 +35,7 @@ class Home extends React.Component {
      <Container style={{backgroundColor: '#131325'}}>
         <Content>
           <Card style={{backgroundColor: '#1e2c3c'}}>
-           <CardItem header  style={{ backgroundColor: '#00838F'
-            }}>
+           <CardItem header  style={{ backgroundColor: '#00838F'}}>
            <Left/>
            <Body>
              <Text style={{color: 'white'}}>Data Colletion</Text>
@@ -40,20 +44,15 @@ class Home extends React.Component {
            </CardItem>
            <CardItem style={{ backgroundColor: '#1e2c3c'}}>
 
-<Left>
-             <Button transparent>
-          <Icon active name="controller-play" type="Entypo" style={{fontSize: 60, color: 'red'}}/>
-      </Button>
-      </Left>
+           <Left>
+           <Text style={{color: 'white'}}>Data Collection OFF</Text>
+           </Left>
 
- <Body>
- <Text style={{color: 'white'}}>00:00:00</Text>
- </Body>
  <Right>
- <Button transparent>
-  <Icon active name="controller-stop" type="Entypo" style={{fontSize: 60, color: 'green'}}/>
-</Button>
-             </Right>
+<Switch onValueChange = {this.toggleSwitch1}
+            value = {this.state.switch1Value} onTintColor='green' />
+
+</Right>
            </CardItem>
                     </Card>
 
