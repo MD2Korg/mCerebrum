@@ -30,12 +30,19 @@ android {
     defaultConfig {
         applicationId "org.md2k.mcerebrum"
         minSdkVersion 19
-        targetSdkVersion 22
+        targetSdkVersion 23
         versionCode buildVersionCode()
         versionName version
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         buildConfigField 'boolean', 'LOG_DEBUG_PROVIDER', "true"
+        ndk {
+            abiFilters "armeabi-v7a", "x86"
+        }
+
+        packagingOptions {
+            exclude "lib/arm64-v8a/libgnustl_shared.so"
+        }
     }
     buildTypes {
         release {
@@ -64,9 +71,10 @@ android {
         exclude 'META-INF/NOTICE'
         exclude 'META-INF/LICENSE'
     }
-}
+    configurations.all {
+        resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
+    }}
 dependencies {
-    compile project(':react-native-fetch-blob')
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
@@ -114,6 +122,4 @@ dependencies {
     compile 'io.paperdb:paperdb:2.6'
     compile "com.facebook.react:react-native:0.20.1"
     compile project(':react-native-navigation')
-    compile project(':react-native-fs')
-
 }

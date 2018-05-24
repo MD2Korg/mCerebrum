@@ -16,7 +16,6 @@ import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
-import com.rnfs.RNFSPackage;
 
 import org.md2k.mcerebrum.configuration.ConfigManager;
 
@@ -67,7 +66,7 @@ public class MainApplication extends NavigationApplication implements ReactAppli
         Paper.init(context);
         Utils.init(this);
         SoLoader.init(this, /* native exopackage */ false);
-        ConfigManager.load(getApplicationContext(), ConfigManager.LOAD_TYPE.READ);
+//        ConfigManager.load(getApplicationContext(), ConfigManager.LOAD_TYPE.READ);
 
     }
     public static Context getContext(){
@@ -78,9 +77,8 @@ public class MainApplication extends NavigationApplication implements ReactAppli
         // No need to add RnnPackage and MainReactPackage
         return Arrays.<ReactPackage>asList(
                 new ActivityStarterReactPackage(),
-                new MainReactPackage() ,               // eg. new VectorIconsPackage()
-                new RNFSPackage() // <---------- add package
-        );
+                new MainReactPackage()
+                        );
     }
 
     @Override
@@ -101,8 +99,7 @@ public class MainApplication extends NavigationApplication implements ReactAppli
         protected List<ReactPackage> getPackages() {
             return Arrays.asList(
                     new ActivityStarterReactPackage(),
-                    new MainReactPackage(),
-                    new RNFSPackage() // <---------- add package
+                    new MainReactPackage()
             );
         }
     };

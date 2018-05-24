@@ -16,8 +16,6 @@
     "react-native": "^0.55.4",
     "react-native-animatable": "^1.2.4",
     "react-native-collapsible": "^0.11.3",
-    "react-native-fetch-blob": "^0.10.8",
-    "react-native-fs": "^2.9.12",
     "react-native-navigation": "^1.1.462"
   },
   "devDependencies": {
