@@ -68,10 +68,14 @@ public class PhoneSensorDataSources {
         phoneSensorDataSources.add(new Pressure(context));
         phoneSensorDataSources.add(new AmbientTemperature(context));
         phoneSensorDataSources.add(new Proximity(context));
-        phoneSensorDataSources.add(new CPU(context));
-        phoneSensorDataSources.add(new Memory(context));
+        phoneSensorDataSources.add(new AppUsage(context));
+        phoneSensorDataSources.add(new Notification(context));
+        phoneSensorDataSources.add(new SMS(context));
+        phoneSensorDataSources.add(new CallReceiver(context));
+//        phoneSensorDataSources.add(new CPU(context));
+//        phoneSensorDataSources.add(new Memory(context));
         phoneSensorDataSources.add(new StepCount(context));
-        phoneSensorDataSources.add(new GeoFence(context));
+//        phoneSensorDataSources.add(new GeoFence(context));
         phoneSensorDataSources.add(new TouchScreen(context));
 //        PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
 //        wl = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "My Tag");
@@ -94,6 +98,10 @@ public class PhoneSensorDataSources {
             if (phoneSensorDataSource == null) continue;
             phoneSensorDataSource.updateDataSource(dataSources.get(i));
         }
+    }
+    public void setEnable(boolean enable){
+        for (int i = 0; i < phoneSensorDataSources.size(); i++)
+            phoneSensorDataSources.get(i).setEnabled(enable);
     }
 
     public int countEnabled() {

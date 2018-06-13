@@ -77,13 +77,13 @@ public class PrivacyManager {
     RoutingManager routingManager;
 
     /** List of restricted data sources. */
-    SparseArray<Boolean> listPrivacyListDsId;
+//    SparseArray<Boolean> listPrivacyListDsId;
 
     /** An individual restricted data source. */
-    int dsIdPrivacy;
+//    int dsIdPrivacy;
 
     /** Message handler. */
-    Handler handler;
+//    Handler handler;
 
     /** <code>PrivacyData</code> object from mCerebrum Utilites.
      *
@@ -91,27 +91,31 @@ public class PrivacyManager {
      *     This object contains a duration, starting timestamp, and an arrayList of privacy types.
      * </p>
      */
-    PrivacyData privacyData;
+//    PrivacyData privacyData;
 
 
+/*
     Runnable timer = new Runnable() {
         @Override
         public void run() {
             deactivate();
         }
     };
+*/
 
     /**
      * Returns whether the <code>PrivacyManager</code> is currently active.
      *
      * @return Whether <code>PrivacyManager</code> is active or not.
      */
+/*
     public boolean isActive(){
         if (privacyData == null|| !privacyData.isStatus() || getRemainingTime()<=0)
             return false;
         else
             return true;
     }
+*/
 
     /**
      * Constructor
@@ -125,9 +129,9 @@ public class PrivacyManager {
         Log.d(TAG,"PrivacyManager()..constructor()..");
         this.context = context;
         routingManager = RoutingManager.getInstance(context);
-        listPrivacyListDsId = new SparseArray<>();
-        handler = new Handler();
-        processPrivacyData();
+//        listPrivacyListDsId = new SparseArray<>();
+//        handler = new Handler();
+//        processPrivacyData();
     }
 
     /**
@@ -148,6 +152,7 @@ public class PrivacyManager {
     /**
      * Iterates through <code>privacyData</code> to create a list of
      */
+/*
     private void createPrivacyList() {
         if(!isActive())
             return;
@@ -166,6 +171,7 @@ public class PrivacyManager {
         }
         listPrivacyListDsId.remove(dsIdPrivacy);
     }
+*/
 
     /**
      * Registers the given data source and creates a privacy list.
@@ -175,7 +181,7 @@ public class PrivacyManager {
      */
     public DataSourceClient register(DataSource dataSource) {
         DataSourceClient dataSourceClient = routingManager.register(dataSource);
-        createPrivacyList();
+//        createPrivacyList();
         return dataSourceClient;
     }
 
@@ -192,17 +198,17 @@ public class PrivacyManager {
         if(ds_id == -1 || dataTypes == null)
             return new Status(Status.INTERNAL_ERROR);
 
-        if (listPrivacyListDsId.get(ds_id) == null) {
+//        if (listPrivacyListDsId.get(ds_id) == null) {
             status = routingManager.insert(ds_id, dataTypes);
 
             if(status.getStatusCode() == Status.INTERNAL_ERROR)
                 return status;
-        }
+  /*      }
         if(ds_id == dsIdPrivacy){
             Log.d(TAG,"privacy data...process start...");
             processPrivacyData();
         }
-        return status;
+  */      return status;
     }
 
     /**
@@ -210,6 +216,7 @@ public class PrivacyManager {
      *
      * @param privacyData <code>PrivacyData</code> object.
      */
+/*
     public void insertPrivacy(PrivacyData privacyData){
         this.privacyData = privacyData;
         Gson gson = new Gson();
@@ -217,6 +224,7 @@ public class PrivacyManager {
         DataTypeJSONObject dataTypeJSONObject = new DataTypeJSONObject(DateTime.getDateTime(), sample);
         insert(dsIdPrivacy, new DataTypeJSONObject[]{dataTypeJSONObject});
     }
+*/
 
     /**
      * Attempts to insert the given data source into the database, if privacy preferences allow.
@@ -229,15 +237,17 @@ public class PrivacyManager {
         Status status = new Status(Status.SUCCESS);
         if (ds_id == -1 || dataTypes == null)
             return new Status(Status.INTERNAL_ERROR);
-        if (listPrivacyListDsId.get(ds_id) == null) {
+//        if (listPrivacyListDsId.get(ds_id) == null) {
             status = routingManager.insertHF(ds_id, dataTypes);
             if (status.getStatusCode() == Status.INTERNAL_ERROR)
                 return status;
+/*
         }
         if (ds_id == dsIdPrivacy) {
             Log.d(TAG, "privacy data...process start...");
             processPrivacyData();
         }
+*/
         return status;
     }
 
@@ -246,16 +256,19 @@ public class PrivacyManager {
      *
      * @return The remaining time on the duration of the privacy data.
      */
+/*
     public long getRemainingTime(){
         long currentTimeStamp = DateTime.getDateTime();
         long endTimeStamp = privacyData.getStartTimeStamp() + privacyData.getDuration().getValue();
         Log.d(TAG,"remaining time = " + (endTimeStamp - currentTimeStamp));
         return endTimeStamp - currentTimeStamp;
     }
+*/
 
     /**
      * Adds <code>privacyData</code> to the last synced privacy data.
      */
+/*
     private void processPrivacyData(){
         Log.d(TAG, "processPrivacyData()...");
         privacyData = queryLastPrivacyData();
@@ -266,6 +279,7 @@ public class PrivacyManager {
         else
             deactivate();
     }
+*/
 
     /**
      * Queries the database for the given data source during the given time frame.
@@ -374,7 +388,7 @@ public class PrivacyManager {
     public void close() {
         Log.d(TAG, "PrivacyManager()..close()..instance=" + instance);
         if(instance != null) {
-            listPrivacyListDsId.clear();
+//            listPrivacyListDsId.clear();
             routingManager.close();
             instance = null;
         }
@@ -383,26 +397,31 @@ public class PrivacyManager {
     /**
      * Removes any remaining callbacks from the timer.
      */
+/*
     void activate() {
         handler.removeCallbacks(timer);
         createPrivacyList();
         handler.postDelayed(timer,getRemainingTime());
     }
+*/
 
     /**
      * Returns the <code>PrivacyData</code> object of the caller.
      *
      * @return The <code>PrivacyData</code> object of the caller.
      */
+/*
     public PrivacyData getPrivacyData(){
         return privacyData;
     }
+*/
 
     /**
      * Queries the last privacy data sent to the database.
      *
      * @return The <code>PrivacyData</code> from the query.
      */
+/*
     private PrivacyData queryLastPrivacyData() {
         Gson gson = new Gson();
         dsIdPrivacy = routingManager.register(createDataSourcePrivacy()).getDs_id();
@@ -414,22 +433,25 @@ public class PrivacyManager {
         DataTypeJSONObject dataTypeJSONObject = (DataTypeJSONObject) dataTypes.get(0);
         return gson.fromJson(dataTypeJSONObject.getSample().toString(), PrivacyData.class);
     }
+*/
 
     /**
      * Clears <code>listPrivacyListDsId</code>, nullifies <code>privacyData</code> and removes any
      * remaining timer callbacks.
      */
+/*
     private void deactivate() {
         Log.d(TAG, "privacy deactivated...");
         listPrivacyListDsId.clear();
         privacyData = null;
         handler.removeCallbacks(timer);
     }
+*/
 
     /**
      * Updates the given data source's summary.
      *
-     * @param dataSource Data source to update.
+     * @param dataSourceClient Data source to update.
      * @param dataType Data type of the summary data.
      * @return Status after the update.
      */
@@ -437,11 +459,11 @@ public class PrivacyManager {
         Status status = new Status(Status.SUCCESS);
         if(dataSourceClient == null || dataType == null)
             return new Status(Status.INTERNAL_ERROR);
-        if (listPrivacyListDsId.get(dataSourceClient.getDs_id()) == null) {
+//        if (listPrivacyListDsId.get(dataSourceClient.getDs_id()) == null) {
             status = routingManager.updateSummary(dataSourceClient.getDataSource(), dataType);
             if(status.getStatusCode() == Status.INTERNAL_ERROR)
                 return status;
-        }
+//        }
         return status;
     }
 }

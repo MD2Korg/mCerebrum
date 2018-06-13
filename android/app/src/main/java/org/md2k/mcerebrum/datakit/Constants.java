@@ -42,7 +42,7 @@ public class Constants {
      * </p>
      */
     public static final String CONFIG_DIRECTORY= Environment.getExternalStorageDirectory()
-                                                            .getAbsolutePath() + "/mCerebrum/org.md2k.datakit/";
+                                                            .getAbsolutePath() + "/mCerebrum/org.md2k.mcerebrum/";
 
     /**
      * Name of the configuration file.
@@ -51,7 +51,7 @@ public class Constants {
      *   The configuration file is named <code>"config.json"</code> by default.
      * </p>
      */
-    public static final String CONFIG_FILENAME = "config.json";
+    public static final String CONFIG_FILENAME = "datakit.json";
 
     /**
      * Filename of the database.
@@ -61,6 +61,7 @@ public class Constants {
      * </p>
      */
     public static final String DATABASE_FILENAME="database.db";
+    public static final String USER_UUID = "636fcc1f-8966-4e63-a9df-0cbaa6e9296c";
 
     /**
      * Archive directory.
@@ -78,7 +79,7 @@ public class Constants {
      *   The default raw data directory is <code>"raw/"</code>.
      * </p>
      */
-    public static final String RAW_DIRECTORY = "raw/";
+    public static final String RAW_DIRECTORY = USER_UUID+"/";
 
     /**
      * Name of this service.

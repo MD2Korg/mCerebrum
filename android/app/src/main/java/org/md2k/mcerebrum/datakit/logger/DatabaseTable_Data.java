@@ -40,6 +40,7 @@ import org.md2k.mcerebrum.core.datakitapi.datatype.DataType;
 import org.md2k.mcerebrum.core.datakitapi.datatype.DataTypeDoubleArray;
 import org.md2k.mcerebrum.core.datakitapi.datatype.DataTypeLong;
 import org.md2k.mcerebrum.core.datakitapi.datatype.RowObject;
+import org.md2k.mcerebrum.core.datakitapi.source.datasource.DataSourceClient;
 import org.md2k.mcerebrum.core.datakitapi.status.Status;
 import android.util.Log;
 
@@ -78,7 +79,7 @@ public class DatabaseTable_Data {
     private static final int CVALUE_LIMIT = 250;
 
     /** Size of a content value array for high frequency data. */
-    private static final int HFVALUE_LIMIT = 5000;
+    private static final int HFVALUE_LIMIT = 500;
 
     /** Maximum number of rows in the data table. */
     private static final int MAX_DATA_ROW = 50000;
@@ -86,6 +87,7 @@ public class DatabaseTable_Data {
     private SparseArray<Subscription> subscriptionPrune;
 
     private Subscription subsPrune;
+    SparseArray<DataSourceClient> dscs;
 
     /** Command string to create an index into the database based on <code>datasource_id</code>. */
     private static final String SQL_CREATE_DATA_INDEX = "CREATE INDEX IF NOT EXISTS index_datasource_id on "
@@ -122,6 +124,7 @@ public class DatabaseTable_Data {
 
     /** Time of the last insertion. */
     long lastUnlock = 0;
+    long lastUnlockHF = 0;
 
     /** Used for turning <code>DataSource</code> objects into byte arrays, or serialization. */
     Kryo kryo;
@@ -140,6 +143,7 @@ public class DatabaseTable_Data {
         kryo = new Kryo();
         createIfNotExists(db);
         gzLogger = gzl;
+        dscs = new SparseArray<>();
     }
 
     /**
@@ -178,8 +182,10 @@ public class DatabaseTable_Data {
             long st = System.currentTimeMillis();
             db.beginTransaction();
 
-            for (int i = 0; i < cValueCount; i++)
+            for (int i = 0; i < cValueCount; i++) {
                 db.insert(tableName, null, cValues[i]);
+            }
+            gzLogger.insert(cValues, cValueCount, dscs);
             cValueCount = 0;
 
             try {
@@ -217,16 +223,17 @@ public class DatabaseTable_Data {
      * Updates or inserts the data type accordingly.
      *
      * @param db Database.
-     * @param dataSourceId Data source identifier.
+     * @param dataSourceClient Data source identifier.
      * @param dataType Data type to insert.
      * @param isUpdate Whether the data is an update.
      * @return The status after insertion.
      */
-    public synchronized Status insert(SQLiteDatabase db, int dataSourceId, DataType[] dataType, boolean isUpdate) {
+    public synchronized Status insert(SQLiteDatabase db, DataSourceClient dataSourceClient, DataType[] dataType, boolean isUpdate) {
+        dscs.put(dataSourceClient.getDs_id(), dataSourceClient);
         if (isUpdate) {
-            for (DataType aDataType : dataType) update(db, dataSourceId, aDataType);
+            for (DataType aDataType : dataType) update(db, dataSourceClient.getDs_id(), aDataType);
         } else {
-            for (DataType aDataType : dataType) insert(db, dataSourceId, aDataType);
+            for (DataType aDataType : dataType) insert(db, dataSourceClient.getDs_id(), aDataType);
         }
         return new Status(Status.SUCCESS);
     }
@@ -255,31 +262,32 @@ public class DatabaseTable_Data {
     /**
      * Wrapper method for <code>insertHF()</code> that iterates through a data type array.
      *
-     * @param dataSourceId Data source identifier.
+     * @param dataSourceClient Data source identifier.
      * @param dataType Data type to insert.
      * @return The status after insertion.
      */
-    public synchronized Status insertHF(int dataSourceId, DataTypeDoubleArray[] dataType) {
+    public synchronized Status insertHF(DataSourceClient dataSourceClient, DataTypeDoubleArray[] dataType) {
+        dscs.put(dataSourceClient.getDs_id(), dataSourceClient);
         for (DataTypeDoubleArray aDataType : dataType)
-            insertHF(dataSourceId, aDataType);
+            insertHF(dataSourceClient.getDs_id(), aDataType);
         return new Status(Status.SUCCESS);
     }
 
     /**
      * Insert high frequency data into a <code>ContentValues</code> object.
      *
-     * @param dataSourceId Data source identifier.
+     * @param dsId Data source identifier.
      * @param dataType Data type to insert.
      * @return The status after insertion.
      */
-    private synchronized Status insertHF(int dataSourceId, DataTypeDoubleArray dataType) {
+    private synchronized Status insertHF(int dsId, DataTypeDoubleArray dataType) {
         Status status = new Status(Status.SUCCESS);
-        if (dataType.getDateTime() - lastUnlock >= WAITTIME || hfValueCount >= HFVALUE_LIMIT) {
-            status = gzLogger.insert(hfValues, hfValueCount);
+        if (dataType.getDateTime() - lastUnlockHF >= WAITTIME || hfValueCount >= HFVALUE_LIMIT) {
+            status = gzLogger.insertHF(hfValues, hfValueCount, dscs);
             hfValueCount = 0;
-            lastUnlock = dataType.getDateTime();
+            lastUnlockHF = dataType.getDateTime();
         }
-        ContentValues contentValues = prepareDataHF(dataSourceId, dataType);
+        ContentValues contentValues = prepareDataHF(dsId, dataType);
         hfValues[hfValueCount++] = contentValues;
         return status;
     }
@@ -288,15 +296,15 @@ public class DatabaseTable_Data {
     /**
      * Prepares a high frequency <code>ContentValues</code> object.
      *
-     * @param dataSourceId Data source identifier.
+     * @param dsId Data source identifier.
      * @param dataType Data type to convert.
      * @return The constructed <code>ContentValues</code> object.
      */
-    public synchronized ContentValues prepareDataHF(int dataSourceId, DataTypeDoubleArray dataType) {
+    public synchronized ContentValues prepareDataHF(int dsId, DataTypeDoubleArray dataType) {
         ContentValues contentValues = new ContentValues();
         byte[] dataTypeArray = dataType.toRawBytes();
 
-        contentValues.put(C_DATASOURCE_ID, dataSourceId);
+        contentValues.put(C_DATASOURCE_ID, dsId);
         contentValues.put(C_DATETIME, dataType.getDateTime());
         contentValues.put(C_SAMPLE, dataTypeArray);
         return contentValues;

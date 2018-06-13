@@ -300,8 +300,7 @@ public class CerebralCortexWrapper extends Thread {
                 if (fileTimestamp < currentTimestamp) {
                     Log.d(TAG, file.getAbsolutePath());
 
-                    Boolean resultUpload = ccWebAPICalls.putArchiveDataAndMetadata(ar.getAccessToken()
-                                                        .toString(), dsMetadata, file.getAbsolutePath());
+                    Boolean resultUpload = ccWebAPICalls.putArchiveDataAndMetadata(ar.getAccessToken().toString(), dsMetadata, file.getAbsolutePath());
                     if (resultUpload) {
                         File newFile = new File(file.getAbsolutePath());
                         newFile.delete();

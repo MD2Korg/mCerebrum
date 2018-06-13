@@ -27,10 +27,13 @@
 package org.md2k.mcerebrum.datakit.logger;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.util.SparseArray;
 
+import org.md2k.mcerebrum.MainApplication;
 import org.md2k.mcerebrum.datakit.Constants;
 import org.md2k.mcerebrum.datakit.configuration.Configuration;
 import org.md2k.mcerebrum.datakit.configuration.ConfigurationManager;
@@ -45,6 +48,10 @@ import org.md2k.mcerebrum.commons.storage_old.FileManager;
 
 import java.io.IOException;
 import java.util.ArrayList;
+
+import io.paperdb.Paper;
+
+import static android.content.Context.MODE_PRIVATE;
 
 /**
  * Provides wrapper methods for managing calls to database table methods.
@@ -62,6 +69,7 @@ public class DatabaseLogger extends SQLiteOpenHelper {
 
     /** Data table. */
     DatabaseTable_Data databaseTable_data = null;
+    SparseArray<DataSourceClient> dataSourceClients;
 
     /** Database object. */
     SQLiteDatabase db = null;
@@ -82,10 +90,11 @@ public class DatabaseLogger extends SQLiteOpenHelper {
     public DatabaseLogger(Context context, String path) {
         super(context, path, null, 1);
         db = this.getWritableDatabase();
+        dataSourceClients=new SparseArray<>();
         Log.d(TAG, "DataBaseLogger() db isopen=" + db.isOpen() + " readonly=" + db.isReadOnly()
                                 + " isWriteAheadLoggingEnabled=" + db.isWriteAheadLoggingEnabled());
-        databaseTable_dataSource = new DatabaseTable_DataSource(db);
         gzLogger = new gzipLogger(context);
+        databaseTable_dataSource = new DatabaseTable_DataSource(db, gzLogger);
         databaseTable_data = new DatabaseTable_Data(db, gzLogger);
     }
 
@@ -141,8 +150,18 @@ public class DatabaseLogger extends SQLiteOpenHelper {
      * @return The status after insertion.
      */
     public Status insert(int dataSourceId, DataType[] dataType, boolean isUpdate) {
-        return databaseTable_data.insert(db, dataSourceId, dataType, isUpdate);
+        countPoint(String.valueOf(dataSourceId), dataType.length);
+        return databaseTable_data.insert(db, dataSourceClients.get(dataSourceId), dataType, isUpdate);
     }
+    private void countPoint(String key, long value){
+        SharedPreferences sharedPreferences= MainApplication.getContext().getSharedPreferences("COUNT", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        long cur = sharedPreferences.getLong(key, 0);
+        editor.putLong(key, cur+value);
+        Paper.book().write(key, cur+value);
+        Log.d("abc","key="+key+" value="+String.valueOf(cur+value));
+        editor.apply();
+   }
 
     /**
      * Inserts a row of high frequency data into the data table.
@@ -152,7 +171,8 @@ public class DatabaseLogger extends SQLiteOpenHelper {
      * @return The status after the insertion.
      */
     public Status insertHF(int dataSourceId, DataTypeDoubleArray[] dataType) {
-        return databaseTable_data.insertHF(dataSourceId, dataType);
+        countPoint(String.valueOf(dataSourceId), dataType.length);
+        return databaseTable_data.insertHF(dataSourceClients.get(dataSourceId), dataType);
     }
 
     /**
@@ -257,7 +277,10 @@ public class DatabaseLogger extends SQLiteOpenHelper {
      * @return The registered <code>DataSourceClient</code>.
      */
     public DataSourceClient register(DataSource dataSource) {
-        return databaseTable_dataSource.register(db, dataSource);
+        DataSourceClient dsc = databaseTable_dataSource.register(db, dataSource);
+        Log.d("abc","register "+dsc.getDs_id()+" "+dsc.getDataSource().getType());
+        dataSourceClients.put(dsc.getDs_id(), dsc);
+        return dsc;
     }
 
     /**
@@ -267,7 +290,10 @@ public class DatabaseLogger extends SQLiteOpenHelper {
      * @return List of matching <code>DataSourceClient</code>s.
      */
     public ArrayList<DataSourceClient> find(DataSource dataSource) {
-        return databaseTable_dataSource.findDataSource(db, dataSource);
+        ArrayList<DataSourceClient> a = databaseTable_dataSource.findDataSource(db, dataSource);
+        for(int i=0;i<a.size();i++)
+            dataSourceClients.put(a.get(i).getDs_id(), a.get(i));
+        return a;
     }
 
     /**

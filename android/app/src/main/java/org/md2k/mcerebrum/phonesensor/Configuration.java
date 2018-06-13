@@ -41,9 +41,9 @@ import java.util.HashMap;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 public class Configuration {
-    private static final String CONFIG_DIRECTORY = Environment.getExternalStorageDirectory().getAbsolutePath() + "/mCerebrum/org.md2k.phonesensor/";
+    private static final String CONFIG_DIRECTORY = Environment.getExternalStorageDirectory().getAbsolutePath() + "/mCerebrum/org.md2k.mcerebrum/";
     private static final String DEFAULT_CONFIG_FILENAME = "default_config.json";
-    private static final String CONFIG_FILENAME = "config.json";
+    private static final String CONFIG_FILENAME = "phonesensor.json";
 
     public static ArrayList<DataSource> read(Context context) throws FileNotFoundException {
         String root=Storage.getRootDirectory(context, StorageType.SDCARD_INTERNAL);

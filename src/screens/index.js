@@ -4,13 +4,16 @@ import Home from './home/index';
 import Plugins from './plugins/index';
 import Settings from './settings/index';
 import Report from './report/index';
+import Info from './info/index';
+import MarkerEdit from './report/marker_edit';
 
 export function registerScreens() {
   Navigation.registerComponent('mc.Home', () => Home);
   Navigation.registerComponent('mc.Plugins', () => Plugins);
   Navigation.registerComponent('mc.Settings', () => Settings);
   Navigation.registerComponent('mc.Report', () => Report);
-
+  Navigation.registerComponent('mc.Info', () => Info);
+  Navigation.registerComponent('mc.Report.MarkerEdit',()=>MarkerEdit);
 }
 
 export function registerScreenVisibilityListener() {

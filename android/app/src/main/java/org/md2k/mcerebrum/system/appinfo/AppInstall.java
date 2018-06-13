@@ -209,7 +209,7 @@ public class AppInstall {
     }
 
     public static boolean getInstalled(Context context, String packageName) {
-        return AppCP.getInstalled(context, packageName);
+        return AppUtils.isAppInstalled(packageName);
     }
     public static boolean isCoreInstalled(Context context) {
         ArrayList<String> apps = AppBasicInfo.getStudy(context);

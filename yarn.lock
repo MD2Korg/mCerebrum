@@ -3447,6 +3447,12 @@ react-native-animatable@^1.2.4:
   dependencies:
     prop-types "^15.5.10"
 
+react-native-collapsible@^0.11.3:
+  version "0.11.3"
+  resolved "https://registry.yarnpkg.com/react-native-collapsible/-/react-native-collapsible-0.11.3.tgz#5974d9b81f29677372340a21675c9e1c363b410e"
+  dependencies:
+    prop-types "^15.5.10"
+
 react-native-drawer@2.5.0:
   version "2.5.0"
   resolved "https://registry.yarnpkg.com/react-native-drawer/-/react-native-drawer-2.5.0.tgz#022cba5c0516126a9fc9cce3185cb46c644b51c4"
@@ -3471,11 +3477,21 @@ react-native-keyboard-aware-scroll-view@0.5.0:
     prop-types "^15.6.0"
     react-native-iphone-x-helper "^1.0.1"
 
-react-native-navigation@^1.1.462:
-  version "1.1.462"
-  resolved "https://registry.yarnpkg.com/react-native-navigation/-/react-native-navigation-1.1.462.tgz#a0db454177ebecd439db5d802d3624ba2cf4eb5e"
+react-native-navigation@^1.1.464:
+  version "1.1.464"
+  resolved "https://registry.yarnpkg.com/react-native-navigation/-/react-native-navigation-1.1.464.tgz#200e5bcedeeae47fcbd594e767449fb188d20416"
   dependencies:
     lodash "4.x.x"
+
+react-native-switch@^1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/react-native-switch/-/react-native-switch-1.5.0.tgz#a5c8e72f87def649d1c9de027c5ae27e2037ea40"
+  dependencies:
+    prop-types "^15.6.0"
+
+react-native-timer@^1.3.3:
+  version "1.3.3"
+  resolved "https://registry.yarnpkg.com/react-native-timer/-/react-native-timer-1.3.3.tgz#6dcd48bac37e89f17964a0f5404dae08bd9dfb19"
 
 react-native-vector-icons@~4.5.0:
   version "4.5.0"

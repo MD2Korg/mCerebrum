@@ -1,5 +1,10 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="Sensors"
+    <PreferenceCategory android:title="Options"
+        android:key="options">
+        <Preference android:title="Select all" android:key="select_all"/>
+        <Preference android:title="Unselect all"  android:key="unselect_all"/>
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Phone Sensors"
         android:key="dataSourceType">
     </PreferenceCategory>
 </PreferenceScreen>

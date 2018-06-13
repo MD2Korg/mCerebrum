@@ -262,7 +262,7 @@ public class ServiceDataKit extends Service {
         public void handleMessage(Message incomingMessage) {
             Message outgoingMessage;
             if (messageController == null) {
-                Log.d(TAG, "error...messageController=null");
+                Log.e(TAG, "error...messageController=null");
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(Status.class.getSimpleName(), new Status(Status.INTERNAL_ERROR));
                 outgoingMessage = prepareMessage(bundle, incomingMessage.what);

@@ -31,6 +31,7 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
+import android.util.Log;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
@@ -49,6 +50,8 @@ import java.util.ArrayList;
  * Class for defining a <code>DataSource</code> table within the database.
  */
 public class DatabaseTable_DataSource {
+    private gzipLogger gzLogger;
+
     /** Name of the table. <p>Default is <code>"datasources"</code>.</p> */
     private static String TABLE_NAME = "datasources";
 
@@ -99,8 +102,9 @@ public class DatabaseTable_DataSource {
      *
      * @param db database to check.
      */
-    DatabaseTable_DataSource(SQLiteDatabase db) {
+    DatabaseTable_DataSource(SQLiteDatabase db, gzipLogger gzl) {
         createIfNotExists(db);
+        gzLogger = gzl;
     }
 
     /**
@@ -247,13 +251,17 @@ public class DatabaseTable_DataSource {
      * @return The registered <code>DataSourceClient</code>.
      */
     public synchronized DataSourceClient register(SQLiteDatabase db, DataSource dataSource) {
+        DataSourceClient dsc;
         ContentValues cValues = prepareDataSource(dataSource);
         int newRowId;
         newRowId = (int) db.insert(TABLE_NAME, null, cValues);
         if (newRowId == -1) {
-            return new DataSourceClient(-1, dataSource, new Status(Status.INTERNAL_ERROR));
+            dsc= new DataSourceClient(-1, dataSource, new Status(Status.INTERNAL_ERROR));
         } else
-            return new DataSourceClient(newRowId, dataSource, new Status(Status.SUCCESS));
+            dsc = new DataSourceClient(newRowId, dataSource, new Status(Status.SUCCESS));
+        Log.d("abc","gzLogger = "+gzLogger+" dsc="+dsc);
+        gzLogger.register(dsc);
+        return dsc;
     }
 
     /**

@@ -26,17 +26,12 @@ package org.md2k.mcerebrum.phonesensor;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-import android.content.Context;
-
 import com.google.android.gms.location.DetectedActivity;
 
 public class Constants {
-    public static final String FILENAME_ASSET_METADATA = "meta_data.json";
+    public static final String FILENAME_ASSET_METADATA = "phonesensor_metadata.json";
     private Constants() {
     }
-
-    public static final String PACKAGE_NAME = "org.md2k.phonesensor";
-
 
     /**
      * List of DetectedActivity types that we monitor in this sample.

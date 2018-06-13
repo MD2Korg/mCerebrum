@@ -1,4 +1,4 @@
-package org.md2k.mcerebrum.app;
+package org.md2k.mcerebrum.data;
 /*
  * Copyright (c) 2016, The University of Memphis, MD2K Center
  * - Syed Monowar Hossain <monowar.hossain@gmail.com>
@@ -26,11 +26,26 @@ package org.md2k.mcerebrum.app;
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-public class AppInfo {
+public class MarkerInfo {
     String title;
-    String summary;
-    String description;
-    String downloadLink;
-    boolean isInstalled;
+    String button1;
+    String button2;
 
+    public MarkerInfo(String title, String button1, String button2) {
+        this.title = title;
+        this.button1 = button1;
+        this.button2 = button2;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getButton1() {
+        return button1;
+    }
+
+    public String getButton2() {
+        return button2;
+    }
 }

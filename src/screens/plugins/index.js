@@ -1,35 +1,12 @@
 import React, {Component} from 'react';
-import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body, Right, Fab, Title} from 'native-base';
+import { Container, Header, Content, Card, CardItem, Thumbnail, Text, Button, Icon, Left, Body, Right, Fab, Title, Badge, scaleX, scaleY} from 'native-base';
 
-import { StyleSheet,  View, TouchableOpacity, Image, Alert, AppRegistry, NativeModules } from 'react-native';
+import { AppState, StyleSheet,  View, TouchableOpacity, Image, Alert, AppRegistry, NativeModules } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import Collapsible from 'react-native-collapsible';
 import Accordion from 'react-native-collapsible/Accordion';
 
 
-const BACON_IPSUM =
-  'Bacon ipsum dolor amet chuck turducken landjaeger tongue spare ribs. Picanha beef prosciutto meatball turkey shoulder shank salami cupim doner jowl pork belly cow. Chicken shankle rump swine tail frankfurter meatloaf ground round flank ham hock tongue shank andouille boudin brisket. ';
-  const CONTENT = [
-    {
-      title: 'Phone Sensor',
-      summary: 'Captures phone sensor data',
-      pre_requisite: '',
-      package_name: 'org.md2k.mcerebrum',
-      tag: ['phone-accelerometer','phone-gyroscope','phone-compass','activity','gps','location'],
-      current_version:'3.0.0',
-      latest_version: '3.0.1',
-      button_add: true,
-      content: BACON_IPSUM
-    },
-    {
-      title: 'Motion Sense',
-      summary: 'Captures motion sense wrist sensor data',
-      package_name: 'org.md2k.motionsense',
-      download_link: 'https://raw.githubusercontent.com/MD2Korg/mCerebrum-releases/master/2.0/org.md2k.motionsense/motionsense2.0.17-RC1.apk',
-      button_add: false,
-      content: BACON_IPSUM
-    }
-  ];
   const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -89,9 +66,13 @@ class Plugins extends React.Component {
   state = {
       activeSection: false,
       collapsed: true,
-      active: false
+      active: false,
+      uniqueValue: 1,
+      content:[],
     };
-
+    componentWillUnmount() {
+      console.log("----------------------unmount----------------");
+      }
     _toggleExpanded = () => {
       this.setState({ collapsed: !this.state.collapsed });
     };
@@ -117,20 +98,21 @@ class Plugins extends React.Component {
                     </CardItem>
                     <CardItem boardered style={{backgroundColor: '#1e2c3c'}}>
                                   <Left>
-                                    <Button transparent small warning disabled={this.addButtonStatus(section.package_name)}  onPress={() => NativeModules.ActivityStarter.pluginInstall(section.package_name)}>
+                                    <Button transparent small warning disabled={this.addButtonStatus(section.packageName, section.isInstalled)}  onPress={() => NativeModules.ActivityStarter.pluginInstall(section.packageName)}>
                                     <Icon active name="ios-add-circle-outline" type="Ionicons"/>
                                       <Text style={styles.card_button_text}>Add</Text>
                                     </Button>
                                   </Left>
                                   <Body>
-                                    <Button transparent small warning disabled={this.addButtonStatus(section.package_name)} onPress={() => NativeModules.ActivityStarter.pluginUnInstall(section.package_name)}>
+                                    <Button transparent small warning disabled={this.removeButtonStatus(section.packageName, section.isInstalled)} onPress={() => NativeModules.ActivityStarter.pluginUnInstall(section.packageName)}>
                                       <Icon active name="ios-remove-circle-outline" type="Ionicons"/>
                                       <Text style={styles.card_button_text}>Remove</Text>
                                     </Button>
                                   </Body>
                                   <Right>
-                                  <Button transparent small warning onPress={() => NativeModules.ActivityStarter.pluginSettings(section.package_name)}>
+                                  <Button transparent small warning={section.isConfigured} danger={this.isNotConfigured(section.isConfigured)} disabled={this.settingsButtonStatus(section.packageName, section.isInstalled)} onPress={() => NativeModules.ActivityStarter.pluginSettings(section.packageName)}>
                                     <Icon active name="ios-settings-outline" type="Ionicons"/>
+
                                     <Text style={styles.card_button_text}>Settings</Text>
                                   </Button>
                                   </Right>
@@ -140,42 +122,108 @@ class Plugins extends React.Component {
 
       );
     }
-    addButtonStatus=(packageName)=>{
+
+
+    addButtonStatus=(packageName, isInstalled)=>{
       if (packageName=='org.md2k.mcerebrum')
         return true;
-        else return false;
+        else return isInstalled;
     }
-    removeButtonStatus=(packageName)=>{
+    removeButtonStatus=(packageName, isInstalled)=>{
       if (packageName=='org.md2k.mcerebrum')
         return true;
-        else return false;
+
+        else return !isInstalled;
     }
+    settingsButtonStatus=(packageName, isInstalled)=>{
+      if (packageName=='org.md2k.mcerebrum')
+        return false;
+
+        else return !isInstalled;
+    }
+    isSettings=()=>{
+      if(this.state.content && this.state.content.length>0){
+        for (var i=0; i<this.state.content.length; i++) {
+            if(this.state.content[i].isConfigured==true){
+              this.props.navigator.setTabBadge({
+                badgeColor: 'red', // (optional) if missing, the badge will use the default color
+              });
+              
+            return true;
+          }
+        }
+        this.props.navigator.setTabBadge({
+          badge: 1, // badge value, null to remove badge
+          badgeColor: 'red', // (optional) if missing, the badge will use the default color
+        });
+        return false;
+      }else {
+        this.props.navigator.setTabBadge({
+          badgeColor: 'red', // (optional) if missing, the badge will use the default color
+        });
+
+        return true;
+    }
+  }
+    isNotConfigured=(isConfigured)=>{
+      if (isConfigured==true)
+        return false;
+
+        else return true;
+    }
+
 
     _renderContent(section, i, isActive) {
       return (
         <Animatable.View
-          duration={400}
+          duration={0}
           style={[styles.content, isActive ? styles.active : styles.inactive]}
           transition="backgroundColor"
         >
-          <Animatable.Text animation={isActive ? 'slideInDown' : undefined}>
-            {section.content}
-          </Animatable.Text>
         </Animatable.View>
       );
     }
     constructor(props){
       super(props);
       this.props.navigator.setTitle({title: 'mCerebrum : Plugins'});
+      this.props.navigator.addOnNavigatorEvent(this.onNavigatorEvent.bind(this));
+      {this.read()};
+
+    }
+    onNavigatorEvent(event) {
+      console.log('plugin ..event='+event.id);
+      switch(event.id) {
+        case 'didAppear':
+        case 'onActivityResumed':
+        {this.read()};
+        break;
+
+      }
+    }
+
+    read = () =>{
+      console.log('reading plugins.....');
+      NativeModules.ActivityStarter.getPackageList(result=>{
+        this.state.content = JSON.parse(result);
+        console.log('plugin...after read...');
+        {this.isSettings()}
+        {this.forceRemount()};
+
+    });
+  }
+    forceRemount = () => {
+      this.setState({
+        uniqueValue: this.state.uniqueValue + 1
+      });
     }
 
     render() {
       return (
-        <Container style={{backgroundColor: '#131325'}}>
+        <Container style={{backgroundColor: '#131325'}} key={this.state.uniqueValue}>
                 <Content>
  <Accordion
             activeSection={this.state.activeSection}
-            sections={CONTENT}
+            sections={this.state.content}
             touchableComponent={TouchableOpacity}
             renderHeader={this._renderHeader}
             renderContent={this._renderContent}

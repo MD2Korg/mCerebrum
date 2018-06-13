@@ -95,10 +95,31 @@ public class PrefsFragmentSettings extends PreferenceFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        readConfiguration();
+        phoneSensorDataSources = new PhoneSensorDataSources(getActivity());
         enableGPS();
         addPreferencesFromResource(R.xml.pref_phonesensor_platform);
         createPreferenceScreen();
+        Preference ps =  findPreference("select_all");
+        Preference pus =  findPreference("unselect_all");
+        ps.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                phoneSensorDataSources.setEnable(true);
+                saveConfigurationFile();
+                updatePreferenceScreen();
+                return false;
+            }
+        });
+        pus.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                phoneSensorDataSources.setEnable(false);
+                saveConfigurationFile();
+                updatePreferenceScreen();
+                return false;
+            }
+        });
+
     }
 
     private static final long INTERVAL = 5000L;
@@ -197,9 +218,7 @@ public class PrefsFragmentSettings extends PreferenceFragment {
         updatePreferenceScreen();
     }
 
-    void readConfiguration() {
-        phoneSensorDataSources = new PhoneSensorDataSources(getActivity());
-    }
+
 
     boolean isSensorSupported(String dataSourceType) {
         SensorManager mSensorManager;
@@ -242,6 +261,12 @@ public class PrefsFragmentSettings extends PreferenceFragment {
         String title = dataSourceType;
         title = title.replace("_", " ");
         title = title.substring(0, 1).toUpperCase() + title.substring(1).toLowerCase();
+        switch(dataSourceType){
+            case "CU_APPUSAGE": title="App Usage";break;
+            case "CU_NOTIF_POST_PACKAGE": title="Notification";break;
+            case "CU_SMS_TYPE": title="SMS";break;
+            case "CU_CALL_TYPE": title="Call Record";break;
+        }
         switchPreference.setTitle(title);
         switchPreference.setOnPreferenceChangeListener(onPreferenceChangeListener);
         switchPreference.setEnabled(isSensorSupported(dataSourceType));
@@ -273,7 +298,7 @@ public class PrefsFragmentSettings extends PreferenceFragment {
 
     private Preference.OnPreferenceClickListener alertDialogFrequency(final String[] frequencies) {
         for (int i = 0; i < frequencies.length; i++)
-            frequencies[i] = frequencies[i] + " Hz";
+            frequencies[i] = frequencies[i];
         return new Preference.OnPreferenceClickListener() {
             @Override
             public boolean onPreferenceClick(final Preference preference) {
@@ -284,7 +309,7 @@ public class PrefsFragmentSettings extends PreferenceFragment {
                     String freq = phoneSensorDataSources.find(preference.getKey()).getFrequency();
                     if (freq != null) {
                         for (int i = 0; i < frequencies.length; i++)
-                            if (frequencies[i].equals(freq + " Hz")) {
+                            if (frequencies[i].equals(freq)) {
                                 curSelected = i;
                                 break;
                             }
@@ -343,7 +368,10 @@ public class PrefsFragmentSettings extends PreferenceFragment {
                 switchPreference.setSummary("Not Supported");
             else {
                 try {
-                    switchPreference.setSummary(phoneSensorDataSource.getFrequency() + " Hz");
+                    if(phoneSensorDataSource.getFrequency()!=null && phoneSensorDataSource.getFrequency().equals("ON_CHANGE"))
+                    switchPreference.setSummary(phoneSensorDataSource.getFrequency());
+                    else
+                        switchPreference.setSummary(phoneSensorDataSource.getFrequency()+" Hz");
                 } catch (NumberFormatException nfe) {
                     switchPreference.setSummary(phoneSensorDataSource.getFrequency());
                 }
@@ -396,7 +424,7 @@ public class PrefsFragmentSettings extends PreferenceFragment {
             if(flag) getActivity().startService(new Intent(getActivity(), ServicePhoneSensor.class));
 
 //            Toast.makeText(getActivity(), "Configuration file is saved.", Toast.LENGTH_LONG).show();
-        } catch (IOException e) {
+        } catch (Exception e) {
             Toast.makeText(getActivity(), "!!!Error:" + e.getMessage(), Toast.LENGTH_LONG).show();
             e.printStackTrace();
         }

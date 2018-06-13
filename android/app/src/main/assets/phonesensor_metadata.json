@@ -1,7 +1,7 @@
 [
   {
     "application": {
-      "id": "org.md2k.phonesensor",
+      "id": "org.md2k.mcerebrum",
       "metadata": {
         "NAME": "PhoneSensor",
         "DESCRIPTION": "Collects data from the phone sensors."
@@ -53,7 +53,7 @@
   },
   {
     "application": {
-      "id": "org.md2k.phonesensor",
+      "id": "org.md2k.mcerebrum",
       "metadata": {
         "NAME": "PhoneSensor",
         "DESCRIPTION": "Collects data from the phone sensors."
@@ -132,7 +132,7 @@
   },
   {
     "application": {
-      "id": "org.md2k.phonesensor",
+      "id": "org.md2k.mcerebrum",
       "metadata": {
         "NAME": "PhoneSensor",
         "DESCRIPTION": "Collects data from the phone sensors."
@@ -166,7 +166,7 @@
   },
   {
     "application": {
-      "id": "org.md2k.phonesensor",
+      "id": "org.md2k.mcerebrum",
       "metadata": {
         "NAME": "PhoneSensor",
         "DESCRIPTION": "Collects data from the phone sensors."
@@ -219,7 +219,7 @@
   },
   {
     "application": {
-      "id": "org.md2k.phonesensor",
+      "id": "org.md2k.mcerebrum",
       "metadata": {
         "NAME": "PhoneSensor",
         "DESCRIPTION": "Collects data from the phone sensors."
@@ -272,7 +272,7 @@
   },
   {
     "application": {
-      "id": "org.md2k.phonesensor",
+      "id": "org.md2k.mcerebrum",
       "metadata": {
         "NAME": "PhoneSensor",
         "DESCRIPTION": "Collects data from the phone sensors."
@@ -325,7 +325,7 @@
   },
   {
     "application": {
-      "id": "org.md2k.phonesensor",
+      "id": "org.md2k.mcerebrum",
       "metadata": {
         "NAME": "PhoneSensor",
         "DESCRIPTION": "Collects data from the phone sensors."
@@ -360,7 +360,7 @@
   },
   {
     "application": {
-      "id": "org.md2k.phonesensor",
+      "id": "org.md2k.mcerebrum",
       "metadata": {
         "NAME": "PhoneSensor",
         "DESCRIPTION": "Collects data from the phone sensors."
@@ -395,7 +395,7 @@
   },
   {
     "application": {
-      "id": "org.md2k.phonesensor",
+      "id": "org.md2k.mcerebrum",
       "metadata": {
         "NAME": "PhoneSensor",
         "DESCRIPTION": "Collects data from the phone sensors."
@@ -430,7 +430,7 @@
   },
   {
     "application": {
-      "id": "org.md2k.phonesensor",
+      "id": "org.md2k.mcerebrum",
       "metadata": {
         "NAME": "PhoneSensor",
         "DESCRIPTION": "Collects data from the phone sensors."
@@ -464,7 +464,7 @@
   },
   {
     "application": {
-      "id": "org.md2k.phonesensor",
+      "id": "org.md2k.mcerebrum",
       "metadata": {
         "NAME": "PhoneSensor",
         "DESCRIPTION": "Collects data from the phone sensors."
@@ -507,7 +507,7 @@
   },
   {
     "application": {
-      "id": "org.md2k.phonesensor",
+      "id": "org.md2k.mcerebrum",
       "metadata": {
         "NAME": "PhoneSensor",
         "DESCRIPTION": "Collects data from the phone sensors."
@@ -542,7 +542,7 @@
   },
   {
     "application": {
-      "id": "org.md2k.phonesensor",
+      "id": "org.md2k.mcerebrum",
       "metadata": {
         "NAME": "PhoneSensor",
         "DESCRIPTION": "Collects data from the phone sensors."
@@ -577,7 +577,7 @@
   },
   {
     "application": {
-      "id": "org.md2k.phonesensor",
+      "id": "org.md2k.mcerebrum",
       "metadata": {
         "NAME": "PhoneSensor",
         "DESCRIPTION": "Collects data from the phone sensors."
@@ -622,7 +622,7 @@
   },
   {
     "application": {
-      "id": "org.md2k.phonesensor",
+      "id": "org.md2k.mcerebrum",
       "metadata": {
         "NAME": "PhoneSensor",
         "DESCRIPTION": "Collects data from the phone sensors."
@@ -657,5 +657,111 @@
       "FREQUENCY": "ON_CHANGE"
     },
     "type": "TOUCH_SCREEN"
-  }
-]
+  },
+  {
+    "application": {
+      "id": "org.md2k.mcerebrum",
+      "metadata": {
+        "NAME": "PhoneSensor",
+        "DESCRIPTION": "Collects data from the phone sensors."
+      }
+    },
+    "dataDescriptors": [
+      {
+        "DATA_TYPE": "String",
+        "NAME": "App Usage",
+        "DESCRIPTION": "Package name which is now showing in the screen. It is sampled in every 1 minute",
+        "UNIT": "package_name"
+      }
+    ],
+    "persistent": true,
+    "metadata": {
+      "DATA_TYPE": "org.md2k.datakitapi.datatype.DataTypeString",
+      "NAME": "App Usage",
+      "DESCRIPTION": "Package name which is now showing in the screen. It is sampled in every 1 minute",
+      "UNIT": "package_name",
+      "FREQUENCY": "1/60"
+    },
+    "type": "CU_APPUSAGE"
+  },
+  {
+    "application": {
+      "id": "org.md2k.mcerebrum",
+      "metadata": {
+        "NAME": "PhoneSensor",
+        "DESCRIPTION": "Collects data from the phone sensors."
+      }
+    },
+    "dataDescriptors": [
+      {
+        "DATA_TYPE": "String",
+        "NAME": "Notification post package",
+        "DESCRIPTION": "App package that posted a notification",
+        "FREQUENCY": "ON_CHANGE",
+        "UNIT": "package_name"
+      }
+    ],
+    "persistent": true,
+    "metadata": {
+      "DATA_TYPE": "org.md2k.datakitapi.datatype.DataTypeString",
+      "NAME": "Notification post package",
+      "DESCRIPTION": "App package that posted a notification",
+      "UNIT": "package_name",
+      "FREQUENCY": "ON_CHANGE"
+    },
+    "type": "CU_NOTIF_POST_PACKAGE"
+  },
+  {
+    "application": {
+      "id": "org.md2k.mcerebrum",
+      "metadata": {
+        "NAME": "PhoneSensor",
+        "DESCRIPTION": "Collects data from the phone sensors."
+      }
+    },
+    "dataDescriptors": [
+      {
+        "DATA_TYPE": "Int",
+        "NAME": "Call Type",
+        "DESCRIPTION": "Type of call. [values: 1:INCOMING_TYPE, 2:OUTGOING_TYPE, 3:MISSED_TYPE, 4:VOICEMAIL_TYPE, 5:REJECTED_TYPE, 6:BLOCKED_TYPE, 7:ANSWERED_EXTERNALLY_TYPE]",
+        "FREQUENCY": "ON_CHANGE",
+        "UNIT": "enum"
+      }
+    ],
+    "persistent": true,
+    "metadata": {
+      "DATA_TYPE": "org.md2k.datakitapi.datatype.DataTypeInt",
+      "NAME": "Call Type",
+      "DESCRIPTION": "Type of call. [values: 1:INCOMING_TYPE, 2:OUTGOING_TYPE, 3:MISSED_TYPE, 4:VOICEMAIL_TYPE, 5:REJECTED_TYPE, 6:BLOCKED_TYPE, 7:ANSWERED_EXTERNALLY_TYPE]",
+      "UNIT": "enum",
+      "FREQUENCY": "ON_CHANGE"
+    },
+    "type": "CU_CALL_TYPE"
+  },
+  {
+    "application": {
+      "id": "org.md2k.mcerebrum",
+      "metadata": {
+        "NAME": "PhoneSensor",
+        "DESCRIPTION": "Collects data from the phone sensors."
+      }
+    },
+    "dataDescriptors": [
+      {
+        "DATA_TYPE": "Int",
+        "NAME": "SMS Type",
+        "DESCRIPTION": "SMS Type (1: incoming, 2: outgoing)",
+        "FREQUENCY": "ON_CHANGE",
+        "UNIT": "enum"
+      }
+    ],
+    "persistent": true,
+    "metadata": {
+      "DATA_TYPE": "org.md2k.datakitapi.datatype.DataTypeInt",
+      "NAME": "SMS Type",
+      "DESCRIPTION": "SMS Type (1: incoming, 2: outgoing)",
+      "UNIT": "enum",
+      "FREQUENCY": "ON_CHANGE"
+    },
+    "type": "CU_SMS_TYPE"
+  }]

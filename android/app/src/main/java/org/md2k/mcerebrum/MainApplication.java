@@ -1,6 +1,8 @@
 package org.md2k.mcerebrum;
 
+import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 
 import com.beardedhen.androidbootstrap.TypefaceProvider;
 
@@ -16,6 +18,7 @@ import com.facebook.react.ReactApplication;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.shell.MainReactPackage;
 import com.facebook.soloader.SoLoader;
+import com.reactnativenavigation.controllers.ActivityCallbacks;
 
 import org.md2k.mcerebrum.configuration.ConfigManager;
 
@@ -66,6 +69,13 @@ public class MainApplication extends NavigationApplication implements ReactAppli
         Paper.init(context);
         Utils.init(this);
         SoLoader.init(this, /* native exopackage */ false);
+        setActivityCallbacks(new ActivityCallbacks() {
+            @Override
+            public void onActivityResumed(Activity activity) {
+                Log.d("abcd", "onActivityResumed...");
+
+            }
+        });
 
     }
     public static Context getContext(){
@@ -75,8 +85,7 @@ public class MainApplication extends NavigationApplication implements ReactAppli
         // Add additional packages you require here
         // No need to add RnnPackage and MainReactPackage
         return Arrays.<ReactPackage>asList(
-                new ActivityStarterReactPackage(),
-                new MainReactPackage()
+                new ActivityStarterReactPackage()
                         );
     }
 

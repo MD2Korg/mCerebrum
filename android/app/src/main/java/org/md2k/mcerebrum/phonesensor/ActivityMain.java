@@ -198,7 +198,7 @@ public class ActivityMain extends AppCompatActivity {
                     TextView tvSensor = new TextView(this);
                     tvSensor.setPadding(10, 0, 0, 0);
                     try {
-                        tvSensor.setText(dataSourceType.toLowerCase() + " (" + phoneSensorDataSources.get(i).getFrequency() + " Hz)");
+                        tvSensor.setText(dataSourceType.toLowerCase() + " (" + phoneSensorDataSources.get(i).getFrequency() + ")");
                     } catch (NumberFormatException nfe) {
                         tvSensor.setText(dataSourceType.toLowerCase() + " (" + phoneSensorDataSources.get(i).getFrequency() + ")");
                     }

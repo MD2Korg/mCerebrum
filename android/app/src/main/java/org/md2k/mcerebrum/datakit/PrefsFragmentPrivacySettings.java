@@ -150,6 +150,7 @@ public class PrefsFragmentPrivacySettings extends PreferenceFragment {
              */
             @Override
             public void onClick(View v) {
+/*
                 if(privacyManager.isActive()){
                     PrivacyData privacyData = privacyManager.getPrivacyData();
                     privacyData.setStatus(false);
@@ -163,6 +164,7 @@ public class PrefsFragmentPrivacySettings extends PreferenceFragment {
                         getActivity().finish();
                     }
                 }
+*/
             }
         });
         buttonCancel.setText("Close");
@@ -214,6 +216,7 @@ public class PrefsFragmentPrivacySettings extends PreferenceFragment {
         preference.setEnabled(false);
         PreferenceCategory pc = (PreferenceCategory) findPreference("category_settings");
 
+/*
         if (privacyManager.isActive()) {
             ((Button) getActivity().findViewById(R.id.button_1)).setText("Stop");
             pc.setEnabled(false);
@@ -230,6 +233,7 @@ public class PrefsFragmentPrivacySettings extends PreferenceFragment {
                                 0, summary.length(), 0);
             preference.setSummary(summary);
         }
+*/
     }
 
     /**
@@ -299,6 +303,7 @@ public class PrefsFragmentPrivacySettings extends PreferenceFragment {
         }
         listPreference.setEntries(entries);
         listPreference.setEntryValues(entryValues);
+/*
         if (privacyManager.isActive()) {
             String list = "";
             for(int i = 0; i < privacyManager.getPrivacyData().getPrivacyTypes().size(); i++){
@@ -312,6 +317,7 @@ public class PrefsFragmentPrivacySettings extends PreferenceFragment {
                 0, summary.length(), 0);
             listPreference.setSummary(summary);
         }
+*/
         listPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             /**
              * Sets the new privacy type.
@@ -355,6 +361,7 @@ public class PrefsFragmentPrivacySettings extends PreferenceFragment {
         }
         listPreference.setEntries(entries.toArray(new String[entries.size()]));
         listPreference.setEntryValues(entryValues.toArray(new String[entryValues.size()]));
+/*
         if (privacyManager.isActive()) {
             listPreference.setSummary(privacyManager.getPrivacyData().getDuration().getTitle());
 
@@ -364,6 +371,7 @@ public class PrefsFragmentPrivacySettings extends PreferenceFragment {
                 0, summary.length(), 0);
             listPreference.setSummary(summary);
         }
+*/
         listPreference.setOnPreferenceChangeListener(new Preference.OnPreferenceChangeListener() {
             /**
              * Sets the new privacy duration.

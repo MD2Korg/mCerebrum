@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="org.md2k.mcerebrum.Main2Activity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingBottom="50dp"
+            android:paddingTop="50dp"
+            android:text="mCerebrum"
+            android:textAlignment="center"
+            android:textSize="30sp"
+            tools:layout_editor_absoluteX="101dp"
+            tools:layout_editor_absoluteY="31dp" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Terms and Conditions"
+            android:textAlignment="center"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            tools:layout_editor_absoluteX="93dp"
+            tools:layout_editor_absoluteY="105dp" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:lineSpacingExtra="8sp"
+            android:paddingBottom="40dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="40dp"
+            android:text="This software is intended for informational and demonstrational purposes only, and is not designed to diagnose, treat, cure, prevent, or track disease or health states. No content provided in this software is intended to serve as a substitute for any kind of professional (e.g., medical) advice."
+            android:textAlignment="center"
+            android:textSize="18sp"
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="137dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/buttonAgree"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Agree"
+                tools:layout_editor_absoluteX="61dp"
+                tools:layout_editor_absoluteY="414dp" />
+
+            <Button
+                android:id="@+id/buttonDisagree"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Disagree"
+                tools:layout_editor_absoluteX="224dp"
+                tools:layout_editor_absoluteY="414dp" />
+        </LinearLayout>
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

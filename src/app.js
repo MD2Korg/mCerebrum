@@ -16,10 +16,10 @@ const tabs = [{
   title: 'Home',
 },
 {
-  label: 'Report',
+  label: 'Activities',
   screen: 'mc.Report',
-  icon: require('../img/summary.png'),
-  title: 'Report',
+  icon: require('../img/mark.png'),
+  title: 'Activities',
 },
 {
   label: 'Settings',
@@ -30,8 +30,14 @@ const tabs = [{
 {
   label: 'Plugins',
   screen: 'mc.Plugins',
-  icon: require('../img/list.png'),
+  icon: require('../img/plugin.png'),
   title: 'Plugins',
+},
+{
+  label: 'Supported Markers',
+  screen: 'mc.Info',
+  icon: require('../img/info.png'),
+  title: 'Supported Markers',
 }];
 
 // this will start our app

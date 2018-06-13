@@ -28,6 +28,7 @@
 package org.md2k.mcerebrum.datakit;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
@@ -40,6 +41,7 @@ import org.md2k.mcerebrum.R;
 import org.md2k.mcerebrum.commons.dialog.Dialog;
 import org.md2k.mcerebrum.commons.dialog.DialogCallback;
 import org.md2k.mcerebrum.commons.storage.Storage;
+import org.md2k.mcerebrum.core.datakitapi.source.datasource.DataSource;
 import org.md2k.mcerebrum.datakit.cerebralcortex.ServiceCerebralCortex;
 import org.md2k.mcerebrum.datakit.configuration.Configuration;
 import org.md2k.mcerebrum.datakit.configuration.ConfigurationManager;
@@ -84,8 +86,8 @@ public class ActivityClear extends AppCompatActivity {
      * Asks the user if they would like to delete the database and archive files.
      */
     void clearData() {
-        Dialog.simple(this, "Delete Database & Archive Files?", "Delete Database & Archive Files?"
-            + "\n\nData can't be recovered after deletion", "Yes", "Cancel", new DialogCallback() {
+        Dialog.simple(this, "Delete", "Delete all data?"
+            + "\n\nData can't be recovered after deletion", "Yes", "No", new DialogCallback() {
 
             /**
              * Calls <code>deleteData()</code> if necessary.
@@ -94,8 +96,11 @@ public class ActivityClear extends AppCompatActivity {
              */
             @Override
             public void onSelected(String value) {
-                if (value.equals("Yes"))
+                if (value.equals("Yes")) {
+                    SharedPreferences.Editor editor = getSharedPreferences("COUNT", MODE_PRIVATE).edit();
+                    editor.clear().apply();
                     deleteData();
+                }
                 else finish();
             }
         }).autoDismiss(true).show();

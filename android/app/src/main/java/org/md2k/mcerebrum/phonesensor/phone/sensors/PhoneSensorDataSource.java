@@ -94,6 +94,7 @@ public abstract class PhoneSensorDataSource {
 
 
     public void register(DataSourceBuilder dataSourceBuilder, CallBack newCallBack) throws DataKitException {
+        Log.d("abc","register = "+dataSourceBuilder.build().getType());
         dataKitAPI = DataKitAPI.getInstance(context);
         dataSourceClient = dataKitAPI.register(dataSourceBuilder);
         callBack = newCallBack;

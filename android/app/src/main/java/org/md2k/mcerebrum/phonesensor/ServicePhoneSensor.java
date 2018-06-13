@@ -120,9 +120,6 @@ public class ServicePhoneSensor extends Service {
             phoneSensorDataSources.unregister();
             phoneSensorDataSources = null;
         }
-        if (dataKitAPI != null && dataKitAPI.isConnected()) {
-            dataKitAPI.disconnect();
-        }
     }
 
     private boolean readSettings() {

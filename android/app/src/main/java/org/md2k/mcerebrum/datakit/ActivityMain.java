@@ -267,6 +267,7 @@ public class ActivityMain extends AppCompatActivity {
         TextView textViewStatus = ((TextView) findViewById(R.id.textViewPrivacyStatus));
         TextView textViewOption = ((TextView) findViewById(R.id.textViewPrivacyOption));
 
+/*
         if (privacyManager.isActive()) {
             textViewStatus.setText("ON (" + DateTime.convertTimestampToTimeStr(privacyManager.getRemainingTime()) + ")");
             textViewOption.setText(getPrivacyList(privacyManager.getPrivacyData().getPrivacyTypes()));
@@ -280,6 +281,7 @@ public class ActivityMain extends AppCompatActivity {
             textViewOption.setVisibility(View.GONE);
             findViewById(R.id.textViewPrivacyOptionTitle).setVisibility(View.GONE);
         }
+*/
     }
 
     /**
@@ -344,6 +346,7 @@ public class ActivityMain extends AppCompatActivity {
      * @param menu Options menu.
      * @return Whether the preparation was successful.
      */
+/*
     @Override
     protected boolean onPrepareOptionsPanel(View view, Menu menu) {
         if (menu != null) {
@@ -358,6 +361,7 @@ public class ActivityMain extends AppCompatActivity {
         }
         return super.onPrepareOptionsPanel(view, menu);
     }
+*/
 
     /**
      * Provides actions for menu items.

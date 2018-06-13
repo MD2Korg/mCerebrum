@@ -10,7 +10,7 @@ buildscript {
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
     }
 }
-version = '2.0.14'
+version = '3.0.0'
 apply from: 'versioning.gradle'
 
 apply plugin: 'com.android.application'
@@ -44,6 +44,16 @@ android {
             exclude "lib/arm64-v8a/libgnustl_shared.so"
         }
     }
+    signingConfigs {
+        release {
+            if (project.hasProperty('MYAPP_RELEASE_STORE_FILE')) {
+                storeFile file(MYAPP_RELEASE_STORE_FILE)
+                storePassword MYAPP_RELEASE_STORE_PASSWORD
+                keyAlias MYAPP_RELEASE_KEY_ALIAS
+                keyPassword MYAPP_RELEASE_KEY_PASSWORD
+            }
+        }
+    }
     buildTypes {
         release {
             minifyEnabled false
@@ -53,6 +63,11 @@ android {
                     output.outputFile = new File(output.outputFile.parent, output.outputFile.name.replace("-release", "${variant.versionName}"))
                 }
             }
+            signingConfig signingConfigs.release
+
+        }
+        debug {
+            debuggable true
         }
     }
     packagingOptions {
@@ -73,7 +88,8 @@ android {
     }
     configurations.all {
         resolutionStrategy.force 'com.google.code.findbugs:jsr305:1.3.9'
-    }}
+    }
+}
 dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
@@ -85,7 +101,7 @@ dependencies {
     //MD2K commons
     compile project(':commons')
     compile project(':core')
-//    compile project(':utilities')
+    //    compile project(':utilities')
     //Folding UI
     //Bootstrap
     compile('com.crashlytics.sdk.android:crashlytics:2.6.8@aar') {
@@ -100,7 +116,6 @@ dependencies {
     compile 'com.squareup.retrofit2:retrofit:2.3.0'
     compile 'com.squareup.retrofit2:converter-gson:2.3.0'
     compile 'com.squareup.retrofit2:adapter-rxjava:2.1.0'
-
     compile 'com.google.code.gson:gson:2.8.0'
     compile 'com.github.GrenderG:Toasty:1.2.5'
     compile 'com.github.javiersantos:AppUpdater:2.6.3'
@@ -120,6 +135,6 @@ dependencies {
     compile 'com.bluelinelabs:logansquare:1.3.7'
     compile 'com.squareup.okhttp3:okhttp:3.4.1'
     compile 'io.paperdb:paperdb:2.6'
-    compile "com.facebook.react:react-native:0.20.1"
+    compile 'com.facebook.react:react-native:0.20.1'
     compile project(':react-native-navigation')
 }
