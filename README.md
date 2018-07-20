@@ -25,11 +25,11 @@ MAJOR.MINOR.PATCH (example: 3.0.12)
   2. MINOR version when functionality is added in a backwards-compatible manner, and
   3. PATCH version when backwards-compatible bug fixes are introduced.
 
-For the versions available, see [this repository's tags](./tags).
+For the versions available, see [this repository's tags](https://github.com/MD2Korg/mCerebrum/tags).
 
 ## Contributors
 
-Link to the [list of contributors](./contributors) who participated in this project.
+Link to the [list of contributors](https://github.com/MD2Korg/mCerebrum/graphs/contributors) who participated in this project.
 
 ## License
 
