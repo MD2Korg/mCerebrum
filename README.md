@@ -5,7 +5,7 @@ mCerebrum is a configurable smartphone software platform for mobile and wearable
 You can find more information about MD2K software on our [software website](https://md2k.org/software) or the MD2K organization on our [MD2K website](https://md2k.org/).
 
 ## Contributing
-Please read our [Contributing Guidelines](https://md2k.org/software/CodeofConduct) for details on the process for submitting pull requests to us.
+Please read our [Contributing Guidelines](https://md2k.org/software/under-the-hood/contributing) for details on the process for submitting pull requests to us.
 
 We use the [Google Java Style Guide](https://google.github.io/styleguide/javaguide.html).
 
